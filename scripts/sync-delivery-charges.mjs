@@ -3,74 +3,87 @@ import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 
 const DELIVERY_WINDOW = "3:30pm - 11:30pm";
+const SITE_SETTINGS_PAYLOAD = {
+  tagline: "Premium Cheese & Fast Food Supplies",
+  whatsapp_number: "923357750066",
+  business_hours: "Daily, 3:30 PM to 11:30 PM",
+  hero_kicker: "Hyderabad Cheese Store",
+  hero_title: "Premium Cheese & Fast Food Supplies",
+  hero_subtitle:
+    "High-quality dairy & frozen products for restaurants and home use.",
+  homepage_story_title: "Trusted supply for daily kitchens.",
+  homepage_story_body:
+    "Fresh cheese, dairy, frozen items, and simple ordering in one place.",
+  products_section_title: "Best Sellers",
+  deals_section_title: "Live Deals",
+  contact_section_title: "Contact Us",
+  announcement_bar:
+    "Fresh quality, best prices, and fast delivery across major delivery zones.",
+  contact_phone: "0335-7750066",
+  address: "Latifabad, Hyderabad, Sindh",
+};
 
 const deliveryZones = [
   {
-    slug: "hyderabad-city",
-    name: "Hyderabad City",
-    aliases: ["hyderabad-city", "hyderabad"],
-    description: "Home delivery charges for Hyderabad city.",
-    deliveryCharge: 50,
+    slug: "hyderabad",
+    name: "Hyderabad",
+    aliases: ["hyderabad-city", "hyderabad", "latifabad", "qasimabad"],
+    description: "Fast delivery for central Hyderabad routes.",
+    deliveryCharge: 80,
     freeDeliveryMinimum: 0,
     estimatedDeliveryTime: DELIVERY_WINDOW,
     sortOrder: 0,
     areas: [
-      ["Latifabad Units 8, 7, 6, 11, 12", 50, "Latifabad"],
-      ["Latifabad Units 5, 10, 3, 2", 70, "Latifabad"],
-      ["Latifabad Unit 4", 100, "Latifabad"],
-      ["Kohsar Phase 1, 2", 150, "Kohsar"],
-      ["Daman e Kohsar", 150, "Kohsar"],
-      ["Mir Hussainabad", 100, "Hyderabad"],
-      ["G.O.R Colony", 100, "Hyderabad"],
-      ["Auto Bhan Road", 70, "Hyderabad"],
-      ["Labour Colony", 150, "Site Area"],
-      ["Zeel Pak Society", 150, "Site Area"],
-      ["Hali Road", 150, "Site Area"],
-      ["Pakola Factory", 150, "Site Area"],
-      ["Gul Center", 100, "City"],
-      ["Garikhata", 120, "City"],
-      ["Tilaq Chari", 120, "City"],
-      ["Pakka Qila", 120, "City"],
-      ["Saddar", 120, "City"],
-      ["Tower / Liaqat Colony", 170, "City"],
-      ["Phuleli", 170, "City"],
-      ["Heerabad", 150, "City"],
-      ["Qasimabad Phase 1", 120, "Qasimabad"],
-      ["Qasimabad Phase 2", 150, "Qasimabad"],
-      ["London Town", 150, "Qasimabad"],
-      ["Alamdar Chowk", 150, "Qasimabad"],
-      ["Wadhu Wah", 120, "Qasimabad"],
-      ["Near Roopa Mari", 150, "Qasimabad"],
-      ["Naqash Villas", 150, "Qasimabad"],
-      ["Mother Village", 250, "Qasimabad"],
-      ["Honda Place", 200, "Qasimabad"],
-      ["Jamshoro", 300, "Outstation"],
-      ["Kotri City", 150, "Outstation"],
-      ["Kotri Site Area", 250, "Outstation"],
+      ["City", 80, "Central Hyderabad"],
+      ["Latifabad", 100, "Latifabad routes"],
+      ["Qasimabad", 120, "Qasimabad routes"],
+      ["Hirabad", 100, "Hirabad routes"],
     ],
   },
   {
-    slug: "karachi-city",
-    name: "Karachi City",
+    slug: "karachi",
+    name: "Karachi",
     aliases: ["karachi-city", "karachi"],
-    description: "Home delivery charges for Karachi city.",
+    description: "Longer-distance delivery for Karachi routes.",
     deliveryCharge: 200,
     freeDeliveryMinimum: 0,
     estimatedDeliveryTime: DELIVERY_WINDOW,
     sortOrder: 1,
     areas: [
-      ["F.B Area", 200, "Karachi"],
-      ["Gulshan e Iqbal", 200, "Karachi"],
-      ["Gulistan e Johar", 200, "Karachi"],
-      ["Gulshan e Maymar", 300, "Karachi"],
-      ["Scheme 33", 300, "Karachi"],
-      ["Bahadurabad", 300, "Karachi"],
-      ["Tariq Road", 300, "Karachi"],
-      ["Liaqatabad", 200, "Karachi"],
-      ["Azizabad", 200, "Karachi"],
-      ["New Karachi", 250, "Karachi"],
-      ["North Karachi", 250, "Karachi"],
-      ["Nazimabad", 300, "Karachi"],
+      ["DHA", 220, "Karachi DHA"],
+      ["Gulshan", 200, "Gulshan area"],
+      ["Saddar", 180, "Karachi Saddar"],
+      ["North Nazimabad", 220, "North Nazimabad"],
+    ],
+  },
+  {
+    slug: "jamshoro",
+    name: "Jamshoro",
+    aliases: ["jamshoro"],
+    description: "Simple coverage for Jamshoro routes.",
+    deliveryCharge: 150,
+    freeDeliveryMinimum: 0,
+    estimatedDeliveryTime: DELIVERY_WINDOW,
+    sortOrder: 2,
+    areas: [
+      ["Jamshoro City", 150, "Jamshoro city routes"],
+      ["University Area", 170, "University area"],
+      ["Railway Phatak", 190, "Railway Phatak"],
+    ],
+  },
+  {
+    slug: "kotri",
+    name: "Kotri",
+    aliases: ["kotri", "kotri-city"],
+    description: "Quick coverage for Kotri and nearby industrial routes.",
+    deliveryCharge: 120,
+    freeDeliveryMinimum: 0,
+    estimatedDeliveryTime: DELIVERY_WINDOW,
+    sortOrder: 3,
+    areas: [
+      ["Kotri City", 120, "Kotri city routes"],
+      ["SITE Area", 150, "Kotri site area"],
+      ["Railway Station Area", 130, "Railway station area"],
     ],
   },
 ];
@@ -260,13 +273,11 @@ async function syncDeliveryCharges() {
       throw deleteAreasError;
     }
 
-    const areaPayload = zone.areas.map(([areaName, deliveryCharge, description], index) => ({
+    const areaPayload = zone.areas.map(([areaName, deliveryCharge, description]) => ({
       zone_id: zoneId,
       area_name: areaName,
       delivery_charge: deliveryCharge,
       description,
-      is_active: true,
-      sort_order: index,
     }));
 
     const { error: insertAreasError } = await supabase
@@ -280,9 +291,7 @@ async function syncDeliveryCharges() {
 
   const { error: settingsError } = await supabase
     .from("site_settings")
-    .update({
-      business_hours: `Daily ${DELIVERY_WINDOW}`,
-    })
+    .update(SITE_SETTINGS_PAYLOAD)
     .eq("id", 1);
 
   if (settingsError) {
@@ -298,8 +307,6 @@ async function syncDeliveryCharges() {
           0,
         ),
         deliveryWindow: DELIVERY_WINDOW,
-        skippedVariableArea:
-          "Karachi other area charge as per distance was not inserted because checkout currently needs a fixed numeric charge.",
       },
       null,
       2,

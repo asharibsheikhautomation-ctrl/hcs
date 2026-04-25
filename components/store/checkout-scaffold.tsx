@@ -394,7 +394,9 @@ export function CheckoutScaffold({
               ) : null}
 
               <div className="mt-6 rounded-[1.6rem] bg-surface-muted px-4 py-4 text-sm text-ink-700">
-                {pricing.qualifiesForFreeDelivery ? (
+                {pricing.freeDeliveryMinimum <= 0 ? (
+                  <p>Delivery charges apply based on the selected area.</p>
+                ) : pricing.qualifiesForFreeDelivery ? (
                   <p className="font-semibold text-cheese-500">
                     Free delivery for {selectedZone?.name}.
                   </p>
@@ -424,7 +426,11 @@ export function CheckoutScaffold({
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Free delivery threshold</span>
-                  <span>{formatCurrency(pricing.freeDeliveryMinimum)}</span>
+                  <span>
+                    {pricing.freeDeliveryMinimum > 0
+                      ? formatCurrency(pricing.freeDeliveryMinimum)
+                      : "Not available"}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-base font-semibold text-ink-950">
                   <span>Final total</span>

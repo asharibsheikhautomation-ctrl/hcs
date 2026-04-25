@@ -26,7 +26,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
   );
   const whatsappHref = createWhatsAppOrderUrl(
     settings.whatsappNumber,
-    "Hello Hyderabad Cheese Store, I'd like to place an order.",
+    "Hello Hyderabad Cheese Store, I need help with products or delivery.",
   );
 
   return (
@@ -63,7 +63,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
               aria-label="Hyderabad Cheese Store home"
               className="min-w-0 max-w-full flex-1"
             >
-              <LogoMark className="[&_p]:text-white [&_p:last-child]:text-white/65" />
+              <LogoMark className="[&_p]:!text-white [&_p:last-child]:!text-white/72" />
             </Link>
 
             <motion.div
@@ -110,7 +110,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
                           "inline-flex min-h-[46px] items-center justify-center whitespace-nowrap rounded-full px-4 py-2.5 text-center text-sm font-semibold tracking-[0.02em] transition-colors duration-200 sm:px-5",
                           isActive
                             ? "bg-[linear-gradient(135deg,rgba(255,230,113,1),rgba(216,170,24,1))] text-ink-950 shadow-[0_14px_28px_rgba(216,170,24,0.34)]"
-                            : "bg-white/[0.03] text-white hover:bg-white/[0.08] hover:text-cheese-100",
+                            : "bg-white/[0.03] !text-white hover:bg-white/[0.08] hover:!text-white",
                         )}
                       >
                         {item.label}
@@ -136,7 +136,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             >
               <Link
                 href="/checkout"
-                className="inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-white/10 bg-white/6 px-4 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:px-5"
+                className="inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-white/10 bg-white/6 px-4 text-sm font-semibold !text-white shadow-[0_14px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl sm:px-5"
               >
                 <ShoppingBag className="h-4 w-4" />
                 <span className="ml-2">Checkout</span>
@@ -156,7 +156,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             >
               <Link
                 href="/admin"
-                className="inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-white/10 bg-white/6 px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl"
+                className="inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-white/10 bg-white/6 px-5 text-sm font-semibold !text-white shadow-[0_14px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl"
               >
                 <Shield className="h-4 w-4" />
                 <span className="ml-2">Admin</span>
@@ -173,7 +173,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
                 href={whatsappHref}
                 target="_blank"
                 rel="noreferrer"
-                className="cheese-cta inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-cheese-200/90 bg-[linear-gradient(135deg,rgba(255,230,113,1),rgba(216,170,24,1))] px-5 text-sm font-semibold text-ink-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_20px_38px_rgba(216,170,24,0.28)] sm:min-w-[210px]"
+                className="cheese-cta inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-cheese-200/90 bg-[linear-gradient(135deg,rgba(255,230,113,1),rgba(216,170,24,1))] px-5 text-sm font-semibold !text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_20px_38px_rgba(216,170,24,0.28)] sm:min-w-[210px]"
               >
                 Order on WhatsApp
                 <ArrowUpRight className="ml-2 h-4 w-4" />

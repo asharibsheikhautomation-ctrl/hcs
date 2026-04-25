@@ -2,13 +2,11 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { ArrowUpRight, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { useCart } from "@/components/providers/cart-provider";
 import { DealVisual } from "@/components/store/deal-visual";
 import { formatDealDiscount, formatDealValidity } from "@/lib/deal-utils";
-import { siteSettings } from "@/lib/demo-data";
-import { createQuickDealOrderUrl } from "@/lib/whatsapp";
 import { cn, formatCurrency } from "@/lib/utils";
 import type { Deal } from "@/types/commerce";
 
@@ -39,17 +37,11 @@ const toneClasses = {
 interface DealCardProps {
   deal: Deal;
   index: number;
-  whatsappNumber?: string;
 }
 
-export function DealCard({
-  deal,
-  index,
-  whatsappNumber = siteSettings.whatsappNumber,
-}: DealCardProps) {
+export function DealCard({ deal, index }: DealCardProps) {
   const { addDeal } = useCart();
   const [didAdd, setDidAdd] = useState(false);
-  const quickOrderUrl = createQuickDealOrderUrl(whatsappNumber, deal, 1);
   const tone = toneClasses[deal.accentTone];
   const summaryText = deal.headline || deal.description;
   const featuredItems = deal.includedItems.slice(0, 3);
@@ -173,25 +165,16 @@ export function DealCard({
               </div>
             </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              className="btn-base btn-primary cheese-cta"
-            >
-              <ShoppingBag className="h-4 w-4" />
-              {didAdd ? "Deal added" : "Add deal"}
-            </button>
-            <a
-              href={quickOrderUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-base btn-secondary cheese-cta"
-            >
-              WhatsApp order
-              <ArrowUpRight className="h-4 w-4" />
-            </a>
-          </div>
+            <div className="mt-5">
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                className="btn-base btn-primary w-full"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                {didAdd ? "Deal added" : "Add deal to cart"}
+              </button>
+            </div>
           </div>
         </div>
       </article>

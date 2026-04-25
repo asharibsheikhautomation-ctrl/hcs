@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Boxes, MessageSquareText, Sparkles } from "lucide-react";
+import { Boxes, ShoppingBag, Sparkles } from "lucide-react";
 import { SectionTransition, StaggerGroup, StaggerItem } from "@/components/motion";
 import { SectionHeading } from "@/components/common/section-heading";
 import { DealCard } from "@/components/store/deal-card";
@@ -8,7 +8,6 @@ import { PageHero } from "@/components/store/page-hero";
 import { fetchStoreDeals } from "@/lib/deals";
 import { buildPageMetadata, defaultKeywords } from "@/lib/seo";
 import { fetchResolvedSiteSettings } from "@/lib/site-settings";
-import { createWhatsAppOrderUrl } from "@/lib/whatsapp";
 import { StoreStatePanel } from "@/components/store/store-state-panel";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +15,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = buildPageMetadata({
   title: "Deals",
   description:
-    "Explore active percentage discounts, fixed discounts, and bundle deals with included items, cart actions, and WhatsApp ordering.",
+    "Explore active percentage discounts, fixed discounts, and bundle deals with simple add-to-cart actions.",
   path: "/deals",
   keywords: [...defaultKeywords, "bundle deals", "discount offers", "featured deals"],
 });
@@ -41,9 +40,9 @@ export default async function DealsPage() {
       icon: Sparkles,
     },
     {
-      title: "WhatsApp order",
-      description: "Send any deal on WhatsApp.",
-      icon: MessageSquareText,
+      title: "Checkout ready",
+      description: "Save the order, then continue on WhatsApp.",
+      icon: ShoppingBag,
     },
   ] as const;
 
@@ -52,7 +51,7 @@ export default async function DealsPage() {
       <PageHero
         eyebrow="Deals"
         title={settings.dealsSectionTitle || "Live deals"}
-        description="Clear savings, easy bundles, and fast WhatsApp ordering."
+        description="Clear savings, simple bundles, and fast checkout."
         actions={
           <>
             <Link
@@ -106,24 +105,11 @@ export default async function DealsPage() {
               <StoreStatePanel
                 eyebrow="No Active Deals"
                 title="No live deals right now."
-                description="Browse products or ask the store on WhatsApp."
+                description="Browse products or return later for fresh offers."
                 actions={
-                  <>
-                    <Link href="/products" className="btn-base btn-primary">
-                      Browse products
-                    </Link>
-                    <a
-                      href={createWhatsAppOrderUrl(
-                        settings.whatsappNumber,
-                        "Hello Hyderabad Cheese Store, please share current active deals and bundle recommendations.",
-                      )}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-base btn-secondary"
-                    >
-                      Ask on WhatsApp
-                    </a>
-                  </>
+                  <Link href="/products" className="btn-base btn-primary">
+                    Browse products
+                  </Link>
                 }
               />
             </SectionTransition>
@@ -134,7 +120,6 @@ export default async function DealsPage() {
                   key={deal.id}
                   deal={deal}
                   index={index}
-                  whatsappNumber={settings.whatsappNumber}
                 />
               ))}
             </div>

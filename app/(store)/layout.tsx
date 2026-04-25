@@ -23,7 +23,7 @@ export default async function StoreLayout({
           style={buildSiteThemeStyle(settings)}
         >
           <SiteHeader settings={settings} />
-          <main className="min-w-0 flex-1 overflow-x-clip">{children}</main>
+          <main className="min-w-0 flex-1 overflow-x-hidden">{children}</main>
           <SiteFooter settings={settings} />
         </div>
       </CartProvider>

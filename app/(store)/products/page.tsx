@@ -10,8 +10,10 @@ import {
   buildProductsHref,
   fetchStoreCatalog,
   filterAndSortProducts,
+  getPreferredProductsCategorySlug,
   getFeaturedProducts,
   parseStoreProductFilters,
+  sortStoreCategoriesForDisplay,
 } from "@/lib/store-catalog";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +30,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = buildPageMetadata({
   title: "Products",
   description:
-    "Browse premium frozen food, dairy items, and extras with search, category filters, sorting, and WhatsApp-first ordering.",
+    "Browse cheese, dairy, frozen food, and extras with search, category filters, and simple cart-first ordering.",
   path: "/products",
   keywords: [...defaultKeywords, "premium products", "dairy items", "frozen food"],
 });
@@ -76,23 +78,36 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   const filters = parseStoreProductFilters(resolvedSearchParams);
   const { categories, products, settings } = catalogResult.catalog;
+  const displayCategories = sortStoreCategoriesForDisplay(categories);
+  const preferredCategorySlug = getPreferredProductsCategorySlug(displayCategories);
+  const hasExplicitCategoryParam =
+    typeof resolvedSearchParams.category !== "undefined";
+  const effectiveFilters = {
+    ...filters,
+    category:
+      hasExplicitCategoryParam || !preferredCategorySlug
+        ? filters.category
+        : preferredCategorySlug,
+  };
   const featuredProducts = getFeaturedProducts(products, 3);
-  const filteredProducts = filterAndSortProducts(products, filters);
+  const filteredProducts = filterAndSortProducts(products, effectiveFilters);
   const activeCategory =
-    filters.category === "all"
+    effectiveFilters.category === "all"
       ? null
-      : categories.find((category) => category.slug === filters.category) ?? null;
+      : displayCategories.find((category) => category.slug === effectiveFilters.category) ??
+        null;
   const hasActiveFilters =
     Boolean(filters.query) ||
-    filters.category !== "all" ||
+    (hasExplicitCategoryParam &&
+      effectiveFilters.category !== (preferredCategorySlug ?? "all")) ||
     filters.sort !== "featured";
 
   return (
     <>
       <PageHero
         eyebrow="Products"
-        title="Fresh products. Fast ordering."
-        description="Browse frozen food, dairy, and extras in one clean catalogue."
+        title="Fresh products."
+        description="Browse cheese, dairy, frozen food, and extras in one clean catalogue."
         actions={
           <>
             <Link
@@ -126,7 +141,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   key={product.id}
                   product={product}
                   index={index}
-                  whatsappNumber={settings.whatsappNumber}
                 />
               ))}
             </div>
@@ -161,7 +175,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   <input
                     type="search"
                     name="query"
-                    defaultValue={filters.query}
+                    defaultValue={effectiveFilters.query}
                     placeholder="Search by name, category, or keyword"
                     className="field-input"
                   />
@@ -171,7 +185,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   <span>Sort by</span>
                   <select
                     name="sort"
-                    defaultValue={filters.sort}
+                    defaultValue={effectiveFilters.sort}
                     className="field-select"
                   >
                     {sortOptions.map((option) => (
@@ -183,8 +197,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 </label>
 
                 <div className="grid gap-3 lg:self-end">
-                  {filters.category !== "all" ? (
-                    <input type="hidden" name="category" value={filters.category} />
+                  {effectiveFilters.category !== "all" ? (
+                    <input type="hidden" name="category" value={effectiveFilters.category} />
                   ) : null}
                   <button
                     type="submit"
@@ -208,24 +222,24 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               href={buildProductsHref({ query: filters.query, sort: filters.sort, category: "all" })}
               className={cn(
                 "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
-                filters.category === "all"
+                effectiveFilters.category === "all"
                   ? "border-cheese-300 bg-cheese-100 text-cheese-800"
                   : "border-black/10 bg-white text-ink-700 hover:border-cheese-200 hover:text-ink-950",
               )}
             >
               All products
             </Link>
-            {categories.map((category) => (
+            {displayCategories.map((category) => (
               <Link
                 key={category.id}
                 href={buildProductsHref({
-                  query: filters.query,
-                  sort: filters.sort,
+                  query: effectiveFilters.query,
+                  sort: effectiveFilters.sort,
                   category: category.slug,
                 })}
                 className={cn(
                   "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
-                  filters.category === category.slug
+                  effectiveFilters.category === category.slug
                     ? "border-cheese-300 bg-cheese-100 text-cheese-800"
                     : "border-black/10 bg-white text-ink-700 hover:border-cheese-200 hover:text-ink-950",
                 )}
@@ -280,7 +294,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   key={product.id}
                   product={product}
                   index={index}
-                  whatsappNumber={settings.whatsappNumber}
                 />
               ))}
             </div>

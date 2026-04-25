@@ -28,6 +28,80 @@ export interface StoreProductFilters {
   sort: ProductSortOption;
 }
 
+function normalizeSortValue(value: string | null | undefined) {
+  return value?.trim().toLowerCase() ?? "";
+}
+
+function slugifyCategoryValue(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+}
+
+export function isCheeseCategoryValue(value: string | null | undefined) {
+  return normalizeSortValue(value).includes("cheese");
+}
+
+export function isDairyCategoryValue(value: string | null | undefined) {
+  return normalizeSortValue(value).includes("dairy");
+}
+
+function isFrozenCategoryValue(value: string | null | undefined) {
+  return normalizeSortValue(value).includes("frozen");
+}
+
+function getCategoryDisplayPriority(category: Pick<Category, "slug" | "name" | "sortOrder">) {
+  if (isCheeseCategoryValue(category.name) || isCheeseCategoryValue(category.slug)) {
+    return 0;
+  }
+
+  if (
+    isDairyCategoryValue(category.name) ||
+    isDairyCategoryValue(category.slug)
+  ) {
+    return 1;
+  }
+
+  if (
+    isFrozenCategoryValue(category.name) ||
+    isFrozenCategoryValue(category.slug)
+  ) {
+    return 2;
+  }
+
+  return 3;
+}
+
+export function getProductCategoryPriority(
+  product: Pick<Product, "categorySlug" | "categoryName">,
+) {
+  if (
+    isCheeseCategoryValue(product.categoryName) ||
+    isCheeseCategoryValue(product.categorySlug)
+  ) {
+    return 0;
+  }
+
+  if (
+    isDairyCategoryValue(product.categoryName) ||
+    isDairyCategoryValue(product.categorySlug)
+  ) {
+    return 1;
+  }
+
+  if (
+    isFrozenCategoryValue(product.categoryName) ||
+    isFrozenCategoryValue(product.categorySlug)
+  ) {
+    return 2;
+  }
+
+  return 3;
+}
+
 function isSupabaseConfigured() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -48,31 +122,11 @@ function mapAccentTone(value: string): AccentTone {
 }
 
 function normalizeCategorySlug(value: string): CategorySlug {
-  if (value === "frozen-food" || value === "dairy-items") {
-    return value;
-  }
-
-  return "extra-items";
+  return slugifyCategoryValue(value);
 }
 
 function normalizeCategorySlugFromRow(row: Tables<"categories">): CategorySlug {
-  const slug = row.slug.trim().toLowerCase();
-
-  if (slug === "frozen-food" || slug === "dairy-items" || slug === "extra-items") {
-    return slug;
-  }
-
-  const name = row.name.trim().toLowerCase();
-
-  if (name.includes("frozen")) {
-    return "frozen-food";
-  }
-
-  if (name.includes("dairy")) {
-    return "dairy-items";
-  }
-
-  return "extra-items";
+  return normalizeCategorySlug(row.slug || row.name) || row.id;
 }
 
 function parseStringArray(value: unknown) {
@@ -111,8 +165,8 @@ function mapProductRow(
   return {
     id: row.id,
     categoryId: row.category_id,
-    categorySlug: category?.slug ?? "extra-items",
-    categoryName: category?.name ?? "Extra Items",
+    categorySlug: category?.slug ?? "uncategorized",
+    categoryName: category?.name ?? "Uncategorized",
     slug: row.slug,
     name: row.name,
     shortDescription: row.short_description ?? "",
@@ -204,6 +258,21 @@ export async function fetchStoreCatalog() {
   }
 }
 
+export function sortStoreCategoriesForDisplay(categories: Category[]) {
+  return [...categories].sort((left, right) => {
+    return (
+      getCategoryDisplayPriority(left) - getCategoryDisplayPriority(right) ||
+      left.sortOrder - right.sortOrder ||
+      left.name.localeCompare(right.name)
+    );
+  });
+}
+
+export function getPreferredProductsCategorySlug(categories: Category[]) {
+  const sortedCategories = sortStoreCategoriesForDisplay(categories);
+  return sortedCategories[0]?.slug ?? null;
+}
+
 export async function fetchStoreProductBySlug(slug: string) {
   const { categories, products, settings } = await fetchStoreCatalog();
   const product = products.find((entry) => entry.slug === slug) ?? null;
@@ -271,15 +340,29 @@ export function filterAndSortProducts(
   return filteredProducts.sort((left, right) => {
     switch (filters.sort) {
       case "price-low-to-high":
-        return left.price - right.price;
+        return (
+          left.price - right.price ||
+          getProductCategoryPriority(left) - getProductCategoryPriority(right) ||
+          left.name.localeCompare(right.name)
+        );
       case "price-high-to-low":
-        return right.price - left.price;
+        return (
+          right.price - left.price ||
+          getProductCategoryPriority(left) - getProductCategoryPriority(right) ||
+          left.name.localeCompare(right.name)
+        );
       case "newest":
-        return new Date(right.createdAt ?? 0).valueOf() - new Date(left.createdAt ?? 0).valueOf();
+        return (
+          new Date(right.createdAt ?? 0).valueOf() -
+            new Date(left.createdAt ?? 0).valueOf() ||
+          getProductCategoryPriority(left) - getProductCategoryPriority(right) ||
+          left.name.localeCompare(right.name)
+        );
       case "featured":
       default:
         return (
           Number(right.isFeatured) - Number(left.isFeatured) ||
+          getProductCategoryPriority(left) - getProductCategoryPriority(right) ||
           new Date(right.createdAt ?? 0).valueOf() - new Date(left.createdAt ?? 0).valueOf() ||
           left.name.localeCompare(right.name)
         );
@@ -292,10 +375,59 @@ export function getFeaturedProducts(products: Product[], limit = 3) {
     .filter((product) => product.isFeatured)
     .sort(
       (left, right) =>
+        getProductCategoryPriority(left) - getProductCategoryPriority(right) ||
         new Date(right.createdAt ?? 0).valueOf() -
-        new Date(left.createdAt ?? 0).valueOf(),
+          new Date(left.createdAt ?? 0).valueOf() ||
+        left.name.localeCompare(right.name),
     )
     .slice(0, limit);
+}
+
+export function getHomepageFeaturedProducts(products: Product[], limit = 4) {
+  const rankedProducts = [...products].sort(
+    (left, right) =>
+      getProductCategoryPriority(left) - getProductCategoryPriority(right) ||
+      Number(right.isFeatured) - Number(left.isFeatured) ||
+      new Date(right.createdAt ?? 0).valueOf() -
+        new Date(left.createdAt ?? 0).valueOf() ||
+      left.name.localeCompare(right.name),
+  );
+  const selectedProductIds = new Set<string>();
+  const selectedProducts: Product[] = [];
+
+  const addMatchingProducts = (predicate: (product: Product) => boolean) => {
+    for (const product of rankedProducts) {
+      if (!predicate(product) || selectedProductIds.has(product.id)) {
+        continue;
+      }
+
+      selectedProducts.push(product);
+      selectedProductIds.add(product.id);
+
+      if (selectedProducts.length >= limit) {
+        return;
+      }
+    }
+  };
+
+  addMatchingProducts(
+    (product) =>
+      product.isFeatured && getProductCategoryPriority(product) <= 1,
+  );
+  addMatchingProducts(
+    (product) =>
+      !product.isFeatured && getProductCategoryPriority(product) <= 1,
+  );
+  addMatchingProducts(
+    (product) =>
+      product.isFeatured && getProductCategoryPriority(product) > 1,
+  );
+  addMatchingProducts(
+    (product) =>
+      !product.isFeatured && getProductCategoryPriority(product) > 1,
+  );
+
+  return selectedProducts.slice(0, limit);
 }
 
 export function buildProductsHref(filters: Partial<StoreProductFilters>) {
@@ -305,7 +437,7 @@ export function buildProductsHref(filters: Partial<StoreProductFilters>) {
     params.set("query", filters.query.trim());
   }
 
-  if (filters.category && filters.category !== "all") {
+  if (typeof filters.category !== "undefined") {
     params.set("category", filters.category);
   }
 

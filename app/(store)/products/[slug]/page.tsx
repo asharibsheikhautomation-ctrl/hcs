@@ -51,7 +51,7 @@ export default async function ProductDetailPage({
   params,
 }: ProductDetailPageProps) {
   const { slug } = await params;
-  const { product, products, settings } = await fetchStoreProductBySlug(slug);
+  const { product, products } = await fetchStoreProductBySlug(slug);
 
   if (!product) {
     notFound();
@@ -83,7 +83,7 @@ export default async function ProductDetailPage({
     {
       icon: product.compareAtPrice ? ShieldCheck : MessageCircle,
       label: product.compareAtPrice ? "Value" : "Order",
-      value: product.compareAtPrice ? "Great everyday value" : "WhatsApp ordering ready",
+      value: product.compareAtPrice ? "Great everyday value" : "Add to cart and checkout",
     },
   ] as const;
 
@@ -172,7 +172,6 @@ export default async function ProductDetailPage({
 
               <ProductPurchasePanel
                 product={product}
-                whatsappNumber={settings.whatsappNumber}
               />
             </SectionTransition>
           </div>
@@ -194,7 +193,6 @@ export default async function ProductDetailPage({
                   key={relatedProduct.id}
                   product={relatedProduct}
                   index={index}
-                  whatsappNumber={settings.whatsappNumber}
                 />
               ))}
             </div>

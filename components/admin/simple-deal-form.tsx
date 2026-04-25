@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { saveDealAction } from "@/app/admin/actions";
 import { AdminImageUploadField } from "@/components/admin/image-upload-field";
 import {
@@ -20,10 +20,69 @@ interface SimpleDealFormProps {
   deal?: AdminDeal;
 }
 
+interface CustomDealItemDraft {
+  key: string;
+  name: string;
+  quantity: string;
+  price: string;
+  unitLabel: string;
+  imageUrl: string;
+}
+
+function createDraftKey() {
+  return `custom-item-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function createEmptyCustomDealItem(): CustomDealItemDraft {
+  return {
+    key: createDraftKey(),
+    name: "",
+    quantity: "1",
+    price: "",
+    unitLabel: "",
+    imageUrl: "",
+  };
+}
+
 export function SimpleDealForm({ products, deal }: SimpleDealFormProps) {
   const [state, action] = useActionState(saveDealAction, initialAdminActionState);
   const isEditing = Boolean(deal);
   const linkedProductIds = new Set(deal?.linkedProductIds ?? []);
+  const [customItems, setCustomItems] = useState<CustomDealItemDraft[]>(
+    deal?.customItems.length
+      ? deal.customItems.map((item) => ({
+          key: item.id,
+          name: item.name,
+          quantity: String(item.quantity),
+          price: String(item.price),
+          unitLabel: item.unitLabel,
+          imageUrl: item.imageUrl,
+        }))
+      : [createEmptyCustomDealItem()],
+  );
+
+  function updateCustomItem(
+    key: string,
+    field: Exclude<keyof CustomDealItemDraft, "key">,
+    value: string,
+  ) {
+    setCustomItems((currentItems) =>
+      currentItems.map((item) =>
+        item.key === key ? { ...item, [field]: value } : item,
+      ),
+    );
+  }
+
+  function addCustomItemRow() {
+    setCustomItems((currentItems) => [...currentItems, createEmptyCustomDealItem()]);
+  }
+
+  function removeCustomItemRow(key: string) {
+    setCustomItems((currentItems) => {
+      const nextItems = currentItems.filter((item) => item.key !== key);
+      return nextItems.length > 0 ? nextItems : [createEmptyCustomDealItem()];
+    });
+  }
 
   return (
     <form
@@ -114,7 +173,7 @@ export function SimpleDealForm({ products, deal }: SimpleDealFormProps) {
         <div>
           <p className="text-sm font-semibold text-ink-950">Included products</p>
           <p className="mt-1 text-xs leading-6 text-ink-700/70">
-            Select the products that should be added when this deal is chosen.
+            Select store products that should be added when this deal is chosen.
           </p>
         </div>
 
@@ -133,6 +192,109 @@ export function SimpleDealForm({ products, deal }: SimpleDealFormProps) {
               />
               <span>{product.label}</span>
             </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-3 rounded-[1.5rem] border border-black/6 bg-[#faf6ef] p-4">
+        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-ink-950">Custom items</p>
+            <p className="mt-1 text-xs leading-6 text-ink-700/70">
+              Add manual items if a deal should include something that is not already in Products.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={addCustomItemRow}
+            className="btn-base btn-secondary w-full justify-center rounded-[1.1rem] px-4 py-3 text-sm md:w-auto"
+          >
+            Add custom item
+          </button>
+        </div>
+
+        {state.fieldErrors.customItems ? (
+          <p className="text-xs font-semibold text-red-600">
+            {state.fieldErrors.customItems}
+          </p>
+        ) : null}
+
+        <div className="grid gap-3">
+          {customItems.map((item, index) => (
+            <div
+              key={item.key}
+              className="rounded-[1.2rem] border border-black/6 bg-white p-4"
+            >
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-ink-950">
+                  Custom item {index + 1}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => removeCustomItemRow(item.key)}
+                  className="rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-red-700"
+                >
+                  Remove
+                </button>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-2">
+                <AdminInput
+                  name="customItemName"
+                  value={item.name}
+                  onChange={(event) =>
+                    updateCustomItem(item.key, "name", event.currentTarget.value)
+                  }
+                  placeholder="Cheese Dip Cup"
+                />
+                <AdminInput
+                  name="customItemUnitLabel"
+                  value={item.unitLabel}
+                  onChange={(event) =>
+                    updateCustomItem(
+                      item.key,
+                      "unitLabel",
+                      event.currentTarget.value,
+                    )
+                  }
+                  placeholder="Cup / Box / 250g"
+                />
+                <AdminInput
+                  type="number"
+                  min="1"
+                  step="1"
+                  name="customItemQuantity"
+                  value={item.quantity}
+                  onChange={(event) =>
+                    updateCustomItem(item.key, "quantity", event.currentTarget.value)
+                  }
+                  placeholder="1"
+                />
+                <AdminInput
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  name="customItemPrice"
+                  value={item.price}
+                  onChange={(event) =>
+                    updateCustomItem(item.key, "price", event.currentTarget.value)
+                  }
+                  placeholder="350"
+                />
+                <div className="md:col-span-2">
+                  <AdminInput
+                    name="customItemImageUrl"
+                    value={item.imageUrl}
+                    onChange={(event) =>
+                      updateCustomItem(item.key, "imageUrl", event.currentTarget.value)
+                    }
+                    placeholder="https://... optional image URL"
+                  />
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>

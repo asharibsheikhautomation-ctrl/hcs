@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { parseCsv } from "@/lib/admin/csv";
 import { uploadAdminImage } from "@/lib/admin-media";
 import { siteSettings as demoSiteSettings } from "@/lib/demo-data";
 import { buildDealSavingsLabel } from "@/lib/deal-utils";
@@ -15,24 +16,33 @@ import {
 import { fetchAdminSiteSettings } from "@/lib/admin-data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { AdminActionState } from "@/types/admin";
-import type { Json, TablesInsert, TablesUpdate } from "@/types/supabase";
+import type { Json, Tables, TablesInsert, TablesUpdate } from "@/types/supabase";
 
-function successState(message: string): AdminActionState {
+const PRODUCT_IMPORT_REQUIRED_COLUMNS = ["name", "price"] as const;
+const MAX_IMPORT_DETAILS = 12;
+
+function successState(
+  message: string,
+  details: string[] = [],
+): AdminActionState {
   return {
     status: "success",
     message,
     fieldErrors: {},
+    details,
   };
 }
 
 function errorState(
   message: string,
   fieldErrors: Record<string, string> = {},
+  details: string[] = [],
 ): AdminActionState {
   return {
     status: "error",
     message,
     fieldErrors,
+    details,
   };
 }
 
@@ -129,6 +139,80 @@ function getCheckboxValues(formData: FormData, key: string) {
   );
 }
 
+function getStringValues(formData: FormData, key: string) {
+  return formData
+    .getAll(key)
+    .map((value) => (typeof value === "string" ? value.trim() : ""));
+}
+
+interface ParsedCustomDealItem {
+  name: string;
+  quantity: number;
+  price: number;
+  unitLabel: string | null;
+  imageUrl: string | null;
+}
+
+function parseCustomDealItems(formData: FormData) {
+  const names = getStringValues(formData, "customItemName");
+  const quantities = getStringValues(formData, "customItemQuantity");
+  const prices = getStringValues(formData, "customItemPrice");
+  const unitLabels = getStringValues(formData, "customItemUnitLabel");
+  const imageUrls = getStringValues(formData, "customItemImageUrl");
+  const maxLength = Math.max(
+    names.length,
+    quantities.length,
+    prices.length,
+    unitLabels.length,
+    imageUrls.length,
+  );
+  const items: ParsedCustomDealItem[] = [];
+  const errors: string[] = [];
+
+  for (let index = 0; index < maxLength; index += 1) {
+    const name = names[index] ?? "";
+    const quantityValue = quantities[index] ?? "";
+    const priceValue = prices[index] ?? "";
+    const unitLabel = unitLabels[index] ?? "";
+    const imageUrl = imageUrls[index] ?? "";
+
+    if (!name && !quantityValue && !priceValue && !unitLabel && !imageUrl) {
+      continue;
+    }
+
+    if (!name) {
+      errors.push(`Custom item ${index + 1}: name is required.`);
+      continue;
+    }
+
+    const quantity = quantityValue
+      ? Number.parseInt(quantityValue, 10)
+      : 1;
+
+    if (!Number.isFinite(quantity) || quantity <= 0) {
+      errors.push(`Custom item ${index + 1}: quantity must be at least 1.`);
+      continue;
+    }
+
+    const price = Number.parseFloat(priceValue);
+
+    if (!Number.isFinite(price) || price <= 0) {
+      errors.push(`Custom item ${index + 1}: price must be greater than zero.`);
+      continue;
+    }
+
+    items.push({
+      name,
+      quantity,
+      price,
+      unitLabel: unitLabel || null,
+      imageUrl: imageUrl || null,
+    });
+  }
+
+  return { items, errors };
+}
+
 function getStockStatus(stockQuantity: number) {
   if (stockQuantity <= 0) {
     return "out_of_stock";
@@ -149,6 +233,59 @@ function slugifyValue(value: string) {
     .replace(/^-+|-+$/g, "")
     .replace(/-{2,}/g, "-")
     .slice(0, 64);
+}
+
+function normalizeLookupValue(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function parseImportDecimal(value: string) {
+  const normalizedValue = value
+    .trim()
+    .replace(/,/g, "")
+    .replace(/rs\.?/gi, "")
+    .replace(/pkr/gi, "");
+
+  if (!normalizedValue) {
+    return null;
+  }
+
+  const parsedValue = Number.parseFloat(normalizedValue);
+
+  return Number.isFinite(parsedValue) ? parsedValue : Number.NaN;
+}
+
+function parseImportBoolean(value: string) {
+  const normalizedValue = normalizeLookupValue(value);
+
+  if (!normalizedValue) {
+    return null;
+  }
+
+  if (
+    ["true", "1", "yes", "y", "active", "on"].includes(normalizedValue)
+  ) {
+    return true;
+  }
+
+  if (
+    ["false", "0", "no", "n", "inactive", "off"].includes(normalizedValue)
+  ) {
+    return false;
+  }
+
+  return undefined;
+}
+
+function summarizeImportDetails(details: string[]) {
+  if (details.length <= MAX_IMPORT_DETAILS) {
+    return details;
+  }
+
+  return [
+    ...details.slice(0, MAX_IMPORT_DETAILS),
+    `${details.length - MAX_IMPORT_DETAILS} more rows failed. Fix the CSV and import again.`,
+  ];
 }
 
 async function getOrCreateSimpleProductCategory(
@@ -264,6 +401,39 @@ async function resolveUploadedImageUrl({
     folder,
     slugSource,
   });
+}
+
+function buildImportedProductValues({
+  category,
+  name,
+  description,
+  price,
+  salePrice,
+  imageUrl,
+  isActive,
+}: {
+  category: Pick<Tables<"categories">, "id" | "slug" | "accent_tone">;
+  name: string;
+  description: string;
+  price: number;
+  salePrice: number | null;
+  imageUrl: string | null;
+  isActive: boolean;
+}) {
+  return {
+    category_id: category.id,
+    name,
+    short_description: description ? description.slice(0, 120) : null,
+    description: description || null,
+    image_url: imageUrl,
+    gallery_urls: imageUrl ? [imageUrl] : [],
+    base_price: price,
+    sale_price: salePrice,
+    compare_at_price: salePrice !== null ? price : null,
+    is_active: isActive,
+    is_frozen: category.slug === "frozen-food",
+    accent_tone: category.accent_tone ?? "gold",
+  };
 }
 
 export async function loginAdminAction(
@@ -746,6 +916,255 @@ export async function deleteSimpleProductAction(formData: FormData) {
   revalidatePath("/deals");
 }
 
+export async function importProductsCsvAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await requireAdminSession("/admin#products");
+
+  const file = getFile(formData, "file");
+
+  if (!file) {
+    return errorState("Please upload a CSV file first.", {
+      file: "Choose a CSV file to import products.",
+    });
+  }
+
+  if (!file.name.toLowerCase().endsWith(".csv")) {
+    return errorState(
+      "Please upload a CSV file. XLSX import is not enabled yet.",
+      {
+        file: "Use a .csv file with the product columns.",
+      },
+    );
+  }
+
+  let parsedCsv: ReturnType<typeof parseCsv>;
+
+  try {
+    parsedCsv = parseCsv(await file.text());
+  } catch (error) {
+    return errorState(
+      error instanceof Error
+        ? error.message
+        : "The CSV file could not be read.",
+      {
+        file: "Use a valid CSV file with a header row.",
+      },
+    );
+  }
+
+  const missingColumns = PRODUCT_IMPORT_REQUIRED_COLUMNS.filter(
+    (column) => !parsedCsv.headers.includes(column),
+  );
+
+  if (missingColumns.length > 0) {
+    return errorState(
+      `The CSV is missing required columns: ${missingColumns.join(", ")}.`,
+      {
+        file: "Add the required columns and import again.",
+      },
+    );
+  }
+
+  if (parsedCsv.rows.length === 0) {
+    return errorState("The CSV does not contain any product rows.", {
+      file: "Add at least one product row below the header.",
+    });
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const [{ data: categories, error: categoriesError }, { data: products, error: productsError }] =
+    await Promise.all([
+      supabase.from("categories").select("id, name, slug, accent_tone"),
+      supabase.from("products").select("*"),
+    ]);
+
+  if (categoriesError) {
+    return errorState(categoriesError.message);
+  }
+
+  if (productsError) {
+    return errorState(productsError.message);
+  }
+
+  if (!categories || categories.length === 0) {
+    return errorState("Create at least one category before importing products.");
+  }
+
+  const categoryByLookup = new Map<
+    string,
+    Pick<Tables<"categories">, "id" | "name" | "slug" | "accent_tone">
+  >();
+
+  for (const category of categories) {
+    categoryByLookup.set(normalizeLookupValue(category.name), category);
+    categoryByLookup.set(normalizeLookupValue(category.slug), category);
+    categoryByLookup.set(normalizeLookupValue(slugifyValue(category.name)), category);
+  }
+
+  const productsByName = new Map<string, Tables<"products">>();
+
+  for (const product of products ?? []) {
+    productsByName.set(normalizeLookupValue(product.name), product);
+  }
+
+  let successCount = 0;
+  const failureDetails: string[] = [];
+
+  for (const row of parsedCsv.rows) {
+    const name = row.values.name?.trim() ?? "";
+    const description = row.values.description?.trim() ?? "";
+    const categoryInput = row.values.category?.trim() ?? "";
+    const imageUrl = row.values.image_url?.trim() || null;
+    const price = parseImportDecimal(row.values.price ?? "");
+    const salePriceRaw = parseImportDecimal(row.values.sale_price ?? "");
+    const isActiveRaw = parseImportBoolean(row.values.is_active ?? "");
+    const existingProduct = productsByName.get(normalizeLookupValue(name));
+    const category =
+      categoryByLookup.get(normalizeLookupValue(categoryInput)) ??
+      categoryByLookup.get(normalizeLookupValue(slugifyValue(categoryInput))) ??
+      (existingProduct
+        ? categories.find((item) => item.id === existingProduct.category_id) ?? null
+        : null);
+
+    if (!name) {
+      failureDetails.push(`Row ${row.rowNumber}: Product name is required.`);
+      continue;
+    }
+
+    if (price === null || !Number.isFinite(price) || price <= 0) {
+      failureDetails.push(
+        `Row ${row.rowNumber}: Price must be a valid number greater than zero.`,
+      );
+      continue;
+    }
+
+    if (salePriceRaw !== null && (!Number.isFinite(salePriceRaw) || salePriceRaw < 0)) {
+      failureDetails.push(
+        `Row ${row.rowNumber}: Sale price must be zero or greater.`,
+      );
+      continue;
+    }
+
+    if (salePriceRaw !== null && salePriceRaw > price) {
+      failureDetails.push(
+        `Row ${row.rowNumber}: Sale price cannot be greater than price.`,
+      );
+      continue;
+    }
+
+    if (isActiveRaw === undefined) {
+      failureDetails.push(
+        `Row ${row.rowNumber}: is_active should be true/false, yes/no, or 1/0.`,
+      );
+      continue;
+    }
+
+    if (!category) {
+      failureDetails.push(
+        `Row ${row.rowNumber}: Category "${categoryInput || "blank"}" was not found. Use an existing category name or slug.`,
+      );
+      continue;
+    }
+
+    const isActive = isActiveRaw ?? existingProduct?.is_active ?? true;
+    const salePrice = salePriceRaw ?? null;
+    const baseValues = buildImportedProductValues({
+      category,
+      name,
+      description,
+      price,
+      salePrice,
+      imageUrl,
+      isActive,
+    });
+
+    if (existingProduct) {
+      const { data: updatedProduct, error: updateError } = await supabase
+        .from("products")
+        .update(baseValues satisfies TablesUpdate<"products">)
+        .eq("id", existingProduct.id)
+        .select("*")
+        .single();
+
+      if (updateError || !updatedProduct) {
+        failureDetails.push(
+          `Row ${row.rowNumber}: ${updateError?.message ?? "Product could not be updated."}`,
+        );
+        continue;
+      }
+
+      productsByName.set(normalizeLookupValue(updatedProduct.name), updatedProduct);
+      successCount += 1;
+      continue;
+    }
+
+    let slug = "";
+
+    try {
+      slug = await buildUniqueProductSlug(supabase, name);
+    } catch (error) {
+      failureDetails.push(
+        `Row ${row.rowNumber}: ${
+          error instanceof Error ? error.message : "Product slug could not be prepared."
+        }`,
+      );
+      continue;
+    }
+
+    const { data: insertedProduct, error: insertError } = await supabase
+      .from("products")
+      .insert({
+        ...baseValues,
+        slug,
+        badge: null,
+        sku: null,
+        unit_label: "unit",
+        stock_quantity: 100,
+        stock_status: "in_stock",
+        is_featured: false,
+        sort_order: 0,
+      } satisfies TablesInsert<"products">)
+      .select("*")
+      .single();
+
+    if (insertError || !insertedProduct) {
+      failureDetails.push(
+        `Row ${row.rowNumber}: ${insertError?.message ?? "Product could not be created."}`,
+      );
+      continue;
+    }
+
+    productsByName.set(normalizeLookupValue(insertedProduct.name), insertedProduct);
+    successCount += 1;
+  }
+
+  if (successCount === 0) {
+    return errorState(
+      "No products were imported.",
+      {},
+      summarizeImportDetails(failureDetails),
+    );
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/products");
+  revalidatePath("/products");
+  revalidatePath("/");
+  revalidatePath("/deals");
+
+  if (failureDetails.length > 0) {
+    return errorState(
+      `${successCount} products imported successfully. ${failureDetails.length} rows failed.`,
+      {},
+      summarizeImportDetails(failureDetails),
+    );
+  }
+
+  return successState(`${successCount} products imported successfully.`);
+}
+
 export async function saveDealAction(
   _previousState: AdminActionState,
   formData: FormData,
@@ -764,6 +1183,10 @@ export async function saveDealAction(
   const isActive = getBoolean(formData, "isActive");
   const isFeatured = getBoolean(formData, "isFeatured");
   const linkedProductIds = getCheckboxValues(formData, "linkedProductIds");
+  const {
+    items: customDealItems,
+    errors: customDealItemErrors,
+  } = parseCustomDealItems(formData);
   const fieldErrors: Record<string, string> = {};
   let slug = requestedSlug;
 
@@ -811,8 +1234,12 @@ export async function saveDealAction(
     fieldErrors.endsAt = "End date must be after the start date.";
   }
 
+  if (customDealItemErrors.length > 0) {
+    fieldErrors.customItems = "Check the custom items section.";
+  }
+
   if (Object.keys(fieldErrors).length > 0) {
-    return errorState("Please fix the deal form.", fieldErrors);
+    return errorState("Please fix the deal form.", fieldErrors, customDealItemErrors);
   }
 
   let bannerImageUrl: string | null = null;
@@ -881,21 +1308,41 @@ export async function saveDealAction(
     return errorState(deleteItemsError.message);
   }
 
-  if (linkedProductIds.length > 0) {
-    const dealItems: TablesInsert<"deal_items">[] = linkedProductIds.map(
-      (productId) => ({
+  if (linkedProductIds.length > 0 || customDealItems.length > 0) {
+    const dealItems: TablesInsert<"deal_items">[] = [
+      ...linkedProductIds.map((productId) => ({
         deal_id: dealId,
         product_id: productId,
         quantity: 1,
-      }),
-    );
+        custom_name: null,
+        custom_price: null,
+        custom_unit_label: null,
+        custom_image_url: null,
+      })),
+      ...customDealItems.map((item) => ({
+        deal_id: dealId,
+        product_id: null,
+        quantity: item.quantity,
+        custom_name: item.name,
+        custom_price: item.price,
+        custom_unit_label: item.unitLabel,
+        custom_image_url: item.imageUrl,
+      })),
+    ];
 
     const { error: insertItemsError } = await supabase
       .from("deal_items")
       .insert(dealItems);
 
     if (insertItemsError) {
-      return errorState(insertItemsError.message);
+      return errorState(
+        insertItemsError.message,
+        {},
+        [
+          "Custom deal items need the latest deal_items columns in Supabase.",
+          "Run the SQL in supabase/deal-items-custom-support.sql if your database has not been updated yet.",
+        ],
+      );
     }
   }
 

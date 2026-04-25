@@ -71,8 +71,12 @@ create table if not exists public.deals (
 create table if not exists public.deal_items (
   id uuid primary key default gen_random_uuid(),
   deal_id uuid not null references public.deals(id) on delete cascade,
-  product_id uuid not null references public.products(id) on delete cascade,
+  product_id uuid references public.products(id) on delete cascade,
   quantity integer not null default 1 check (quantity > 0),
+  custom_name text,
+  custom_price numeric(10, 2),
+  custom_unit_label text,
+  custom_image_url text,
   created_at timestamptz not null default timezone('utc', now()),
   unique (deal_id, product_id)
 );
@@ -194,6 +198,21 @@ alter table public.deals
 alter table public.deals
   add column if not exists discount_value numeric(10, 2);
 
+alter table public.deal_items
+  alter column product_id drop not null;
+
+alter table public.deal_items
+  add column if not exists custom_name text;
+
+alter table public.deal_items
+  add column if not exists custom_price numeric(10, 2);
+
+alter table public.deal_items
+  add column if not exists custom_unit_label text;
+
+alter table public.deal_items
+  add column if not exists custom_image_url text;
+
 alter table public.site_settings
   add column if not exists logo_url text;
 
@@ -295,21 +314,21 @@ insert into public.site_settings (
 values (
   1,
   'Hyderabad Cheese Store',
-  'Curated frozen and dairy essentials, delivered with a luxury finish.',
-  '923001234567',
+  'Premium Cheese & Fast Food Supplies',
+  '923357750066',
   '',
-  'Daily, 11:00 AM to 11:00 PM',
-  'Cold chain, curated beautifully',
-  'Luxury provisions for a sharper, colder, richer Hyderabad pantry.',
-  'Hyderabad Cheese Store blends premium frozen goods, dairy staples, and quick WhatsApp ordering into a polished modern retail experience.',
-  'A store built like a tasting room, not a supermarket.',
-  'Every shelf is treated like a signature display. Frozen lines feel clean and atmospheric, dairy items feel comforting and rich, and checkout stays fast with WhatsApp-first convenience.',
-  'Curated Favourites',
-  'Editor''s Deals',
-  'Talk To The Store',
-  'Fresh deals updated weekly. Delivery zones and charges are managed centrally in Supabase.',
+  'Daily, 3:30 PM to 11:30 PM',
+  'Hyderabad Cheese Store',
+  'Premium Cheese & Fast Food Supplies',
+  'High-quality dairy & frozen products for restaurants and home use.',
+  'Trusted supply for daily kitchens.',
+  'Fresh cheese, dairy, frozen items, and simple ordering in one place.',
+  'Best Sellers',
+  'Live Deals',
+  'Contact Us',
+  'Fresh quality, best prices, and fast delivery across major delivery zones.',
   'hello@hyderabadcheesestore.com',
-  '+92 300 1234567',
+  '0335-7750066',
   'Latifabad, Hyderabad, Sindh',
   '#d7a128',
   '#111111',
@@ -383,36 +402,47 @@ insert into public.delivery_zones (
 )
 values
   (
-    'latifabad',
-    'Latifabad',
-    'Fast-turn delivery for the core Hyderabad catchment.',
-    220,
-    5000,
-    '30-45 mins',
+    'hyderabad',
+    'Hyderabad',
+    'Fast delivery for central Hyderabad routes.',
+    80,
+    0,
+    '35-50 mins',
     'gold',
     1,
     true
   ),
   (
-    'qasimabad',
-    'Qasimabad',
-    'Balanced route timing with same-day cold-chain handling.',
-    320,
-    6500,
-    '45-60 mins',
+    'karachi',
+    'Karachi',
+    'Longer-distance delivery for Karachi routes.',
+    200,
+    0,
+    '90-120 mins',
     'frost',
     2,
     true
   ),
   (
-    'city-edge',
-    'City Edge',
-    'Outer Hyderabad radius with extended route coordination.',
-    450,
-    8000,
-    '60-90 mins',
+    'jamshoro',
+    'Jamshoro',
+    'Simple coverage for Jamshoro routes.',
+    150,
+    0,
+    '50-70 mins',
     'ink',
     3,
+    true
+  ),
+  (
+    'kotri',
+    'Kotri',
+    'Quick coverage for Kotri and nearby industrial routes.',
+    120,
+    0,
+    '45-60 mins',
+    'gold',
+    4,
     true
   )
 on conflict (slug) do update
@@ -439,15 +469,20 @@ select
   seeded.description
 from (
   values
-    ('latifabad', 'Unit 6', 220, 'Core area'),
-    ('latifabad', 'Unit 7', 260, 'Mid zone'),
-    ('latifabad', 'Autobahn Road', 300, 'Outer route'),
-    ('qasimabad', 'Phase 1', 320, 'Core area'),
-    ('qasimabad', 'Phase 2', 360, 'Mid zone'),
-    ('qasimabad', 'Phase 3', 410, 'Outer route'),
-    ('city-edge', 'Ring Road', 450, 'Primary edge route'),
-    ('city-edge', 'Hosiery Market', 520, 'Extended route'),
-    ('city-edge', 'Bypass Corridor', 600, 'Long-distance edge route')
+    ('hyderabad', 'City', 80, 'Central Hyderabad'),
+    ('hyderabad', 'Latifabad', 100, 'Latifabad routes'),
+    ('hyderabad', 'Qasimabad', 120, 'Qasimabad routes'),
+    ('hyderabad', 'Hirabad', 100, 'Hirabad routes'),
+    ('karachi', 'DHA', 220, 'Karachi DHA'),
+    ('karachi', 'Gulshan', 200, 'Gulshan area'),
+    ('karachi', 'Saddar', 180, 'Karachi Saddar'),
+    ('karachi', 'North Nazimabad', 220, 'North Nazimabad'),
+    ('jamshoro', 'Jamshoro City', 150, 'Jamshoro city routes'),
+    ('jamshoro', 'University Area', 170, 'University area'),
+    ('jamshoro', 'Railway Phatak', 190, 'Railway Phatak'),
+    ('kotri', 'Kotri City', 120, 'Kotri city routes'),
+    ('kotri', 'SITE Area', 150, 'Kotri site area'),
+    ('kotri', 'Railway Station Area', 130, 'Railway station area')
 ) as seeded(zone_slug, area_name, delivery_charge, description)
 join public.delivery_zones z on z.slug = seeded.zone_slug
 where not exists (

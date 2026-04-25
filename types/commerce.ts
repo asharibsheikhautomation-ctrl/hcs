@@ -1,6 +1,6 @@
 export type UUID = string;
 
-export type CategorySlug = "frozen-food" | "dairy-items" | "extra-items";
+export type CategorySlug = string;
 export type AccentTone = "gold" | "frost" | "ink";
 export type ProductStockStatus = "in_stock" | "low_stock" | "out_of_stock";
 export type DealStatus = "scheduled" | "active" | "archived";
@@ -73,20 +73,25 @@ export interface Deal {
 export interface DealItem {
   id: UUID;
   dealId: UUID;
-  productId: UUID;
+  productId: UUID | null;
   quantity: number;
+  customName?: string | null;
+  customPrice?: number | null;
+  customUnitLabel?: string | null;
+  customImageUrl?: string | null;
 }
 
 export interface DealIncludedItem {
   id: UUID;
   dealId: UUID;
-  productId: UUID;
-  productSlug: string;
+  productId: UUID | null;
+  productSlug?: string | null;
   productName: string;
   quantity: number;
   unitLabel?: string | null;
   unitPrice: number;
   imageUrl?: string | null;
+  source?: "product" | "custom";
 }
 
 export interface DeliveryZoneArea {

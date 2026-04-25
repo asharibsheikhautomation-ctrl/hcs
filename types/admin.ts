@@ -6,12 +6,21 @@ export interface AdminActionState {
   status: AdminFormStatus;
   message: string;
   fieldErrors: Record<string, string>;
+  details?: string[];
 }
 
 export const initialAdminActionState: AdminActionState = {
   status: "idle",
   message: "",
   fieldErrors: {},
+  details: [],
+};
+
+export const initialAdminImportActionState: AdminActionState = {
+  status: "idle",
+  message: "",
+  fieldErrors: {},
+  details: [],
 };
 
 export interface AdminOption {
@@ -63,6 +72,16 @@ export interface AdminDeal {
   isFeatured: boolean;
   linkedProductIds: string[];
   linkedProductNames: string[];
+  customItems: AdminDealCustomItem[];
+}
+
+export interface AdminDealCustomItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  unitLabel: string;
+  imageUrl: string;
 }
 
 export interface AdminDeliveryZoneArea {

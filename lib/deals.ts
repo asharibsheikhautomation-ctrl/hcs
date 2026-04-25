@@ -41,7 +41,15 @@ function mapDiscountType(value: string | null | undefined): DealDiscountType {
 
 function buildIncludedItems(
   dealId: string,
-  linkedRows: Array<{ id: string; product_id: string; quantity: number }>,
+  linkedRows: Array<{
+    id: string;
+    product_id: string | null;
+    quantity: number;
+    custom_name?: string | null;
+    custom_price?: number | null;
+    custom_unit_label?: string | null;
+    custom_image_url?: string | null;
+  }>,
   productsById: Map<
     string,
     {
@@ -56,22 +64,40 @@ function buildIncludedItems(
   const includedItems: DealIncludedItem[] = [];
 
   for (const linkedRow of linkedRows) {
-    const product = productsById.get(linkedRow.product_id);
+    const product =
+      linkedRow.product_id ? productsById.get(linkedRow.product_id) : null;
 
-    if (!product) {
+    if (product && linkedRow.product_id) {
+      includedItems.push({
+        id: linkedRow.id,
+        dealId,
+        productId: linkedRow.product_id,
+        productSlug: product.slug,
+        productName: product.name,
+        quantity: linkedRow.quantity,
+        unitLabel: product.unitLabel,
+        unitPrice: product.unitPrice,
+        imageUrl: product.imageUrl,
+        source: "product",
+      });
+      continue;
+    }
+
+    if (!linkedRow.custom_name || linkedRow.custom_price === null) {
       continue;
     }
 
     includedItems.push({
       id: linkedRow.id,
       dealId,
-      productId: linkedRow.product_id,
-      productSlug: product.slug,
-      productName: product.name,
+      productId: null,
+      productSlug: null,
+      productName: linkedRow.custom_name,
       quantity: linkedRow.quantity,
-      unitLabel: product.unitLabel,
-      unitPrice: product.unitPrice,
-      imageUrl: product.imageUrl,
+      unitLabel: linkedRow.custom_unit_label ?? null,
+      unitPrice: Number(linkedRow.custom_price),
+      imageUrl: linkedRow.custom_image_url ?? null,
+      source: "custom",
     });
   }
 
@@ -167,6 +193,10 @@ function mapDemoDeals() {
         id: item.id,
         product_id: item.productId,
         quantity: item.quantity,
+        custom_name: item.customName ?? null,
+        custom_price: item.customPrice ?? null,
+        custom_unit_label: item.customUnitLabel ?? null,
+        custom_image_url: item.customImageUrl ?? null,
       })),
       productsById,
     );
@@ -244,6 +274,11 @@ async function fetchLiveDeals() {
         id: item.id,
         product_id: item.product_id,
         quantity: item.quantity,
+        custom_name: item.custom_name,
+        custom_price:
+          item.custom_price === null ? null : Number(item.custom_price),
+        custom_unit_label: item.custom_unit_label,
+        custom_image_url: item.custom_image_url,
       })),
       productsById,
     );

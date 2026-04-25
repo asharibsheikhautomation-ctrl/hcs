@@ -2,31 +2,23 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowUpRight, Minus, Plus, ShoppingBag } from "lucide-react";
+import { Minus, Plus, ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/providers/cart-provider";
 import { ProductFeatureStrip } from "@/components/store/product-feature-strip";
-import { createQuickProductOrderUrl } from "@/lib/whatsapp";
 import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/types/commerce";
 
 interface ProductPurchasePanelProps {
   product: Product;
-  whatsappNumber: string;
 }
 
 export function ProductPurchasePanel({
   product,
-  whatsappNumber,
 }: ProductPurchasePanelProps) {
   const { addProduct } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [didAdd, setDidAdd] = useState(false);
   const total = product.price * quantity;
-  const quickOrderUrl = createQuickProductOrderUrl(
-    whatsappNumber,
-    product,
-    quantity,
-  );
 
   function changeQuantity(nextQuantity: number) {
     setQuantity(Math.max(1, nextQuantity));
@@ -41,13 +33,13 @@ export function ProductPurchasePanel({
   return (
     <div className="luxe-panel rounded-[2rem] p-6 md:p-7">
       <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
-        Purchase Controls
+        Purchase
       </p>
       <h2 className="mt-4 text-[2rem] font-semibold leading-[0.96] text-ink-950 sm:text-3xl md:text-4xl">
-        Add this to cart.
+        Add to cart.
       </h2>
-      <p className="mt-3 line-clamp-2 text-[0.95rem] leading-6 text-ink-700/76">
-        Pick quantity and order fast.
+      <p className="mt-3 text-[0.95rem] leading-6 text-ink-700/76">
+        Choose quantity, then continue to checkout.
       </p>
       <ProductFeatureStrip product={product} className="mt-5" />
 
@@ -109,18 +101,8 @@ export function ProductPurchasePanel({
           href="/checkout"
           className="btn-base btn-secondary w-full"
         >
-          Checkout
+          Go to checkout
         </Link>
-
-        <a
-          href={quickOrderUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="btn-base btn-secondary w-full"
-        >
-          WhatsApp order
-          <ArrowUpRight className="h-4 w-4" />
-        </a>
       </div>
     </div>
   );

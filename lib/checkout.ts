@@ -34,7 +34,7 @@ export function applyFreeDeliveryRule(
     return false;
   }
 
-  return subtotal >= zone.freeDeliveryMinimum;
+  return zone.freeDeliveryMinimum > 0 && subtotal >= zone.freeDeliveryMinimum;
 }
 
 export function calculateDeliveryCharge(

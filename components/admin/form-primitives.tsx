@@ -110,7 +110,19 @@ export function AdminFormMessage({ state }: { state: AdminActionState }) {
           : "border border-red-200 bg-red-50 text-red-700",
       )}
     >
-      {state.message}
+      <div className="space-y-3">
+        <p>{state.message}</p>
+
+        {state.details && state.details.length > 0 ? (
+          <ul className="grid gap-2 pl-5 text-xs leading-6">
+            {state.details.map((detail, index) => (
+              <li key={`${detail}-${index}`} className="list-disc">
+                {detail}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
     </div>
   );
 }

@@ -29,12 +29,12 @@ export const metadata: Metadata = {
     template: "%s | Hyderabad Cheese Store",
   },
   description:
-    "Premium frozen and dairy provisions for Hyderabad, built for elegant browsing and fast WhatsApp ordering.",
+    "Premium cheese, dairy, and frozen supplies for restaurants and home kitchens with fast checkout and delivery.",
   keywords: [
     "Hyderabad Cheese Store",
-    "premium frozen food",
+    "premium cheese",
     "dairy delivery Hyderabad",
-    "WhatsApp order store",
+    "frozen food supplies",
   ],
   category: "ecommerce",
   alternates: {
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Hyderabad Cheese Store",
     description:
-      "Premium frozen and dairy provisions for Hyderabad, built for elegant browsing and fast WhatsApp ordering.",
+      "Premium cheese, dairy, and frozen supplies for restaurants and home kitchens with fast checkout and delivery.",
     url: "/",
     siteName: "Hyderabad Cheese Store",
     locale: "en_PK",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Hyderabad Cheese Store",
     description:
-      "Premium frozen and dairy provisions for Hyderabad, built for elegant browsing and fast WhatsApp ordering.",
+      "Premium cheese, dairy, and frozen supplies for restaurants and home kitchens with fast checkout and delivery.",
   },
   robots: {
     index: true,
@@ -69,7 +69,6 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-scroll-behavior="smooth"
       className={`${manrope.variable} ${cormorant.variable} antialiased`}
     >
       <body className="bg-background text-foreground">

@@ -187,22 +187,34 @@ export interface Database {
         Row: {
           id: string;
           deal_id: string;
-          product_id: string;
+          product_id: string | null;
           quantity: number;
+          custom_name: string | null;
+          custom_price: number | null;
+          custom_unit_label: string | null;
+          custom_image_url: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           deal_id: string;
-          product_id: string;
+          product_id?: string | null;
           quantity?: number;
+          custom_name?: string | null;
+          custom_price?: number | null;
+          custom_unit_label?: string | null;
+          custom_image_url?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           deal_id?: string;
-          product_id?: string;
+          product_id?: string | null;
           quantity?: number;
+          custom_name?: string | null;
+          custom_price?: number | null;
+          custom_unit_label?: string | null;
+          custom_image_url?: string | null;
           created_at?: string;
         };
         Relationships: [];

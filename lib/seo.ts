@@ -66,6 +66,6 @@ export const defaultKeywords = [
   "Hyderabad frozen food",
   "Hyderabad dairy store",
   "premium cheese Pakistan",
-  "WhatsApp ordering",
+  "fast checkout",
   "frozen food delivery Hyderabad",
 ];

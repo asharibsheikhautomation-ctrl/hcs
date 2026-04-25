@@ -34,6 +34,10 @@ import {
   createQuickProductOrderUrl,
   createWhatsAppOrderUrl,
 } from "@/lib/whatsapp";
+import {
+  getHomepageFeaturedProducts,
+  sortStoreCategoriesForDisplay,
+} from "@/lib/store-catalog-utils";
 import { cn, formatCurrency } from "@/lib/utils";
 import type {
   Category,
@@ -76,7 +80,7 @@ export function CinematicHomepage({
   const [didAddFeaturedDeal, setDidAddFeaturedDeal] = useState(false);
 
   const featuredProducts = useMemo(
-    () => products.filter((product) => product.isFeatured).slice(0, 4),
+    () => getHomepageFeaturedProducts(products, 4),
     [products],
   );
   const featuredDeals = useMemo(() => deals.slice(0, 3), [deals]);
@@ -90,6 +94,8 @@ export function CinematicHomepage({
         .filter(
           (product) =>
             product.categorySlug === "dairy-items" ||
+            product.categorySlug.includes("cheese") ||
+            product.categorySlug.includes("dairy") ||
             product.accentTone === "gold",
         )
         .slice(0, 3),
@@ -99,29 +105,64 @@ export function CinematicHomepage({
   const secondaryDeals = featuredDeals.slice(1);
   const leadProduct = featuredProducts[0] ?? products[0] ?? null;
   const supportProducts = featuredProducts.slice(1, 4);
-  const warmCategories = categories.slice(0, 3);
-  const deliveryHighlights = deliveryZones.slice(0, 3);
+  const warmCategories = useMemo(
+    () => sortStoreCategoriesForDisplay(categories).slice(0, 3),
+    [categories],
+  );
+  const deliveryHighlights = useMemo(() => {
+    const displayOrder = ["Hyderabad", "Karachi", "Jamshoro", "Kotri"];
+
+    return [...deliveryZones]
+      .sort((left, right) => {
+        const leftIndex = displayOrder.indexOf(left.name);
+        const rightIndex = displayOrder.indexOf(right.name);
+
+        return (
+          (leftIndex === -1 ? Number.POSITIVE_INFINITY : leftIndex) -
+            (rightIndex === -1 ? Number.POSITIVE_INFINITY : rightIndex) ||
+          left.name.localeCompare(right.name)
+        );
+      })
+      .slice(0, 4);
+  }, [deliveryZones]);
   const whatsappShowroomHref = createWhatsAppOrderUrl(
     settings.whatsappNumber,
     "Hello Hyderabad Cheese Store, please recommend a few best sellers.",
   );
-  const heroShortcuts = [
-    {
-      href: "/products?category=frozen-food",
-      icon: <Snowflake className="h-4 w-4" />,
-      label: "Frozen",
-    },
-    {
-      href: "/products?category=dairy-items",
-      icon: <Sparkles className="h-4 w-4" />,
-      label: "Dairy",
-    },
-    {
-      href: "/deals",
-      icon: <ShoppingBag className="h-4 w-4" />,
-      label: "Deals",
-    },
+  const deliveryAreaNames =
+    deliveryHighlights.length > 0
+      ? deliveryHighlights.map((zone) => zone.name)
+      : ["Hyderabad", "Karachi", "Jamshoro", "Kotri"];
+  const frozenCategorySlug =
+    categories.find(
+      (category) =>
+        category.slug.includes("frozen") ||
+        category.name.toLowerCase().includes("frozen"),
+    )?.slug ?? "frozen-food";
+  const dairyCategorySlug =
+    categories.find(
+      (category) =>
+        category.slug.includes("cheese") ||
+        category.slug.includes("dairy") ||
+        category.name.toLowerCase().includes("cheese") ||
+        category.name.toLowerCase().includes("dairy"),
+    )?.slug ?? "dairy-items";
+  const heroHighlights = [
+    "Fresh Quality",
+    "Best Prices",
+    "Fast Delivery",
   ] as const;
+  const heroKicker = "Cold chain, curated beautifully.";
+  const heroTitle = "Premium Cheese & Fast Food Supplies";
+  const heroSubtitle =
+    "High-quality dairy & frozen products for restaurants and home use.";
+  const heroSupportLine =
+    "Luxury provisions for a sharper, colder, richer Hyderabad pantry.";
+  const productsSectionTitle = "Best sellers.";
+  const dealsSectionTitle = "Live Deals";
+  const contactSectionTitle = "Contact Us";
+  const contactPhone = settings.contactPhone || "0335-7750066";
+  const contactLocation = settings.address || "Hyderabad";
 
   function handleAddFeaturedDeal() {
     if (!featureDeal) {
@@ -158,13 +199,16 @@ export function CinematicHomepage({
             <FadeUp className="relative max-w-2xl" distance={24}>
               <p className="inline-flex items-center gap-2 rounded-full border border-cheese-200/80 bg-white/80 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-cheese-500 shadow-[0_18px_35px_rgba(216,170,24,0.12)] backdrop-blur-xl sm:text-[0.72rem] sm:tracking-[0.32em]">
                 <Sparkles className="h-3.5 w-3.5" />
-                {settings.heroKicker}
+                {heroKicker}
               </p>
               <h1 className="mt-5 max-w-3xl text-balance text-[2.7rem] font-semibold leading-[0.92] text-ink-950 sm:text-[4rem] md:mt-6 md:text-7xl xl:text-[6.1rem]">
-                {settings.heroTitle}
+                {heroTitle}
               </h1>
               <p className="mt-5 max-w-md text-[0.92rem] leading-6 text-ink-700/70 md:mt-6 md:line-clamp-2 md:text-[0.98rem]">
-                {settings.heroSubtitle}
+                {heroSubtitle}
+              </p>
+              <p className="mt-3 max-w-lg text-sm leading-6 text-ink-700/62">
+                {heroSupportLine}
               </p>
 
               <div className="mt-8 grid gap-3 sm:flex sm:flex-row">
@@ -187,27 +231,14 @@ export function CinematicHomepage({
               </div>
 
               <StaggerGroup className="mt-6 flex flex-wrap gap-3 md:mt-8" amount={0.16}>
-                <StaggerItem>
-                  <Link href={heroShortcuts[0].href} className="chip-link">
-                    {heroShortcuts[0].icon}
-                    {heroShortcuts[0].label}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </StaggerItem>
-                <StaggerItem>
-                  <Link href={heroShortcuts[1].href} className="chip-link">
-                    {heroShortcuts[1].icon}
-                    {heroShortcuts[1].label}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </StaggerItem>
-                <StaggerItem>
-                  <Link href={heroShortcuts[2].href} className="chip-link">
-                    {heroShortcuts[2].icon}
-                    {heroShortcuts[2].label}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </StaggerItem>
+                {heroHighlights.map((highlight) => (
+                  <StaggerItem key={highlight}>
+                    <span className="chip-link pointer-events-none">
+                      <Sparkles className="h-4 w-4" />
+                      {highlight}
+                    </span>
+                  </StaggerItem>
+                ))}
               </StaggerGroup>
             </FadeUp>
 
@@ -229,29 +260,53 @@ export function CinematicHomepage({
               intensity={1.15}
             >
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
-                Our Story
+                Why Choose Us
               </p>
               <h2 className="mt-4 text-[2.4rem] font-semibold leading-[0.94] text-ink-950 md:text-5xl">
-                {settings.homepageStoryTitle}
+                Reliable supply for daily kitchens.
               </h2>
-              <p className="mt-5 line-clamp-2 max-w-md text-[0.92rem] leading-6 text-ink-700/70 md:text-[0.98rem]">
-                {settings.homepageStoryBody}
-              </p>
+              <ul className="mt-5 grid gap-3 text-[0.92rem] leading-6 text-ink-700/72 md:text-[0.98rem]">
+                <li>Premium Quality Products</li>
+                <li>Wholesale & Retail Available</li>
+                <li>Affordable Prices</li>
+                <li>Fast & Reliable Delivery</li>
+                <li>Trusted by Restaurants</li>
+              </ul>
             </CinematicScrollCard>
 
             <div className="grid gap-6 md:grid-cols-2">
               <StoryPanel
-                title="Visual depth"
-                body="Warm gold, cool frost, clear shelves."
-                kicker="Visual language"
+                title="Serving the main delivery zones."
+                body={
+                  <ul className="grid gap-2">
+                    {deliveryAreaNames.map((zoneName) => (
+                      <li key={zoneName}>{zoneName}</li>
+                    ))}
+                  </ul>
+                }
+                kicker="Delivery Areas"
                 tone="gold"
               />
               <StoryPanel
-                title="Fast ordering"
-                body="Clear pricing. Quick checkout. Easy WhatsApp."
-                kicker="Operational polish"
+                title="Reach us anytime during business hours."
+                body={
+                  <div className="space-y-2">
+                    <p>WhatsApp: {contactPhone}</p>
+                    <p>Location: {contactLocation}</p>
+                    <p>For bulk orders & daily supply, contact us now.</p>
+                  </div>
+                }
+                kicker="Contact Us"
                 tone="frost"
               />
+              <div className="md:col-span-2">
+                <StoryPanel
+                  title="Trusted cheese, dairy, and fast food supply."
+                  body="Hyderabad Cheese Store supplies cheese, dairy, and fast food essentials to restaurants, cafes, and home kitchens with clean pricing and dependable delivery."
+                  kicker="About Us"
+                  tone="gold"
+                />
+              </div>
             </div>
           </SectionTransition>
         </div>
@@ -262,7 +317,7 @@ export function CinematicHomepage({
           <SectionHeading
             kicker="Featured Categories"
             title="Frozen, dairy, extras."
-            body="Three shelves. Tap and shop."
+            body="Cheese, frozen food, and daily fast food essentials."
           />
 
           <StaggerGroup className="mt-10 grid gap-5 lg:grid-cols-3" amount={0.18}>
@@ -329,10 +384,8 @@ export function CinematicHomepage({
         <div className="container-main relative">
           <SectionHeading
             kicker="Featured Products"
-            title={
-              settings.productsSectionTitle || "Best sellers"
-            }
-            body="Big visuals. Quick actions."
+            title={productsSectionTitle}
+            body="Cheese first, fast add, clear pricing."
           />
 
           <div className="mt-10 grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
@@ -458,12 +511,12 @@ export function CinematicHomepage({
           <div className="grid gap-6 lg:grid-cols-[1.06fr_0.94fr]">
             <SpotlightPanel
               kicker="Frozen Spotlight"
-              title="Frozen picks."
-              body="Cold favourites. Fast checkout."
+              title="Frozen essentials."
+              body="Quick-selling frozen lines for home and restaurant use."
               tone="frost"
               icon={<Snowflake className="h-4 w-4" />}
               products={frozenProducts}
-              actionHref="/products?category=frozen-food"
+              actionHref={`/products?category=${frozenCategorySlug}`}
               actionLabel="Browse frozen food"
             />
 
@@ -474,10 +527,10 @@ export function CinematicHomepage({
                   Delivery
                 </p>
                 <h3 className="mt-5 text-4xl font-semibold text-ink-950">
-                  Fast delivery areas.
+                  Main delivery zones.
                 </h3>
                 <p className="mt-4 max-w-sm text-[0.92rem] leading-6 text-ink-700/68">
-                  Clear rates. Fast zones.
+                  Area-based charges with quick checkout totals.
                 </p>
 
                 <StaggerGroup className="mt-8 grid gap-4" amount={0.16}>
@@ -521,12 +574,12 @@ export function CinematicHomepage({
         <div className="container-main">
           <SpotlightPanel
             kicker="Dairy Spotlight"
-            title="Dairy picks."
-            body="Creamy staples with clean pricing."
+            title="Cheese & dairy picks."
+            body="Mozzarella, cheddar, cream, and daily-use dairy lines."
             tone="gold"
             icon={<Sparkles className="h-4 w-4" />}
             products={dairyProducts}
-            actionHref="/products?category=dairy-items"
+            actionHref={`/products?category=${dairyCategorySlug}`}
             actionLabel="Browse dairy items"
             reverse
           />
@@ -546,13 +599,13 @@ export function CinematicHomepage({
                   <div className="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-200">
-                        {settings.dealsSectionTitle || "Featured Deals"}
+                        {dealsSectionTitle}
                       </p>
                       <h2 className="mt-4 text-4xl font-semibold leading-none text-white md:text-5xl">
-                        Featured deals.
+                        Live deals.
                       </h2>
                       <p className="mt-5 max-w-md text-[0.92rem] leading-6 text-white/68 md:text-[0.98rem]">
-                        Clear bundles. Quick add.
+                        Bundle savings for fast-moving daily items.
                       </p>
                     </div>
 
@@ -723,13 +776,13 @@ export function CinematicHomepage({
             <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div className="max-w-3xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
-                  {settings.contactSectionTitle || "WhatsApp Concierge"}
+                  {contactSectionTitle}
                 </p>
                 <h2 className="mt-4 text-4xl font-semibold leading-none text-ink-950 md:text-5xl">
-                  Order on WhatsApp.
+                  Need daily supply?
                 </h2>
                 <p className="mt-5 max-w-sm text-[0.92rem] leading-6 text-ink-700/68 md:text-[0.98rem]">
-                  Send your list. We handle the rest.
+                  Send your list on WhatsApp and we will handle the rest.
                 </p>
               </div>
 
@@ -817,7 +870,7 @@ function StoryPanel({
 }: {
   kicker: string;
   title: string;
-  body: string;
+  body: ReactNode;
   tone: "gold" | "frost";
 }) {
   return (
@@ -842,7 +895,7 @@ function StoryPanel({
         {kicker}
       </p>
       <h3 className="mt-4 text-[2rem] font-semibold leading-[0.96] text-ink-950">{title}</h3>
-      <p className="mt-3 line-clamp-2 text-[0.92rem] leading-6 text-ink-700/68">{body}</p>
+      <div className="mt-3 text-[0.92rem] leading-6 text-ink-700/68">{body}</div>
     </CinematicScrollCard>
   );
 }

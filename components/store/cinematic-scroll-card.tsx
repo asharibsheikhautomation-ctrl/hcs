@@ -1,8 +1,7 @@
 "use client";
 
-import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import type { ReactNode } from "react";
-import { useRef } from "react";
 import { useMotionPreferences } from "@/hooks/use-motion-preferences";
 import { cn } from "@/lib/utils";
 
@@ -68,23 +67,12 @@ export function CinematicScrollCard({
   intensity = 1,
   as = "div",
 }: CinematicScrollCardProps) {
-  const ref = useRef<HTMLDivElement>(null);
   const { prefersReducedMotion, prefersSimplifiedMotion } =
     useMotionPreferences();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 96%", "end 12%"],
-  });
-  
-  // Extra smooth spring for the cinematic 3D feel
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 24,
-    mass: 1.2,
-  });
+  const progress = useMotionValue(0.5);
 
   const depthFactor = prefersSimplifiedMotion ? 0.2 : 1;
-  
+
   const x = useTransform(
     progress,
     [0, 1],
@@ -126,8 +114,7 @@ export function CinematicScrollCard({
     [0, 0.45, 1],
     prefersSimplifiedMotion ? [1, 1, 1] : [0.94, 1.02, 0.98],
   );
-  
-  // Dynamic sheens based on 3D rotation
+
   const sheenX = useTransform(
     progress,
     [0, 1],
@@ -151,7 +138,7 @@ export function CinematicScrollCard({
 
   if (prefersReducedMotion) {
     return (
-      <div ref={ref} className={cn("relative", className)}>
+      <div className={cn("relative", className)}>
         <div className="relative h-full">{children}</div>
       </div>
     );
@@ -160,7 +147,6 @@ export function CinematicScrollCard({
   return (
     <div className="perspective-wrapper [perspective:1400px] [transform-style:preserve-3d]">
       <MotionTag
-        ref={ref}
         className={cn("relative transform-gpu will-change-transform [transform-style:preserve-3d]", className)}
         style={{
           x,

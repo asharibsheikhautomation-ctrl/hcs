@@ -66,12 +66,11 @@ function parseIncludedItems(value: Json | undefined): DealIncludedItem[] {
     const productName = getJsonString(entry.productName);
     const quantity = getJsonNumber(entry.quantity);
     const unitPrice = getJsonNumber(entry.unitPrice);
+    const sourceValue = getJsonString(entry.source);
 
     if (
       !id ||
       !dealId ||
-      !productId ||
-      !productSlug ||
       !productName ||
       quantity === null ||
       unitPrice === null
@@ -90,6 +89,12 @@ function parseIncludedItems(value: Json | undefined): DealIncludedItem[] {
         unitPrice,
         unitLabel: getJsonString(entry.unitLabel),
         imageUrl: getJsonString(entry.imageUrl),
+        source:
+          sourceValue === "custom"
+            ? "custom"
+            : productId
+              ? "product"
+              : "custom",
       },
     ];
   });
@@ -147,6 +152,7 @@ function mapAdminDealRow(
   row: Tables<"deals">,
   linkedProductIds: string[],
   linkedProductNames: string[],
+  customItems: AdminDeal["customItems"],
 ): AdminDeal {
   return {
     id: row.id,
@@ -167,6 +173,7 @@ function mapAdminDealRow(
     isFeatured: row.is_featured,
     linkedProductIds,
     linkedProductNames,
+    customItems,
   };
 }
 
@@ -463,11 +470,30 @@ export async function fetchAdminDeals(
     products.map((product) => [product.id, product.name]),
   );
   const productIdsByDeal = new Map<string, string[]>();
+  const customItemsByDeal = new Map<string, AdminDeal["customItems"]>();
 
   for (const item of dealItems ?? []) {
-    const linkedItems = productIdsByDeal.get(item.deal_id) ?? [];
-    linkedItems.push(item.product_id);
-    productIdsByDeal.set(item.deal_id, linkedItems);
+    if (item.product_id) {
+      const linkedItems = productIdsByDeal.get(item.deal_id) ?? [];
+      linkedItems.push(item.product_id);
+      productIdsByDeal.set(item.deal_id, linkedItems);
+      continue;
+    }
+
+    if (!item.custom_name || item.custom_price === null) {
+      continue;
+    }
+
+    const customItems = customItemsByDeal.get(item.deal_id) ?? [];
+    customItems.push({
+      id: item.id,
+      name: item.custom_name,
+      quantity: item.quantity,
+      price: Number(item.custom_price),
+      unitLabel: item.custom_unit_label ?? "",
+      imageUrl: item.custom_image_url ?? "",
+    });
+    customItemsByDeal.set(item.deal_id, customItems);
   }
 
   return (deals ?? []).map((deal) => {
@@ -475,8 +501,14 @@ export async function fetchAdminDeals(
     const linkedProductNames = linkedProductIds
       .map((productId) => productNameById.get(productId))
       .filter((name): name is string => Boolean(name));
+    const customItems = customItemsByDeal.get(deal.id) ?? [];
 
-    return mapAdminDealRow(deal, linkedProductIds, linkedProductNames);
+    return mapAdminDealRow(
+      deal,
+      linkedProductIds,
+      linkedProductNames,
+      customItems,
+    );
   });
 }
 

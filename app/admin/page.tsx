@@ -13,6 +13,7 @@ import { AdminEmptyState } from "@/components/admin/empty-state";
 import { AdminErrorState } from "@/components/admin/error-state";
 import { OrderStatusBadge } from "@/components/admin/order-status-badge";
 import { PanelCard } from "@/components/admin/panel-card";
+import { ProductImportForm } from "@/components/admin/product-import-form";
 import { SimpleCategoryForm } from "@/components/admin/simple-category-form";
 import { SimpleDealForm } from "@/components/admin/simple-deal-form";
 import { SimpleProductForm } from "@/components/admin/simple-product-form";
@@ -239,10 +240,13 @@ export default async function AdminDashboardPage() {
       <section id="products">
         <PanelCard
           title="Products"
-          description="Add new products, assign them to a category, upload an image, and quickly edit or remove them."
+          description="Add products one by one or bulk upload them from a simple CSV file. You can also export the current list anytime."
         >
           <div className="grid gap-5 xl:grid-cols-[0.78fr_1.22fr]">
-            <SimpleProductForm categories={categoryOptions} />
+            <div className="space-y-4">
+              <ProductImportForm />
+              <SimpleProductForm categories={categoryOptions} />
+            </div>
 
             <div className="space-y-4">
               {products.length === 0 ? (
@@ -317,7 +321,7 @@ export default async function AdminDashboardPage() {
       <section id="deals">
         <PanelCard
           title="Deals"
-          description="Create visual offers with a banner image, simple discounts, and linked products."
+          description="Create visual offers with a banner image, simple discounts, linked products, and manual custom items."
         >
           {dealsResult.error ? (
             <AdminErrorState
@@ -391,21 +395,31 @@ export default async function AdminDashboardPage() {
                         <div className="space-y-4 xl:self-start">
                           <div className="rounded-[1.5rem] bg-white/80 p-5">
                             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
-                              Linked products
+                              Included items
                             </p>
                             <div className="mt-4 flex flex-wrap gap-2">
-                              {deal.linkedProductNames.length > 0 ? (
-                                deal.linkedProductNames.map((productName) => (
-                                  <span
-                                    key={`${deal.id}-${productName}`}
-                                    className="rounded-full border border-black/8 bg-surface-muted px-3 py-2 text-sm font-semibold text-ink-950"
-                                  >
-                                    {productName}
-                                  </span>
-                                ))
+                              {deal.linkedProductNames.length > 0 || deal.customItems.length > 0 ? (
+                                <>
+                                  {deal.linkedProductNames.map((productName) => (
+                                    <span
+                                      key={`${deal.id}-${productName}`}
+                                      className="rounded-full border border-black/8 bg-surface-muted px-3 py-2 text-sm font-semibold text-ink-950"
+                                    >
+                                      {productName}
+                                    </span>
+                                  ))}
+                                  {deal.customItems.map((item) => (
+                                    <span
+                                      key={`${deal.id}-${item.id}`}
+                                      className="rounded-full border border-cheese-200 bg-cheese-100/70 px-3 py-2 text-sm font-semibold text-cheese-800"
+                                    >
+                                      {item.name}
+                                    </span>
+                                  ))}
+                                </>
                               ) : (
                                 <p className="text-sm leading-6 text-ink-700/72">
-                                  No linked products yet.
+                                  No included items yet.
                                 </p>
                               )}
                             </div>
@@ -593,8 +607,17 @@ export default async function AdminDashboardPage() {
       <section id="orders">
         <PanelCard
           title="Orders"
-          description="View customer details, confirm or deliver the order, and send the full order summary to the customer on WhatsApp."
+          description="View customer details, confirm or deliver the order, send the full order summary to WhatsApp, and export all orders to CSV."
         >
+          <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
+            <a
+              href="/admin/export/orders"
+              className="btn-base btn-secondary w-full justify-center rounded-[1.25rem] px-6 py-4 md:w-auto"
+            >
+              Export Orders CSV
+            </a>
+          </div>
+
           {orders.length === 0 ? (
             <AdminEmptyState
               title="No orders yet"

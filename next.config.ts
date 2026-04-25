@@ -24,15 +24,24 @@ function getConfiguredImageHostnames() {
 }
 
 const configuredImageHostnames = getConfiguredImageHostnames();
+const baseRemotePatterns = [
+  {
+    protocol: "https" as const,
+    hostname: "dummyimage.com",
+    pathname: "/**",
+  },
+];
 
 const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
   },
   images: {
-    remotePatterns:
-      configuredImageHostnames.length > 0
-        ? configuredImageHostnames.flatMap((hostname) => [
+    remotePatterns: [
+      ...baseRemotePatterns,
+      ...configuredImageHostnames
+        .filter((hostname) => hostname !== "dummyimage.com")
+        .flatMap((hostname) => [
             {
               protocol: "https" as const,
               hostname,
@@ -43,17 +52,8 @@ const nextConfig: NextConfig = {
               hostname,
               pathname: "/**",
             },
-          ])
-        : [
-            {
-              protocol: "https",
-              hostname: "**",
-            },
-            {
-              protocol: "http",
-              hostname: "**",
-            },
-          ],
+          ]),
+    ],
     formats: ["image/avif", "image/webp"],
     qualities: [60, 75, 85],
   },

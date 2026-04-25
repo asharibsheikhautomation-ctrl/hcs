@@ -33,7 +33,7 @@ export function LogoMark({ className, compact = false }: LogoMarkProps) {
             Hyderabad Cheese Store
           </p>
           <p className="mt-1 hidden text-[0.7rem] uppercase tracking-[0.32em] text-ink-700/75 sm:block">
-            Premium Frozen & Dairy Goods
+            Premium Cheese & Fast Food Supplies
           </p>
         </div>
       ) : null}
