@@ -35,6 +35,14 @@ export default async function AdminLayout({
             </div>
 
             <div className="flex flex-col gap-3 md:flex-row md:flex-wrap xl:max-w-[32rem] xl:justify-end">
+              <div className="grid gap-3 md:hidden">
+                <form action={logoutAdminAction}>
+                  <button type="submit" className="btn-base btn-dark w-full">
+                    Logout
+                  </button>
+                </form>
+              </div>
+              <div className="hidden md:flex md:flex-row md:flex-wrap md:gap-3 xl:justify-end">
               <a href="#overview" className="btn-base btn-secondary w-auto">
                 Overview
               </a>
@@ -55,6 +63,7 @@ export default async function AdminLayout({
                   Logout
                 </button>
               </form>
+              </div>
             </div>
           </div>
         </header>

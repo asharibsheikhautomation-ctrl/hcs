@@ -152,7 +152,7 @@ export function CheckoutScaffold({
     return (
       <section className="container-main pb-20">
         <SectionTransition>
-          <div className="luxe-panel animate-pulse rounded-[2rem] p-8">
+          <div className="cheese-surface luxe-panel animate-pulse rounded-[2rem] p-8">
             <div className="h-8 w-48 rounded-full bg-surface-muted" />
             <div className="mt-4 h-5 w-full max-w-2xl rounded-full bg-surface-muted" />
             <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -193,16 +193,16 @@ export function CheckoutScaffold({
   return (
     <section className="container-main pb-20">
       <form
-        className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]"
+        className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8"
         onSubmit={handleSubmit}
       >
         <SectionTransition>
-          <div className="luxe-panel rounded-[2rem] p-6 md:p-8">
+          <div className="cheese-surface luxe-panel rounded-[2rem] p-5 sm:p-6 md:p-8">
             <div className="mb-6">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
                 Customer Details
               </p>
-              <h2 className="mt-3 text-4xl font-semibold text-ink-950">
+              <h2 className="mt-3 text-3xl font-semibold text-ink-950 sm:text-4xl">
                 Complete the order
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-6 text-ink-700/76">
@@ -210,7 +210,7 @@ export function CheckoutScaffold({
               </p>
               {submitMessage ? (
                 <FadeUp delay={0.05}>
-                  <div className="mt-4 rounded-[1.4rem] border border-black/8 bg-surface-muted px-4 py-3 text-sm text-ink-700">
+                  <div className="mt-4 rounded-[1.4rem] border border-cheese-200/70 bg-cheese-50 px-4 py-3 text-sm text-ink-700">
                     {submitMessage}
                   </div>
                 </FadeUp>
@@ -333,7 +333,7 @@ export function CheckoutScaffold({
 
               <label className="space-y-2 text-sm font-medium text-ink-700">
                 <span>Estimated delivery time</span>
-                <div className="rounded-2xl border border-black/10 bg-surface-muted px-4 py-3 text-sm text-ink-700">
+                <div className="rounded-2xl border border-cheese-200/70 bg-cheese-50 px-4 py-3 text-sm text-ink-700">
                   {selectedZone?.estimatedDeliveryTime || "Select a zone"}
                 </div>
               </label>
@@ -353,14 +353,14 @@ export function CheckoutScaffold({
 
         <div className="space-y-6">
           <SectionTransition delay={0.08}>
-            <div className="luxe-panel rounded-[2rem] p-6 md:p-8">
+            <div className="cheese-surface luxe-panel rounded-[2rem] p-5 sm:p-6 md:p-8">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
                 Cart Summary
               </p>
               <div className="mt-5 space-y-4">
                 {items.map((item) => (
                   <ScaleIn key={item.id} scale={0.98} amount={0.1}>
-                    <div className="flex flex-col gap-4 rounded-2xl bg-surface-muted px-4 py-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex flex-col gap-4 rounded-2xl border border-cheese-200/70 bg-cheese-50 px-4 py-4 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="font-semibold text-ink-950">{item.productName}</p>
                         <p className="text-sm text-ink-700/70">
@@ -371,7 +371,7 @@ export function CheckoutScaffold({
                             {item.includedItems.map((includedItem) => (
                               <span
                                 key={`${item.id}-${includedItem.id}`}
-                                className="rounded-full border border-black/8 bg-white px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-ink-700"
+                                className="rounded-full border border-black/8 bg-white/92 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-ink-700"
                               >
                                 {includedItem.productName} x{includedItem.quantity}
                               </span>
@@ -393,7 +393,7 @@ export function CheckoutScaffold({
                 </p>
               ) : null}
 
-              <div className="mt-6 rounded-[1.6rem] bg-surface-muted px-4 py-4 text-sm text-ink-700">
+              <div className="mt-6 rounded-[1.6rem] border border-cheese-200/70 bg-cheese-50 px-4 py-4 text-sm text-ink-700">
                 {pricing.freeDeliveryMinimum <= 0 ? (
                   <p>Delivery charges apply based on the selected area.</p>
                 ) : pricing.qualifiesForFreeDelivery ? (
@@ -459,8 +459,16 @@ export function CheckoutScaffold({
           </SectionTransition>
 
           <FadeUp delay={0.12}>
-            <div className="frozen-panel rounded-[2rem] p-6 md:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-mist-500">
+            <details className="cheese-surface luxe-panel rounded-[2rem] p-5 md:hidden">
+              <summary className="cursor-pointer list-none text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
+                WhatsApp Preview
+              </summary>
+              <pre className="mt-4 whitespace-pre-wrap text-xs leading-6 text-ink-700/78">
+                {previewWhatsAppMessage}
+              </pre>
+            </details>
+            <div className="cheese-surface luxe-panel hidden rounded-[2rem] p-6 md:block md:p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
                 WhatsApp Preview
               </p>
               <pre className="mt-4 whitespace-pre-wrap text-xs leading-6 text-ink-700/78 md:text-sm">

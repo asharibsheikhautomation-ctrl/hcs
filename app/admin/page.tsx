@@ -11,6 +11,10 @@ import { DeliveryZoneAreaForm } from "@/components/admin/delivery-zone-area-form
 import { DeliveryZoneForm } from "@/components/admin/delivery-zone-form";
 import { AdminEmptyState } from "@/components/admin/empty-state";
 import { AdminErrorState } from "@/components/admin/error-state";
+import {
+  MobileAdminSection,
+  MobileAdminSections,
+} from "@/components/admin/mobile-admin-sections";
 import { OrderStatusBadge } from "@/components/admin/order-status-badge";
 import { PanelCard } from "@/components/admin/panel-card";
 import { ProductImportForm } from "@/components/admin/product-import-form";
@@ -118,8 +122,24 @@ export default async function AdminDashboardPage() {
   }));
 
   return (
-    <div className="space-y-4">
-      <section id="overview" className="grid gap-4 md:grid-cols-2">
+    <MobileAdminSections
+      defaultOpenId="products"
+      links={[
+        { id: "overview", label: "Overview" },
+        { id: "products", label: "Products" },
+        { id: "orders", label: "Orders" },
+        { id: "deals", label: "Deals" },
+        { id: "categories", label: "Categories" },
+        { id: "delivery", label: "Delivery" },
+        { id: "settings", label: "Settings" },
+      ]}
+    >
+      <MobileAdminSection
+        id="overview"
+        title="Overview"
+        description="Orders and revenue at a glance."
+      >
+      <section className="grid gap-4 md:grid-cols-2">
         <div className="luxe-panel rounded-[2rem] p-6 md:p-8">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cheese-500">
             Total orders
@@ -144,11 +164,18 @@ export default async function AdminDashboardPage() {
           </p>
         </div>
       </section>
+      </MobileAdminSection>
 
-      <section id="categories">
+      <MobileAdminSection
+        id="categories"
+        title="Categories"
+        description="Organize products into simple shelves."
+      >
+      <section>
         <PanelCard
           title="Categories"
           description="Keep products separated into simple sections like Frozen Food, Dairy Items, and Extra Items."
+          compactHeaderOnMobile
         >
           <div className="grid gap-5 xl:grid-cols-[0.78fr_1.22fr]">
             <SimpleCategoryForm />
@@ -236,11 +263,18 @@ export default async function AdminDashboardPage() {
           </div>
         </PanelCard>
       </section>
+      </MobileAdminSection>
 
-      <section id="products">
+      <MobileAdminSection
+        id="products"
+        title="Products"
+        description="Add, edit, import, and remove products."
+      >
+      <section>
         <PanelCard
           title="Products"
           description="Add products one by one or bulk upload them from a simple CSV file. You can also export the current list anytime."
+          compactHeaderOnMobile
         >
           <div className="grid gap-5 xl:grid-cols-[0.78fr_1.22fr]">
             <div className="space-y-4">
@@ -317,11 +351,18 @@ export default async function AdminDashboardPage() {
           </div>
         </PanelCard>
       </section>
+      </MobileAdminSection>
 
-      <section id="deals">
+      <MobileAdminSection
+        id="deals"
+        title="Deals"
+        description="Create, edit, and manage active offers."
+      >
+      <section>
         <PanelCard
           title="Deals"
           description="Create visual offers with a banner image, simple discounts, linked products, and manual custom items."
+          compactHeaderOnMobile
         >
           {dealsResult.error ? (
             <AdminErrorState
@@ -444,11 +485,18 @@ export default async function AdminDashboardPage() {
           )}
         </PanelCard>
       </section>
+      </MobileAdminSection>
 
-      <section id="delivery">
+      <MobileAdminSection
+        id="delivery"
+        title="Delivery"
+        description="Manage zones, areas, and delivery charges."
+      >
+      <section>
         <PanelCard
           title="Delivery Locations"
           description="Manage checkout locations, zone pricing, free-delivery minimums, and area-wise charges from one place."
+          compactHeaderOnMobile
         >
           <div className="grid gap-5 xl:grid-cols-[0.8fr_1.2fr]">
             <DeliveryZoneForm />
@@ -603,11 +651,18 @@ export default async function AdminDashboardPage() {
           </div>
         </PanelCard>
       </section>
+      </MobileAdminSection>
 
-      <section id="orders">
+      <MobileAdminSection
+        id="orders"
+        title="Orders"
+        description="Review orders, update status, and send WhatsApp summaries."
+      >
+      <section>
         <PanelCard
           title="Orders"
           description="View customer details, confirm or deliver the order, send the full order summary to WhatsApp, and export all orders to CSV."
+          compactHeaderOnMobile
         >
           <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
             <a
@@ -848,11 +903,18 @@ export default async function AdminDashboardPage() {
           )}
         </PanelCard>
       </section>
+      </MobileAdminSection>
 
-      <section id="settings">
+      <MobileAdminSection
+        id="settings"
+        title="Settings"
+        description="Update WhatsApp number and business hours."
+      >
+      <section>
         <PanelCard
           title="Settings"
           description="Only the essential settings are shown here so daily updates stay easy."
+          compactHeaderOnMobile
         >
           <div className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
             <SimpleSettingsForm settings={settings} />
@@ -883,6 +945,7 @@ export default async function AdminDashboardPage() {
           </div>
         </PanelCard>
       </section>
-    </div>
+      </MobileAdminSection>
+    </MobileAdminSections>
   );
 }

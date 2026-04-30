@@ -1,10 +1,12 @@
 import {
-  MessageCircle,
   Package2,
-  ShieldCheck,
   Snowflake,
   Sparkles,
 } from "lucide-react";
+import {
+  getProductQuantityLabel,
+  getProductUsageTag,
+} from "@/lib/product-copy";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/commerce";
 
@@ -19,6 +21,11 @@ export function ProductFeatureStrip({
   compact = false,
   className,
 }: ProductFeatureStripProps) {
+  const quantityLabel =
+    getProductQuantityLabel(product) ||
+    (product.unitLabel && product.unitLabel.toLowerCase() !== "unit"
+      ? product.unitLabel
+      : "");
   const features = [
     {
       icon: product.isFrozen ? Snowflake : Sparkles,
@@ -26,11 +33,11 @@ export function ProductFeatureStrip({
     },
     {
       icon: Package2,
-      label: product.unitLabel,
+      label: quantityLabel || "Pack",
     },
     {
-      icon: product.compareAtPrice ? ShieldCheck : MessageCircle,
-      label: product.compareAtPrice ? "Value" : "Quick chat",
+      icon: Sparkles,
+      label: getProductUsageTag(product),
     },
   ];
 

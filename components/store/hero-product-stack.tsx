@@ -39,17 +39,17 @@ export function HeroProductStack({
   return (
     <div className="relative flex min-h-[16.5rem] items-center justify-center depth-stack sm:min-h-[24rem] lg:min-h-[42rem]">
       <div className="relative h-full w-full max-w-[44rem] overflow-visible">
-        <div className="pointer-events-none absolute inset-x-[8%] top-[12%] bottom-[18%] rounded-[50%] bg-[radial-gradient(circle,rgba(255,255,255,0.98),rgba(255,246,208,0.78)_36%,rgba(44,34,12,0.34)_72%,transparent_100%)] blur-3xl" />
-        <div className="pointer-events-none absolute inset-x-[14%] top-[22%] bottom-[12%] rounded-[50%] bg-[radial-gradient(circle,rgba(17,17,17,0.28),rgba(17,17,17,0.06)_54%,transparent_80%)] blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-[10%] top-[14%] bottom-[18%] rounded-[3rem] bg-white/88 blur-2xl" />
+        <div className="pointer-events-none absolute inset-x-[18%] top-[26%] bottom-[16%] rounded-[3rem] bg-cheese-100/70 blur-3xl" />
 
         <motion.div
           aria-hidden="true"
-          className="absolute left-[6%] top-[12%] hidden h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(246,221,125,0.62),rgba(246,221,125,0)_72%)] blur-3xl sm:block"
+          className="absolute left-[6%] top-[12%] hidden h-32 w-32 rounded-full bg-cheese-200/70 blur-3xl sm:block"
           style={{ scale: orbScale, opacity: orbOpacity }}
         />
         <motion.div
           aria-hidden="true"
-          className="absolute bottom-[12%] right-[8%] hidden h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(255,218,79,0.42),rgba(255,218,79,0)_72%)] blur-3xl sm:block"
+          className="absolute bottom-[12%] right-[8%] hidden h-44 w-44 rounded-full bg-white/80 blur-3xl sm:block"
           style={{ scale: orbScale, opacity: orbOpacity }}
         />
 
@@ -83,7 +83,7 @@ export function HeroProductStack({
               }}
               className="relative mx-auto w-full max-w-[30rem] sm:max-w-[33rem]"
             >
-              <div className="pointer-events-none absolute inset-0 scale-[1.12] rounded-full bg-[radial-gradient(circle,rgba(246,221,125,0.48),rgba(246,221,125,0)_68%)] blur-3xl" />
+              <div className="pointer-events-none absolute inset-0 scale-[1.08] rounded-full bg-cheese-200/60 blur-3xl" />
               <div className="pointer-events-none absolute inset-x-[10%] bottom-[8%] h-10 rounded-full bg-black/28 blur-3xl" />
 
               <div className="relative mx-auto aspect-square w-full max-w-[30rem] overflow-visible">

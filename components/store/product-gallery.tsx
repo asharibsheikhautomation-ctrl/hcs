@@ -23,7 +23,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
         priority
         sizes="(min-width: 1280px) 44vw, (min-width: 768px) 50vw, 100vw"
         quality={75}
-        className="min-h-[17rem] sm:min-h-[24rem] md:min-h-[34rem]"
+        className="min-h-[15rem] sm:min-h-[22rem] md:min-h-[34rem]"
       />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -36,7 +36,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
               "group overflow-hidden rounded-[1.4rem] border p-1 text-left transition-all duration-300",
               selectedIndex === index
                 ? "border-cheese-300 bg-cheese-50 shadow-[0_10px_28px_rgba(216,170,24,0.18)]"
-                : "border-black/8 bg-white/70 hover:border-cheese-200 hover:bg-white",
+                : "border-black/8 bg-cheese-100/82 hover:border-cheese-300 hover:bg-cheese-50",
             )}
           >
             <ProductVisual

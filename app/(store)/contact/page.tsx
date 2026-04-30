@@ -2,15 +2,22 @@ import type { Metadata } from "next";
 import nextDynamic from "next/dynamic";
 import Link from "next/link";
 import {
+  ArrowRight,
   ArrowUpRight,
   Clock3,
   MapPin,
   MessageCircle,
   PhoneCall,
+  Sparkles,
   Truck,
 } from "lucide-react";
-import { SectionTransition, StaggerGroup, StaggerItem } from "@/components/motion";
-import { PageHero } from "@/components/store/page-hero";
+import {
+  FadeUp,
+  SectionTransition,
+  StaggerGroup,
+  StaggerItem,
+} from "@/components/motion";
+import { ContactHeroVisual } from "@/components/store/contact-hero-visual";
 import { deliveryZones as demoDeliveryZones } from "@/lib/demo-data";
 import { fetchActiveDeliveryZones } from "@/lib/delivery-zones";
 import { buildPageMetadata, defaultKeywords } from "@/lib/seo";
@@ -25,7 +32,7 @@ const ContactInquiryForm = nextDynamic(
     ),
   {
     loading: () => (
-      <div className="grid gap-4 rounded-[2rem] bg-white/70 p-6 shadow-[0_18px_60px_rgba(17,17,17,0.06)] md:p-7">
+      <div className="cheese-surface luxe-panel grid gap-4 rounded-[2rem] p-6 md:p-7">
         <div className="h-4 w-28 rounded-full bg-surface-muted" />
         <div className="h-10 w-56 rounded-full bg-surface-muted" />
         <div className="grid gap-4 md:grid-cols-2">
@@ -78,74 +85,114 @@ export default async function ContactPage() {
     "Hello Hyderabad Cheese Store, I would like help with an order or product inquiry.",
   );
   const callHref = createPhoneHref(settings.contactPhone || settings.whatsappNumber);
+  const heroTitle = settings.contactSectionTitle || "Contact the Store";
+  const supportHighlights = [
+    "Fast WhatsApp replies",
+    "Bulk order support",
+    "Same day guidance",
+  ] as const;
 
   const contactCards = [
     {
       title: "Contact phone",
       value: callDisplay,
-      copy: "Call for quick help.",
+      copy: "Call for urgent help.",
       icon: PhoneCall,
     },
     {
       title: "WhatsApp",
       value: whatsappDisplay,
-      copy: "Best for fast orders.",
+      copy: "Fastest reply channel.",
       icon: MessageCircle,
     },
     {
       title: "Address",
       value: settings.address || "Hyderabad, Sindh",
-      copy: "Delivery base.",
+      copy: "Pickup and delivery base.",
       icon: MapPin,
     },
     {
       title: "Business hours",
       value: settings.businessHours || "Daily availability",
-      copy: "Open hours.",
+      copy: "Support window.",
       icon: Clock3,
     },
   ] as const;
 
   return (
     <>
-      <PageHero
-        eyebrow="Contact"
-        title={settings.contactSectionTitle || "Contact Store"}
-        description="Call, WhatsApp, or send a quick message."
-        actions={
-          <>
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-base btn-primary"
-            >
-              Open WhatsApp
-            </a>
-            <a
-              href={callHref}
-              className="btn-base btn-secondary"
-            >
-              Call the Store
-            </a>
-            <Link
-              href="/products"
-              className="btn-base btn-secondary"
-            >
-              Browse Products
-            </Link>
-          </>
-        }
-      />
+      <section className="section-space pb-8 pt-10 sm:pt-12">
+        <div className="container-main">
+          <div className="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
+            <FadeUp className="max-w-2xl" distance={24}>
+              <p className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cheese-500 shadow-[0_10px_20px_rgba(17,17,17,0.08)]">
+                <Sparkles className="h-3.5 w-3.5" />
+                Contact Hyderabad Cheese Store
+              </p>
+              <h1 className="mt-5 text-balance text-[2.6rem] font-semibold leading-[0.92] text-ink-950 sm:text-[3.3rem] md:text-[4.4rem]">
+                {heroTitle}
+              </h1>
+              <p className="mt-5 max-w-xl text-base leading-7 text-ink-700/82">
+                Call, WhatsApp, or send a quick message for daily supply,
+                restaurant support, and home delivery help.
+              </p>
+              <p className="mt-3 max-w-lg text-sm leading-6 text-ink-700/72">
+                Same warm gold theme, simple contact flow, and quick answers for
+                products, pricing, and delivery coverage.
+              </p>
 
-      <section className="container-main pb-10">
+              <div className="mt-7 grid gap-3 sm:flex sm:flex-row sm:flex-wrap">
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-base btn-primary"
+                >
+                  Open WhatsApp
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+                <a href={callHref} className="btn-base btn-secondary">
+                  Call the Store
+                  <PhoneCall className="h-4 w-4" />
+                </a>
+                <Link href="/products" className="btn-base btn-secondary">
+                  Browse Products
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+
+              <StaggerGroup className="mt-6 flex flex-wrap gap-3" amount={0.14}>
+                {supportHighlights.map((highlight) => (
+                  <StaggerItem key={highlight}>
+                    <span className="chip-link pointer-events-none bg-white/92">
+                      <Sparkles className="h-4 w-4" />
+                      {highlight}
+                    </span>
+                  </StaggerItem>
+                ))}
+              </StaggerGroup>
+            </FadeUp>
+
+            <SectionTransition delay={0.08}>
+              <ContactHeroVisual
+                phone={callDisplay}
+                whatsapp={whatsappDisplay}
+                hours={settings.businessHours || "Daily availability"}
+                address={settings.address || "Hyderabad, Sindh"}
+              />
+            </SectionTransition>
+          </div>
+        </div>
+      </section>
+
+      <section className="container-main pb-12">
         <StaggerGroup className="grid gap-6 md:grid-cols-2 xl:grid-cols-4" amount={0.16}>
           {contactCards.map((item) => {
             const Icon = item.icon;
 
             return (
               <StaggerItem key={item.title}>
-                <article className="luxe-panel rounded-[1.8rem] p-5">
+                <article className="cheese-surface luxe-panel rounded-[1.8rem] p-5 transition-transform duration-300 hover:-translate-y-1">
                   <Icon className="h-5 w-5 text-cheese-500" />
                   <p className="mt-4 text-xs font-semibold uppercase tracking-[0.28em] text-ink-700/55">
                     {item.title}
@@ -163,21 +210,42 @@ export default async function ContactPage() {
         </StaggerGroup>
       </section>
 
-      <section className="section-space pt-4">
+      <section className="section-space bg-cheese-300 pt-2">
         <div className="container-main">
           <div className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr] xl:items-start">
             <SectionTransition>
               <div className="space-y-6">
-                <div className="luxe-panel rounded-[2rem] p-6 md:p-8">
+                <div className="cheese-surface luxe-panel rounded-[2rem] p-6 md:p-8">
                   <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
                     Direct Contact
                   </p>
                   <h2 className="mt-4 text-[2.5rem] font-semibold leading-[0.94] text-ink-950 sm:text-5xl">
-                    Need help fast?
+                    Quick help, clean flow.
                   </h2>
                   <p className="mt-4 max-w-xl text-sm leading-6 text-ink-700/76">
-                    WhatsApp for quick replies. Call for urgent help.
+                    WhatsApp for the fastest reply. Call for urgent support. Use
+                    the form when you want stock checks, partnership details, or
+                    regular kitchen supply help.
                   </p>
+
+                  <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-[1.4rem] border border-black/8 bg-white/88 p-4">
+                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-cheese-500">
+                        Best for
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-ink-950">
+                        Daily orders, urgent questions, delivery follow-up
+                      </p>
+                    </div>
+                    <div className="rounded-[1.4rem] border border-black/8 bg-white/88 p-4">
+                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-cheese-500">
+                        Good to ask
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-ink-950">
+                        Product recommendations, bulk pricing, area coverage
+                      </p>
+                    </div>
+                  </div>
 
                   <div className="mt-8 grid gap-3">
                     <a
@@ -199,32 +267,35 @@ export default async function ContactPage() {
                   </div>
                 </div>
 
-                <div className="frozen-panel rounded-[2rem] p-6 md:p-8">
+                <div className="cheese-surface luxe-panel rounded-[2rem] p-6 md:p-8">
                   <div className="flex items-center gap-3">
-                    <Truck className="h-5 w-5 text-mist-500" />
-                    <p className="text-xs font-semibold uppercase tracking-[0.32em] text-mist-500">
+                    <Truck className="h-5 w-5 text-cheese-500" />
+                    <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
                       Service Coverage
                     </p>
                   </div>
                   <h2 className="mt-4 text-4xl font-semibold text-ink-950">
                     Delivery areas
                   </h2>
+                  <p className="mt-3 text-sm leading-6 text-ink-700/74">
+                    Clear zones, clear charges, and a simple route to checkout.
+                  </p>
                   <div className="mt-6 grid gap-4">
                     {zones.map((zone) => (
                       <article
                         key={zone.id}
-                        className="rounded-[1.6rem] border border-white/70 bg-white/76 p-5 shadow-[0_16px_40px_rgba(93,127,152,0.10)]"
+                        className="rounded-[1.6rem] border border-cheese-200/70 bg-cheese-50 p-5 shadow-[0_16px_40px_rgba(141,97,8,0.10)]"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
-                            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-mist-500">
+                            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cheese-500">
                               {zone.name}
                             </p>
                             <p className="mt-2 line-clamp-2 text-sm leading-6 text-ink-700/72">
                               {zone.description}
                             </p>
                           </div>
-                          <div className="rounded-full bg-frost-100 px-4 py-2 text-sm font-semibold text-mist-500">
+                          <div className="rounded-full bg-cheese-100 px-4 py-2 text-sm font-semibold text-ink-950">
                             From {formatCurrency(zone.deliveryCharge)}
                           </div>
                         </div>
@@ -247,6 +318,43 @@ export default async function ContactPage() {
             </SectionTransition>
           </div>
         </div>
+      </section>
+
+      <section className="container-main pb-16 pt-4">
+        <FadeUp>
+          <div className="cheese-surface luxe-panel rounded-[2.2rem] px-6 py-7 md:px-8 md:py-9">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
+                  Bulk Supply
+                </p>
+                <h2 className="mt-3 text-[2.1rem] font-semibold leading-[0.95] text-ink-950 sm:text-4xl">
+                  Need daily kitchen stock?
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-ink-700/76">
+                  Message the store for restaurant orders, recurring supply, and
+                  fast delivery planning.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-base btn-primary"
+                >
+                  Message on WhatsApp
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+                <Link href="/checkout" className="btn-base btn-secondary">
+                  Go to Checkout
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </FadeUp>
       </section>
     </>
   );

@@ -18,7 +18,7 @@ export function PageHero({
     <section className="section-space pb-6 pt-10 sm:pt-12">
       <div className="container-main">
         <SectionTransition>
-          <div className="page-sheen luxe-panel glass-ring cheese-melt-card rounded-[2rem] p-6 md:rounded-[2.25rem] md:p-10 lg:p-12">
+          <div className="cheese-surface rounded-[2rem] border border-black/10 bg-cheese-300 p-6 shadow-[0_20px_54px_rgba(141,97,8,0.18)] md:rounded-[2.25rem] md:p-10 lg:p-12">
             <StaggerGroup className="max-w-3xl space-y-4" amount={0.12}>
               <StaggerItem>
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-cheese-500 sm:text-xs sm:tracking-[0.34em]">

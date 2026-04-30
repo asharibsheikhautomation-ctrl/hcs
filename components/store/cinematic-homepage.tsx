@@ -22,8 +22,10 @@ import {
 import { useCart } from "@/components/providers/cart-provider";
 import { ProductFeatureStrip } from "@/components/store/product-feature-strip";
 import { CinematicScrollCard } from "@/components/store/cinematic-scroll-card";
+import { DealCard } from "@/components/store/deal-card";
 import { DealVisual } from "@/components/store/deal-visual";
 import { HeroProductStack } from "@/components/store/hero-product-stack";
+import { ProductCard } from "@/components/store/product-card";
 import { ProductVisual } from "@/components/store/product-visual";
 import {
   formatDealDiscount,
@@ -48,17 +50,15 @@ import type {
 } from "@/types/commerce";
 
 const toneSurfaceClassNames = {
-  gold:
-    "border-cheese-200/70 bg-[linear-gradient(145deg,rgba(255,249,223,0.95),rgba(255,255,255,0.94),rgba(246,221,125,0.9))]",
-  frost:
-    "border-frost-200/80 bg-[linear-gradient(145deg,rgba(245,251,255,0.98),rgba(255,255,255,0.94),rgba(189,223,255,0.72))]",
-  ink: "border-black/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(247,247,247,0.92),rgba(229,229,229,0.75))]",
+  gold: "border-cheese-200 bg-white",
+  frost: "border-cheese-200 bg-white",
+  ink: "border-black/10 bg-white",
 } as const;
 
 const toneChipClassNames = {
-  gold: "bg-cheese-100/85 text-cheese-500",
-  frost: "bg-frost-100/85 text-mist-500",
-  ink: "bg-black/5 text-ink-700",
+  gold: "bg-cheese-100 text-ink-950",
+  frost: "bg-cheese-100 text-ink-950",
+  ink: "bg-zinc-100 text-ink-950",
 } as const;
 
 interface CinematicHomepageProps {
@@ -178,43 +178,30 @@ export function CinematicHomepage({
   }
 
   return (
-    <div className="cheese-storefront overflow-x-clip">
-      <section className="relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden md:min-h-[calc(100vh-5rem)]">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/vid1bg.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(246,221,125,0.32),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(189,223,255,0.26),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.6),rgba(251,248,242,0.6))]" />
-        <div className="cinematic-vignette absolute inset-0 opacity-80" />
-        <div className="cinematic-grid absolute inset-0 opacity-50" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,transparent,rgba(17,17,17,0.08))]" />
+    <div className="cheese-storefront overflow-x-clip bg-cheese-300">
+      <section className="relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden bg-cheese-300 md:min-h-[calc(100vh-5rem)]">
 
         <div className="container-main relative z-10 flex min-h-[calc(100svh-4.5rem)] items-center py-10 sm:py-12 md:min-h-[calc(100vh-5rem)] md:py-16 lg:py-20">
           <div className="grid w-full gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
             <FadeUp className="relative max-w-2xl" distance={24}>
-              <p className="inline-flex items-center gap-2 rounded-full border border-cheese-200/80 bg-white/80 px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-cheese-500 shadow-[0_18px_35px_rgba(216,170,24,0.12)] backdrop-blur-xl sm:text-[0.72rem] sm:tracking-[0.32em]">
+              <p className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-950 shadow-[0_10px_20px_rgba(17,17,17,0.08)] sm:text-[0.72rem] sm:tracking-[0.32em]">
                 <Sparkles className="h-3.5 w-3.5" />
                 {heroKicker}
               </p>
               <h1 className="mt-5 max-w-3xl text-balance text-[2.7rem] font-semibold leading-[0.92] text-ink-950 sm:text-[4rem] md:mt-6 md:text-7xl xl:text-[6.1rem]">
                 {heroTitle}
               </h1>
-              <p className="mt-5 max-w-md text-[0.92rem] leading-6 text-ink-700/70 md:mt-6 md:line-clamp-2 md:text-[0.98rem]">
+              <p className="mt-5 max-w-md text-[0.92rem] font-medium leading-6 text-ink-950/78 md:mt-6 md:line-clamp-2 md:text-[0.98rem]">
                 {heroSubtitle}
               </p>
-              <p className="mt-3 max-w-lg text-sm leading-6 text-ink-700/62">
+              <p className="mt-3 max-w-lg text-sm font-medium leading-6 text-ink-950/70">
                 {heroSupportLine}
               </p>
 
               <div className="mt-8 grid gap-3 sm:flex sm:flex-row">
                 <Link
                   href="/products"
-                  className="btn-base btn-dark cheese-cta cheese-cta-dark px-7 py-4 uppercase tracking-[0.22em] sm:w-auto"
+                  className="btn-base btn-primary px-7 py-4 font-bold uppercase tracking-[0.22em] sm:w-auto"
                 >
                   Shop Products
                   <ArrowRight className="h-4 w-4" />
@@ -223,7 +210,7 @@ export function CinematicHomepage({
                   href={whatsappShowroomHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="btn-base btn-secondary cheese-cta px-7 py-4 uppercase tracking-[0.22em] sm:w-auto"
+                  className="btn-base btn-primary px-7 py-4 uppercase tracking-[0.22em] sm:w-auto"
                 >
                   Order on WhatsApp
                   <ArrowUpRight className="h-4 w-4" />
@@ -250,11 +237,12 @@ export function CinematicHomepage({
         </div>
       </section>
 
-      <section className="relative section-space">
+      <div className="flex flex-col">
+      <section className="order-6 bg-cheese-300 section-space lg:order-1">
         <div className="container-main">
           <SectionTransition className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
             <CinematicScrollCard
-              className="luxe-panel page-sheen cheese-melt-card rounded-[2.2rem] p-6 sm:p-8 lg:rounded-[2.6rem] lg:p-10"
+              className="cheese-surface luxe-panel rounded-[2.2rem] border border-cheese-400/35 bg-cheese-100/92 p-6 sm:p-8 lg:rounded-[2.6rem] lg:p-10"
               tone="gold"
               direction="left"
               intensity={1.15}
@@ -312,7 +300,7 @@ export function CinematicHomepage({
         </div>
       </section>
 
-      <section className="section-space pt-0">
+      <section className="order-2 section-space bg-cheese-300 pt-0 lg:order-2">
         <div className="container-main">
           <SectionHeading
             kicker="Featured Categories"
@@ -339,7 +327,6 @@ export function CinematicHomepage({
                   }
                   intensity={0.92}
                 >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.55),transparent_32%)] opacity-80" />
                   <div className="relative flex h-full flex-col">
                     <span
                       className={cn(
@@ -379,8 +366,7 @@ export function CinematicHomepage({
         </div>
       </section>
 
-      <section className="relative section-space overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0),rgba(17,17,17,0.03),rgba(255,255,255,0))]" />
+      <section className="order-1 section-space bg-cheese-300 lg:order-3">
         <div className="container-main relative">
           <SectionHeading
             kicker="Featured Products"
@@ -388,11 +374,20 @@ export function CinematicHomepage({
             body="Cheese first, fast add, clear pricing."
           />
 
-          <div className="mt-10 grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
+          <div className="mt-10 grid gap-5 lg:hidden">
+            {featuredProducts.map((product, index) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                index={index}
+              />
+            ))}
+          </div>
+
+          <div className="mt-10 hidden gap-5 lg:grid lg:grid-cols-[0.92fr_1.08fr]">
             {leadProduct ? (
               <SectionTransition>
-                <article className="luxe-panel glass-ring cheese-melt-card relative overflow-hidden rounded-[2.2rem] p-5 sm:p-6 lg:rounded-[2.6rem] lg:p-8">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(246,221,125,0.22),transparent_34%)]" />
+                <article className="luxe-panel glass-ring relative overflow-hidden rounded-[2.2rem] border border-cheese-200 p-5 sm:p-6 lg:rounded-[2.6rem] lg:p-8">
                   <div className="relative">
                     <ParallaxLayer speed={10}>
                       <ProductVisual
@@ -438,7 +433,7 @@ export function CinematicHomepage({
                         )}
                         target="_blank"
                         rel="noreferrer"
-                        className="btn-base btn-secondary w-auto"
+                        className="btn-base btn-primary w-auto"
                       >
                         WhatsApp order
                         <ArrowUpRight className="h-4 w-4" />
@@ -506,7 +501,7 @@ export function CinematicHomepage({
         </div>
       </section>
 
-      <section className="section-space">
+      <section className="order-4 section-space bg-cheese-300 lg:order-4">
         <div className="container-main">
           <div className="grid gap-6 lg:grid-cols-[1.06fr_0.94fr]">
             <SpotlightPanel
@@ -521,8 +516,8 @@ export function CinematicHomepage({
             />
 
             <SectionTransition>
-              <div className="frozen-panel cheese-melt-card rounded-[2.2rem] p-5 sm:p-7 lg:rounded-[2.6rem] lg:p-8">
-                <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-mist-500">
+              <div className="frozen-panel rounded-[2.2rem] border border-cheese-200 p-5 sm:p-7 lg:rounded-[2.6rem] lg:p-8">
+                <p className="inline-flex items-center gap-2 rounded-full bg-cheese-100 px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-ink-950">
                   <Clock3 className="h-3.5 w-3.5" />
                   Delivery
                 </p>
@@ -536,7 +531,7 @@ export function CinematicHomepage({
                 <StaggerGroup className="mt-8 grid gap-4" amount={0.16}>
                   {deliveryHighlights.map((zone) => (
                     <StaggerItem key={zone.id}>
-                      <div className="rounded-[1.8rem] border border-white/70 bg-white/78 p-5 shadow-[0_18px_40px_rgba(93,127,152,0.12)]">
+                      <div className="rounded-[1.8rem] border border-black/8 bg-white p-5 shadow-[0_12px_28px_rgba(17,17,17,0.08)]">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
                             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-mist-500">
@@ -546,7 +541,7 @@ export function CinematicHomepage({
                               {zone.description}
                             </p>
                           </div>
-                          <div className="rounded-full bg-frost-100 px-4 py-2 text-sm font-semibold text-mist-500">
+                          <div className="rounded-full bg-cheese-100 px-4 py-2 text-sm font-semibold text-ink-950">
                             From {formatCurrency(zone.deliveryCharge)}
                           </div>
                         </div>
@@ -570,7 +565,7 @@ export function CinematicHomepage({
         </div>
       </section>
 
-      <section className="section-space pt-0">
+      <section className="order-5 section-space bg-cheese-300 pt-0 lg:order-5">
         <div className="container-main">
           <SpotlightPanel
             kicker="Dairy Spotlight"
@@ -587,24 +582,38 @@ export function CinematicHomepage({
       </section>
 
       {featureDeal ? (
-        <section className="section-space pt-0">
+        <section className="order-3 section-space bg-cheese-300 pt-0 lg:order-6">
           <div className="container-main">
-            <SectionTransition>
-              <div className="relative overflow-hidden rounded-[2.2rem] border border-black/8 bg-ink-950 px-5 py-8 text-white shadow-[0_35px_120px_rgba(17,17,17,0.22)] sm:px-7 md:rounded-[2.8rem] md:px-10 lg:px-12">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(246,221,125,0.24),transparent_32%),radial-gradient(circle_at_86%_24%,rgba(189,223,255,0.18),transparent_24%)]" />
-                <div aria-hidden="true" className="cheese-dark-drip" />
-                <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:72px_72px]" />
+            <div className="lg:hidden">
+              <SectionHeading
+                kicker={dealsSectionTitle}
+                title="Live deals."
+                body="Bundle savings for fast-moving daily items."
+              />
 
+              <div className="mt-10 grid gap-5">
+                {featuredDeals.map((deal, index) => (
+                  <DealCard
+                    key={deal.id}
+                    deal={deal}
+                    index={index}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <SectionTransition>
+              <div className="cheese-surface relative hidden overflow-hidden rounded-[2.2rem] border border-cheese-400/40 bg-cheese-100/92 px-5 py-8 text-ink-950 shadow-[0_20px_48px_rgba(17,17,17,0.12)] sm:px-7 md:rounded-[2.8rem] md:px-10 lg:block lg:px-12">
                 <div className="relative space-y-8">
                   <div className="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-200">
+                      <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
                         {dealsSectionTitle}
                       </p>
-                      <h2 className="mt-4 text-4xl font-semibold leading-none text-white md:text-5xl">
+                      <h2 className="mt-4 text-4xl font-semibold leading-none text-ink-950 md:text-5xl">
                         Live deals.
                       </h2>
-                      <p className="mt-5 max-w-md text-[0.92rem] leading-6 text-white/68 md:text-[0.98rem]">
+                      <p className="mt-5 max-w-md text-[0.92rem] leading-6 text-ink-700/72 md:text-[0.98rem]">
                         Bundle savings for fast-moving daily items.
                       </p>
                     </div>
@@ -613,7 +622,7 @@ export function CinematicHomepage({
                       <button
                         type="button"
                         onClick={handleAddFeaturedDeal}
-                        className="btn-base btn-primary cheese-cta px-6 py-4 uppercase tracking-[0.22em] sm:w-auto"
+                        className="btn-base btn-primary px-6 py-4 uppercase tracking-[0.22em] sm:w-auto"
                       >
                         <ShoppingBag className="h-4 w-4" />
                         {didAddFeaturedDeal ? "Deal Added" : "Add Deal"}
@@ -626,14 +635,14 @@ export function CinematicHomepage({
                         )}
                         target="_blank"
                         rel="noreferrer"
-                        className="btn-base btn-ghost border-white/14 bg-white/8 px-6 py-4 uppercase tracking-[0.22em] text-white backdrop-blur-xl sm:w-auto"
+                        className="btn-base btn-primary px-6 py-4 uppercase tracking-[0.22em] sm:w-auto"
                       >
                         WhatsApp Deal
                         <ArrowUpRight className="h-4 w-4" />
                       </a>
                       <Link
                         href="/deals"
-                        className="btn-base btn-ghost border-white/14 px-6 py-4 uppercase tracking-[0.22em] text-white sm:w-auto"
+                        className="btn-base btn-dark px-6 py-4 uppercase tracking-[0.22em] sm:w-auto"
                       >
                         All Deals
                         <ArrowRight className="h-4 w-4" />
@@ -642,28 +651,28 @@ export function CinematicHomepage({
                   </div>
 
                   <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-                    <div className="rounded-[2.2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-xl">
+                    <div className="rounded-[2.2rem] border border-cheese-400/35 bg-white/92 px-6 py-6">
                       <div className="grid gap-6 xl:grid-cols-[0.98fr_1.02fr]">
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="rounded-full bg-cheese-200/18 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cheese-100">
+                            <span className="rounded-full bg-cheese-200 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-950">
                               {formatDealDiscount(featureDeal)}
                             </span>
-                            <span className="rounded-full border border-white/10 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/72">
+                            <span className="rounded-full border border-black/8 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-700">
                               {formatDealValidity(featureDeal)}
                             </span>
                             {featureDeal.isFeatured ? (
-                              <span className="rounded-full border border-white/10 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white/72">
+                              <span className="rounded-full border border-black/8 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-700">
                                 Homepage hero
                               </span>
                             ) : null}
                           </div>
 
                           <div className="mt-5">
-                            <h3 className="text-4xl font-semibold text-white">
+                            <h3 className="text-4xl font-semibold text-ink-950">
                               {featureDeal.name}
                             </h3>
-                            <p className="mt-4 line-clamp-2 max-w-2xl text-[0.92rem] leading-6 text-white/72">
+                            <p className="mt-4 line-clamp-2 max-w-2xl text-[0.92rem] leading-6 text-ink-700/72">
                               {featureDeal.headline}
                             </p>
                           </div>
@@ -688,12 +697,12 @@ export function CinematicHomepage({
                             {featureDeal.includedItems.slice(0, 4).map((item) => (
                               <div
                                 key={item.id}
-                                className="rounded-[1.5rem] border border-white/10 bg-white/6 px-4 py-4"
+                                className="rounded-[1.5rem] border border-black/8 bg-cheese-50 px-4 py-4"
                               >
-                                <p className="text-sm font-semibold text-white">
+                                <p className="text-sm font-semibold text-ink-950">
                                   {item.productName}
                                 </p>
-                                <p className="mt-2 text-xs uppercase tracking-[0.24em] text-white/58">
+                                <p className="mt-2 text-xs uppercase tracking-[0.24em] text-ink-700/58">
                                   {item.quantity} x {item.unitLabel ?? "item"}
                                 </p>
                               </div>
@@ -714,45 +723,45 @@ export function CinematicHomepage({
                         secondaryDeals.map((deal) => (
                           <div
                             key={deal.id}
-                            className="rounded-[1.9rem] border border-white/10 bg-white/6 p-5 backdrop-blur-xl"
+                            className="rounded-[1.9rem] border border-cheese-400/35 bg-white/92 p-5"
                           >
                             <DealVisual
                               deal={deal}
                               compact
-                              className="mb-4 h-36 bg-white/8"
+                              className="mb-4 h-36"
                               sizes="(min-width: 1280px) 16vw, 100vw"
                             />
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="rounded-full bg-white/10 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-cheese-100">
+                              <span className="rounded-full bg-cheese-200 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-950">
                                 {formatDealDiscount(deal)}
                               </span>
-                              <span className="rounded-full border border-white/10 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/68">
+                              <span className="rounded-full border border-black/8 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-700">
                                 {formatDealValidity(deal)}
                               </span>
                             </div>
-                            <h3 className="mt-4 text-2xl font-semibold text-white">
+                            <h3 className="mt-4 text-2xl font-semibold text-ink-950">
                               {deal.name}
                             </h3>
-                            <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/68">
+                            <p className="mt-3 line-clamp-2 text-sm leading-6 text-ink-700/68">
                               {deal.headline}
                             </p>
                             <div className="mt-5 flex items-end justify-between gap-4">
                               <div>
-                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
+                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/55">
                                   Deal price
                                 </p>
-                                <p className="mt-2 text-xl font-semibold text-white">
+                                <p className="mt-2 text-xl font-semibold text-ink-950">
                                   {formatCurrency(deal.dealPrice)}
                                 </p>
                               </div>
-                              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-cheese-100">
+                              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-cheese-500">
                                 {deal.includedItems.length} items
                               </span>
                             </div>
                           </div>
                         ))
                       ) : (
-                        <div className="rounded-[1.9rem] border border-dashed border-white/12 bg-white/4 p-5 text-sm leading-6 text-white/64">
+                        <div className="rounded-[1.9rem] border border-dashed border-black/10 bg-white/88 p-5 text-sm leading-6 text-ink-700/64">
                           More featured deals appear here.
                         </div>
                       )}
@@ -765,15 +774,11 @@ export function CinematicHomepage({
         </section>
       ) : null}
 
-      <section className="section-space pt-0">
+      <section className="order-7 section-space bg-cheese-300 pt-0 lg:order-7">
         <div className="container-main">
           <SectionTransition>
-            <div className="relative overflow-hidden rounded-[2.2rem] border border-cheese-200/70 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(255,249,223,0.94),rgba(246,221,125,0.92))] p-6 shadow-[0_32px_110px_rgba(216,170,24,0.16)] sm:p-8 lg:rounded-[2.8rem] lg:p-12">
-            <div aria-hidden="true" className="cheese-light-drip" />
-            <div className="absolute right-[-4rem] top-[-4rem] h-48 w-48 rounded-full bg-cheese-200/55 blur-3xl" />
-            <div className="absolute bottom-[-4rem] left-[-4rem] h-52 w-52 rounded-full bg-frost-200/35 blur-3xl" />
-
-            <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div className="cheese-surface rounded-[2.2rem] border border-cheese-400/40 bg-cheese-200/90 p-6 shadow-[0_18px_38px_rgba(17,17,17,0.1)] sm:p-8 lg:rounded-[2.8rem] lg:p-12">
+            <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div className="max-w-3xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
                   {contactSectionTitle}
@@ -790,7 +795,7 @@ export function CinematicHomepage({
                 href={whatsappShowroomHref}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-base btn-dark cheese-cta cheese-cta-dark px-7 py-4 uppercase tracking-[0.22em] sm:w-auto"
+                className="btn-base btn-primary px-7 py-4 uppercase tracking-[0.22em] sm:w-auto"
               >
                 Start WhatsApp
                 <ArrowUpRight className="h-4 w-4" />
@@ -800,6 +805,7 @@ export function CinematicHomepage({
           </SectionTransition>
         </div>
       </section>
+      </div>
     </div>
   );
 }
@@ -879,8 +885,8 @@ function StoryPanel({
       className={cn(
         "card-hover rounded-[2.2rem] border p-7 shadow-lift",
         tone === "gold"
-          ? "border-cheese-200/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(255,249,223,0.88))]"
-          : "border-frost-200/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(245,251,255,0.94),rgba(225,242,255,0.82))]",
+          ? "border-cheese-200 bg-white"
+          : "border-cheese-200 bg-white",
       )}
       tone={tone === "gold" ? "gold" : "frost"}
       direction={tone === "gold" ? "left" : "right"}
@@ -936,8 +942,8 @@ function SpotlightPanel({
           className={cn(
             "inline-flex w-fit items-center gap-2 rounded-full px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.28em]",
             tone === "gold"
-              ? "bg-cheese-100/90 text-cheese-500"
-              : "bg-white/80 text-mist-500",
+              ? "bg-cheese-100 text-ink-950"
+              : "bg-cheese-100 text-ink-950",
           )}
         >
           {icon}
@@ -952,7 +958,7 @@ function SpotlightPanel({
         <div className="mt-8">
           <Link
             href={actionHref}
-            className="btn-base btn-dark px-6 py-4 uppercase tracking-[0.22em] sm:w-auto"
+            className="btn-base btn-primary px-6 py-4 uppercase tracking-[0.22em] sm:w-auto"
           >
             {actionLabel}
             <ArrowRight className="h-4 w-4" />
@@ -967,8 +973,8 @@ function SpotlightPanel({
               className={cn(
                 "card-hover group grid gap-4 rounded-[1.9rem] border p-4 md:grid-cols-[0.8fr_1.2fr] md:items-center",
                 tone === "gold"
-                  ? "border-cheese-200/70 bg-white/82"
-                  : "border-white/70 bg-white/78",
+                  ? "border-cheese-200 bg-white"
+                  : "border-cheese-200 bg-white",
               )}
             >
               <ProductVisual

@@ -1,19 +1,27 @@
+import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 interface PanelCardProps {
   title: string;
   description: string;
   children: ReactNode;
+  compactHeaderOnMobile?: boolean;
 }
 
 export function PanelCard({
   title,
   description,
   children,
+  compactHeaderOnMobile = false,
 }: PanelCardProps) {
   return (
     <section className="luxe-panel rounded-[2rem] p-6 md:p-8">
-      <div className="mb-6 max-w-2xl">
+      <div
+        className={cn(
+          "mb-6 max-w-2xl",
+          compactHeaderOnMobile && "hidden md:block",
+        )}
+      >
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
           Admin Section
         </p>

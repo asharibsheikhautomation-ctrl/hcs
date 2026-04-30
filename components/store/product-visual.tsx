@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 import type { Product } from "@/types/commerce";
 
 const toneSurface = {
-  gold: "from-cheese-100 via-white to-cheese-200",
-  frost: "from-frost-100 via-white to-frost-200",
-  ink: "from-zinc-100 via-white to-zinc-50",
+  gold: "bg-white",
+  frost: "bg-white",
+  ink: "bg-white",
 } as const;
 
 interface ProductVisualProps {
@@ -38,7 +38,7 @@ export function ProductVisual({
   return (
     <div
       className={cn(
-        "glass-ring relative overflow-hidden rounded-[1.85rem] border border-white/65 bg-gradient-to-br",
+        "glass-ring relative overflow-hidden rounded-[1.85rem] border border-black/8",
         toneSurface[product.accentTone],
         className,
       )}
@@ -59,7 +59,6 @@ export function ProductVisual({
             : "object-contain bg-white p-6 sm:p-8",
         )}
       />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(17,17,17,0.04)_100%)]" />
     </div>
   );
 }

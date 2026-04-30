@@ -31,11 +31,11 @@ export function ProductPurchasePanel({
   }
 
   return (
-    <div className="luxe-panel rounded-[2rem] p-6 md:p-7">
+    <div className="luxe-panel rounded-[2rem] p-5 sm:p-6 md:p-7">
       <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
         Purchase
       </p>
-      <h2 className="mt-4 text-[2rem] font-semibold leading-[0.96] text-ink-950 sm:text-3xl md:text-4xl">
+      <h2 className="mt-4 text-[1.8rem] font-semibold leading-[0.96] text-ink-950 sm:text-3xl md:text-4xl">
         Add to cart.
       </h2>
       <p className="mt-3 text-[0.95rem] leading-6 text-ink-700/76">
@@ -43,7 +43,7 @@ export function ProductPurchasePanel({
       </p>
       <ProductFeatureStrip product={product} className="mt-5" />
 
-      <div className="mt-6 rounded-[1.6rem] bg-surface-muted p-5">
+      <div className="mt-6 rounded-[1.6rem] border border-cheese-200/70 bg-cheese-50 p-5">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/50">
           Quantity
         </p>
@@ -56,7 +56,7 @@ export function ProductPurchasePanel({
           >
             <Minus className="h-4 w-4" />
           </button>
-          <div className="inline-flex min-w-14 items-center justify-center rounded-full bg-white px-4 py-3 text-base font-semibold text-ink-950 sm:min-w-16 sm:px-5 sm:text-lg">
+          <div className="inline-flex min-w-14 items-center justify-center rounded-full bg-white/92 px-4 py-3 text-base font-semibold text-ink-950 sm:min-w-16 sm:px-5 sm:text-lg">
             {quantity}
           </div>
           <button
@@ -71,7 +71,7 @@ export function ProductPurchasePanel({
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-[1.45rem] bg-surface-muted px-4 py-4">
+        <div className="rounded-[1.45rem] border border-cheese-200/70 bg-cheese-50 px-4 py-4">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/50">
             Unit price
           </p>
@@ -79,8 +79,8 @@ export function ProductPurchasePanel({
             {formatCurrency(product.price)}
           </p>
         </div>
-        <div className="rounded-[1.45rem] bg-ink-950 px-4 py-4 text-white">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
+        <div className="rounded-[1.45rem] border border-cheese-200 bg-cheese-100 px-4 py-4 text-ink-950">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/55">
             Selected total
           </p>
           <p className="mt-2 text-lg font-semibold">{formatCurrency(total)}</p>
@@ -99,7 +99,7 @@ export function ProductPurchasePanel({
 
         <Link
           href="/checkout"
-          className="btn-base btn-secondary w-full"
+          className="btn-base btn-dark w-full"
         >
           Go to checkout
         </Link>

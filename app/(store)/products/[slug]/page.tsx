@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Clock3, MessageCircle, Package2, ShieldCheck, Snowflake, Sparkles } from "lucide-react";
 import { FadeUp, SectionTransition } from "@/components/motion";
 import { SectionHeading } from "@/components/common/section-heading";
 import { ProductFeatureStrip } from "@/components/store/product-feature-strip";
 import { ProductCard } from "@/components/store/product-card";
 import { ProductGallery } from "@/components/store/product-gallery";
 import { ProductPurchasePanel } from "@/components/store/product-purchase-panel";
+import {
+  getProductDetailPoints,
+  getProductDisplayTitle,
+  getProductQuantityLabel,
+  getProductQuickNote,
+} from "@/lib/product-copy";
 import { buildPageMetadata, defaultKeywords } from "@/lib/seo";
 import { fetchStoreProductBySlug } from "@/lib/store-catalog";
 import { formatCurrency } from "@/lib/utils";
@@ -57,6 +62,10 @@ export default async function ProductDetailPage({
     notFound();
   }
 
+  const displayTitle = getProductDisplayTitle(product);
+  const quantityLabel = getProductQuantityLabel(product);
+  const quickNote = getProductQuickNote(product);
+  const detailPoints = getProductDetailPoints(product);
   const relatedProducts = products
     .filter(
       (entry) =>
@@ -64,32 +73,10 @@ export default async function ProductDetailPage({
         (entry.categorySlug === product.categorySlug || entry.isFeatured),
     )
     .slice(0, 3);
-  const detailHighlights = [
-    {
-      icon: product.isFrozen ? Snowflake : Sparkles,
-      label: product.isFrozen ? "Cold kept" : "Fresh shelf",
-      value: product.isFrozen ? "Frozen handled with care" : "Ready for everyday use",
-    },
-    {
-      icon: Package2,
-      label: "Pack size",
-      value: product.unitLabel,
-    },
-    {
-      icon: Clock3,
-      label: "Delivery",
-      value: "Area-based delivery rates",
-    },
-    {
-      icon: product.compareAtPrice ? ShieldCheck : MessageCircle,
-      label: product.compareAtPrice ? "Value" : "Order",
-      value: product.compareAtPrice ? "Great everyday value" : "Add to cart and checkout",
-    },
-  ] as const;
 
   return (
     <>
-      <section className="section-space pb-6 pt-12">
+      <section className="section-space pb-6 pt-8 sm:pt-10 md:pt-12">
         <div className="container-main">
           <FadeUp>
             <Link
@@ -100,34 +87,42 @@ export default async function ProductDetailPage({
             </Link>
           </FadeUp>
 
-          <div className="mt-6 grid gap-8 xl:grid-cols-[1.05fr_0.95fr] xl:items-start">
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start xl:gap-8">
             <SectionTransition>
               <ProductGallery product={product} />
             </SectionTransition>
 
             <SectionTransition className="space-y-6" delay={0.06}>
-              <div className="page-sheen luxe-panel glass-ring rounded-[2rem] p-7 md:p-8">
+              <div className="cheese-surface luxe-panel glass-ring rounded-[2rem] p-5 sm:p-6 md:p-8">
                 <div className="flex flex-wrap items-center gap-3">
                   <p className="text-xs font-semibold uppercase tracking-[0.34em] text-cheese-500">
                     {product.categoryName}
                   </p>
+                  {quantityLabel ? (
+                    <span className="rounded-full border border-cheese-300 bg-cheese-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-ink-950">
+                      {quantityLabel}
+                    </span>
+                  ) : null}
                   {product.badge ? (
-                    <span className="rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-ink-700">
+                    <span className="rounded-full border border-black/10 bg-cheese-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-ink-700">
                       {product.badge}
                     </span>
                   ) : null}
                 </div>
 
-                <h1 className="mt-4 text-balance text-[2.8rem] font-semibold leading-[0.94] text-ink-950 sm:text-5xl xl:text-6xl">
-                  {product.name}
+                <h1 className="mt-4 text-balance font-sans text-[2.2rem] font-black leading-[0.92] tracking-[-0.05em] text-ink-950 sm:text-[3rem] xl:text-[4.5rem]">
+                  {displayTitle}
                 </h1>
-                <p className="mt-4 line-clamp-2 max-w-2xl text-[0.98rem] leading-6 text-ink-700/78 sm:text-base sm:leading-7">
-                  {product.shortDescription}
+                <p className="mt-4 max-w-2xl text-[1rem] font-medium leading-7 text-ink-700/82 sm:text-[1.02rem]">
+                  {quickNote}
+                </p>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-ink-700/72 sm:text-base">
+                  {product.description || product.shortDescription}
                 </p>
                 <ProductFeatureStrip product={product} className="mt-5" />
 
-                <div className="mt-6 flex flex-wrap items-end gap-4">
-                  <p className="text-4xl font-semibold text-ink-950">
+                <div className="mt-6 flex flex-wrap items-end gap-3 sm:gap-4">
+                  <p className="text-[2.15rem] font-black text-ink-950 sm:text-5xl">
                     {formatCurrency(product.price)}
                   </p>
                   {product.compareAtPrice ? (
@@ -137,37 +132,22 @@ export default async function ProductDetailPage({
                   ) : null}
                 </div>
 
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  {detailHighlights.map((highlight) => {
-                    const Icon = highlight.icon;
-
-                    return (
-                      <div
-                        key={highlight.label}
-                        className="rounded-[1.4rem] bg-surface-muted px-4 py-4"
-                      >
-                        <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-cheese-500 shadow-[0_10px_26px_rgba(216,170,24,0.14)]">
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/50">
-                          {highlight.label}
-                        </p>
-                        <p className="mt-2 text-base font-semibold text-ink-950 sm:text-lg">
-                          {highlight.value}
-                        </p>
-                      </div>
-                    );
-                  })}
+                <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {detailPoints.map((point) => (
+                    <div
+                      key={`${product.id}-${point.label}`}
+                      className="rounded-[1.4rem] border border-cheese-200/70 bg-cheese-50 px-4 py-4"
+                    >
+                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-700/54">
+                        {point.label}
+                      </p>
+                      <p className="mt-3 text-base font-bold leading-6 text-ink-950 sm:text-[1.02rem]">
+                        {point.value}
+                      </p>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="mt-7 rounded-[1.7rem] bg-surface-muted p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cheese-500">
-                    Quick note
-                  </p>
-                  <p className="mt-4 line-clamp-3 text-sm leading-6 text-ink-700/78">
-                    {product.description || product.shortDescription}
-                  </p>
-                </div>
               </div>
 
               <ProductPurchasePanel
@@ -179,7 +159,7 @@ export default async function ProductDetailPage({
       </section>
 
       {relatedProducts.length > 0 ? (
-        <section className="section-space border-t border-black/5 bg-white/55 pt-12">
+        <section className="section-space border-t border-black/10 bg-cheese-300 pt-12">
           <div className="container-main">
             <SectionHeading
               eyebrow="Related Picks"

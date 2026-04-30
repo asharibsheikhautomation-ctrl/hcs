@@ -148,7 +148,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         </section>
       ) : null}
 
-      <section className="section-space border-y border-black/5 bg-white/60">
+      <section className="section-space border-y border-black/10 bg-cheese-300">
         <div className="container-main">
           <div className="grid gap-8 xl:grid-cols-[0.7fr_1.3fr] xl:items-end">
             <SectionHeading
@@ -167,7 +167,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
             <form
               method="get"
-              className="luxe-panel rounded-[2rem] p-5 md:p-6"
+              className="cheese-surface luxe-panel rounded-[2rem] p-5 md:p-6"
             >
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px_auto]">
                 <label className="grid gap-2 text-sm font-medium text-ink-800">
@@ -223,8 +223,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               className={cn(
                 "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
                 effectiveFilters.category === "all"
-                  ? "border-cheese-300 bg-cheese-100 text-cheese-800"
-                  : "border-black/10 bg-white text-ink-700 hover:border-cheese-200 hover:text-ink-950",
+                  ? "border-cheese-400 bg-cheese-100 text-ink-950"
+                  : "border-black/10 bg-cheese-50 text-ink-700 hover:border-cheese-300 hover:text-ink-950",
               )}
             >
               All products
@@ -240,8 +240,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 className={cn(
                   "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
                   effectiveFilters.category === category.slug
-                    ? "border-cheese-300 bg-cheese-100 text-cheese-800"
-                    : "border-black/10 bg-white text-ink-700 hover:border-cheese-200 hover:text-ink-950",
+                    ? "border-cheese-400 bg-cheese-100 text-ink-950"
+                    : "border-black/10 bg-cheese-50 text-ink-700 hover:border-cheese-300 hover:text-ink-950",
                 )}
               >
                 {category.name}

@@ -77,7 +77,7 @@ export default async function DealsPage() {
 
             return (
               <StaggerItem key={feature.title}>
-                <article className="luxe-panel rounded-[1.8rem] p-5">
+                <article className="cheese-surface luxe-panel rounded-[1.8rem] p-5">
                   <Icon className="h-5 w-5 text-cheese-500" />
                   <h2 className="mt-4 text-2xl font-semibold text-ink-950">
                     {feature.title}
@@ -92,7 +92,7 @@ export default async function DealsPage() {
         </StaggerGroup>
       </section>
 
-      <section className="section-space pt-6">
+      <section className="section-space bg-cheese-300 pt-6">
         <div className="container-main">
           <SectionHeading
             eyebrow="Live Offers"

@@ -12,25 +12,19 @@ import type { Deal } from "@/types/commerce";
 
 const toneClasses = {
   gold: {
-    surface:
-      "border-cheese-200/70 bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(255,249,223,0.9),rgba(246,221,125,0.82))]",
-    banner:
-      "bg-[radial-gradient(circle_at_top_left,rgba(246,221,125,0.4),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.72),rgba(246,221,125,0.4),rgba(17,17,17,0.12))]",
-    chip: "bg-cheese-100/90 text-cheese-700",
+    surface: "border-cheese-200 bg-cheese-50/96",
+    banner: "bg-cheese-50/96",
+    chip: "bg-cheese-100 text-ink-950",
   },
   frost: {
-    surface:
-      "border-frost-200/80 bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(245,251,255,0.96),rgba(189,223,255,0.7))]",
-    banner:
-      "bg-[radial-gradient(circle_at_top_left,rgba(189,223,255,0.4),transparent_32%),linear-gradient(145deg,rgba(255,255,255,0.74),rgba(189,223,255,0.34),rgba(17,17,17,0.14))]",
-    chip: "bg-frost-100/90 text-mist-600",
+    surface: "border-cheese-200 bg-cheese-50/96",
+    banner: "bg-cheese-50/96",
+    chip: "bg-cheese-100 text-ink-950",
   },
   ink: {
-    surface:
-      "border-black/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(248,248,248,0.94),rgba(229,229,229,0.82))]",
-    banner:
-      "bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.36),transparent_32%),linear-gradient(145deg,rgba(34,34,34,0.9),rgba(89,89,89,0.62),rgba(255,255,255,0.18))]",
-    chip: "bg-black/6 text-ink-700",
+    surface: "border-black/10 bg-cheese-50/96",
+    banner: "bg-cheese-50/96",
+    chip: "bg-zinc-100 text-ink-950",
   },
 } as const;
 
@@ -59,11 +53,11 @@ export function DealCard({ deal, index }: DealCardProps) {
     <Reveal delay={index * 0.08}>
       <article
         className={cn(
-          "glass-ring cheese-melt-card card-hover group overflow-hidden rounded-[2rem] border shadow-[0_28px_90px_rgba(17,17,17,0.08)]",
+          "glass-ring card-hover group overflow-hidden rounded-[2rem] border shadow-[0_14px_34px_rgba(17,17,17,0.08)]",
           tone.surface,
         )}
       >
-        <div className="grid gap-6 p-5 md:p-6 xl:grid-cols-[1.05fr_0.95fr] xl:items-stretch">
+        <div className="grid gap-5 p-4 sm:p-5 md:p-6 xl:grid-cols-[1.05fr_0.95fr] xl:items-stretch">
           <DealVisual
             deal={deal}
             className="min-h-[18rem] xl:min-h-full"
@@ -81,7 +75,7 @@ export function DealCard({ deal, index }: DealCardProps) {
                 >
                   {formatDealDiscount(deal)}
                 </span>
-                <span className="rounded-full border border-black/8 bg-white/78 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-700">
+                <span className="rounded-full border border-black/8 bg-white px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-700">
                   {formatDealValidity(deal)}
                 </span>
                 {deal.isFeatured ? (
@@ -94,14 +88,14 @@ export function DealCard({ deal, index }: DealCardProps) {
               <p className="mt-4 text-xs font-semibold uppercase tracking-[0.3em] text-ink-800/60">
                 Deal
               </p>
-              <h3 className="mt-3 text-[2rem] font-semibold leading-[0.95] text-ink-950 md:text-[2.4rem]">
+              <h3 className="mt-3 text-[1.65rem] font-semibold leading-[0.95] text-ink-950 sm:text-[2rem] md:text-[2.4rem]">
                 {deal.name}
               </h3>
               <p className="mt-3 line-clamp-2 text-sm leading-6 text-ink-700/76">
                 {summaryText}
               </p>
 
-              <div className="mt-5 flex flex-wrap items-end gap-4 rounded-[1.5rem] border border-black/6 bg-white/80 p-4">
+              <div className="mt-5 flex flex-wrap items-end gap-4 rounded-[1.5rem] border border-black/6 bg-cheese-50 p-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/55">
                     Price
@@ -118,19 +112,24 @@ export function DealCard({ deal, index }: DealCardProps) {
                   </div>
                 </div>
 
-                <div className="ml-auto rounded-full bg-cheese-100 px-3.5 py-2 text-sm font-semibold text-cheese-700">
+                <div className="ml-auto rounded-full bg-cheese-200 px-3.5 py-2 text-sm font-semibold text-ink-950">
                   {deal.savingsLabel}
                 </div>
               </div>
 
               <div className="mt-5 grid gap-2">
+                <div className="rounded-[1.2rem] border border-black/6 bg-white/90 px-4 py-3 text-sm font-medium text-ink-700 sm:hidden">
+                  {featuredItems.length > 0
+                    ? `${featuredItems.length} items included`
+                    : "Linked items appear here."}
+                </div>
                 {featuredItems.length > 0 ? (
                   featuredItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-3 rounded-[1.2rem] border border-black/6 bg-white/76 px-3.5 py-3"
+                      className="hidden items-center gap-3 rounded-[1.2rem] border border-black/6 bg-white/90 px-3.5 py-3 sm:flex"
                     >
-                      <div className="glass-ring relative h-12 w-12 shrink-0 overflow-hidden rounded-[0.9rem] border border-white/70 bg-white">
+                      <div className="glass-ring relative h-12 w-12 shrink-0 overflow-hidden rounded-[0.9rem] border border-black/8 bg-cheese-50">
                         <Image
                           src={item.imageUrl || "/img3.png"}
                           alt={item.productName}
@@ -158,7 +157,7 @@ export function DealCard({ deal, index }: DealCardProps) {
                     </div>
                   ))
                 ) : (
-                  <div className="rounded-[1.2rem] border border-dashed border-black/10 bg-white/70 px-4 py-4 text-sm text-ink-700/72">
+                  <div className="rounded-[1.2rem] border border-dashed border-black/10 bg-white/90 px-4 py-4 text-sm text-ink-700/72">
                     Linked items appear here.
                   </div>
                 )}

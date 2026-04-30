@@ -12,23 +12,22 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
   );
 
   return (
-    <footer className="relative border-t border-black/8 bg-ink-950 text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(246,221,125,0.14),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.02),transparent)]" />
-      <div className="container-main relative py-12">
-        <div className="grid gap-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 sm:p-8 lg:grid-cols-[1.1fr_0.7fr_0.9fr]">
+    <footer className="border-t border-black/10 bg-cheese-300 text-ink-950">
+      <div className="container-main py-12">
+        <div className="grid gap-8 p-2 sm:p-4 lg:grid-cols-[1.1fr_0.7fr_0.9fr]">
           <div className="space-y-5">
-            <LogoMark className="[&_p]:text-white [&_p:last-child]:text-cheese-100/70" />
-            <p className="max-w-lg text-sm leading-6 text-white/72">
+            <LogoMark className="[&_p]:text-ink-950 [&_p:last-child]:text-ink-950/68" />
+            <p className="max-w-lg text-sm leading-6 text-ink-950/76">
               {settings.tagline}
             </p>
-            <div className="flex flex-wrap gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-cheese-100/80">
-              <span className="rounded-full border border-white/12 bg-white/6 px-3 py-2">
+            <div className="flex flex-wrap gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-ink-950/88">
+              <span className="rounded-full border border-black/10 bg-white/90 px-3 py-2">
                 Cheese & dairy
               </span>
-              <span className="rounded-full border border-white/12 bg-white/6 px-3 py-2">
+              <span className="rounded-full border border-black/10 bg-white/90 px-3 py-2">
                 Frozen supplies
               </span>
-              <span className="rounded-full border border-white/12 bg-white/6 px-3 py-2">
+              <span className="rounded-full border border-black/10 bg-white/90 px-3 py-2">
                 Fast delivery
               </span>
             </div>
@@ -44,50 +43,50 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           </div>
 
           <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cheese-100/55">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-ink-950/62">
               Navigate
             </p>
-            <div className="grid gap-3 text-sm text-white/72">
+            <div className="grid gap-3 text-sm text-ink-950/78">
               {publicNavigation.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="transition-colors hover:text-white"
+                  className="transition-colors hover:text-ink-950"
                 >
                   {item.label}
                 </Link>
               ))}
               <Link
                 href="/admin"
-                className="transition-colors hover:text-white"
+                className="transition-colors hover:text-ink-950"
               >
                 Admin
               </Link>
             </div>
           </div>
 
-          <div className="space-y-4 text-sm text-white/72">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cheese-100/55">
+          <div className="space-y-4 text-sm text-ink-950/78">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-ink-950/62">
               Contact
             </p>
             <div className="grid gap-3">
               <p className="inline-flex items-start gap-3">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cheese-200" />
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-ink-950" />
                 <span className="break-words">{settings.address}</span>
               </p>
               <p className="inline-flex items-center gap-3">
-                <PhoneCall className="h-4 w-4 shrink-0 text-cheese-200" />
+                <PhoneCall className="h-4 w-4 shrink-0 text-ink-950" />
                 <span className="break-words">
                   {settings.contactPhone || settings.whatsappNumber}
                 </span>
               </p>
               <p className="inline-flex items-center gap-3">
-                <Clock3 className="h-4 w-4 shrink-0 text-cheese-200" />
+                <Clock3 className="h-4 w-4 shrink-0 text-ink-950" />
                 <span className="break-words">{settings.businessHours}</span>
               </p>
             </div>
             {settings.contactEmail ? (
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/45">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-950/52">
                 {settings.contactEmail}
               </p>
             ) : null}
