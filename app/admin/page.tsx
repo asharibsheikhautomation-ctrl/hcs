@@ -190,7 +190,7 @@ export default async function AdminDashboardPage() {
                 categories.map((category) => (
                   <details
                     key={category.id}
-                    className="rounded-[1.75rem] border border-black/6 bg-surface-muted p-5"
+                    className="rounded-[1.75rem] border-2 border-[rgba(224,123,0,0.22)] bg-surface-muted p-5"
                   >
                     <summary className="flex cursor-pointer list-none flex-col gap-4 md:flex-row md:items-center md:justify-between">
                       <div className="flex items-center gap-4">
@@ -218,7 +218,7 @@ export default async function AdminDashboardPage() {
                             <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-ink-700">
                               {category.productCount} products
                             </span>
-                            <span className="rounded-full bg-cheese-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cheese-700">
+                            <span className="rounded-full bg-cheese-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
                               {category.isActive ? "Visible" : "Hidden"}
                             </span>
                           </div>
@@ -292,7 +292,7 @@ export default async function AdminDashboardPage() {
                 products.map((product) => (
                   <details
                     key={product.id}
-                    className="rounded-[1.75rem] border border-black/6 bg-surface-muted p-5"
+                    className="rounded-[1.75rem] border-2 border-[rgba(224,123,0,0.22)] bg-surface-muted p-5"
                   >
                     <summary className="flex cursor-pointer list-none flex-col gap-4 md:flex-row md:items-center md:justify-between">
                       <div className="flex items-center gap-4">
@@ -383,7 +383,7 @@ export default async function AdminDashboardPage() {
                   dealsResult.deals.map((deal) => (
                     <details
                       key={deal.id}
-                      className="rounded-[1.75rem] border border-black/6 bg-surface-muted p-5"
+                      className="rounded-[1.75rem] border-2 border-[rgba(224,123,0,0.22)] bg-surface-muted p-5"
                     >
                       <summary className="flex cursor-pointer list-none flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div className="flex items-center gap-4">
@@ -406,7 +406,7 @@ export default async function AdminDashboardPage() {
                               <p className="text-2xl font-semibold text-ink-950">
                                 {deal.title}
                               </p>
-                              <span className="rounded-full bg-cheese-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cheese-700">
+                              <span className="rounded-full bg-cheese-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
                                 {formatDealDiscount(deal)}
                               </span>
                               <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-ink-700">
@@ -434,7 +434,7 @@ export default async function AdminDashboardPage() {
                         />
 
                         <div className="space-y-4 xl:self-start">
-                          <div className="rounded-[1.5rem] bg-white/80 p-5">
+                          <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                               Included items
                             </p>
@@ -444,7 +444,7 @@ export default async function AdminDashboardPage() {
                                   {deal.linkedProductNames.map((productName) => (
                                     <span
                                       key={`${deal.id}-${productName}`}
-                                      className="rounded-full border border-black/8 bg-surface-muted px-3 py-2 text-sm font-semibold text-ink-950"
+                                      className="rounded-full border-2 border-[rgba(224,123,0,0.18)] bg-surface-muted px-3 py-2 text-sm font-semibold text-ink-950"
                                     >
                                       {productName}
                                     </span>
@@ -452,7 +452,7 @@ export default async function AdminDashboardPage() {
                                   {deal.customItems.map((item) => (
                                     <span
                                       key={`${deal.id}-${item.id}`}
-                                      className="rounded-full border border-cheese-200 bg-cheese-100/70 px-3 py-2 text-sm font-semibold text-cheese-800"
+                                      className="rounded-full border-2 border-[var(--color-accent-dark)] bg-cheese-100/70 px-3 py-2 text-sm font-semibold text-[var(--color-primary)]"
                                     >
                                       {item.name}
                                     </span>
@@ -511,7 +511,7 @@ export default async function AdminDashboardPage() {
                 deliveryZones.map((zone) => (
                   <details
                     key={zone.id}
-                    className="rounded-[1.75rem] border border-black/6 bg-surface-muted p-5"
+                    className="rounded-[1.75rem] border-2 border-[rgba(224,123,0,0.22)] bg-surface-muted p-5"
                   >
                     <summary className="flex cursor-pointer list-none flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                       <div>
@@ -519,7 +519,7 @@ export default async function AdminDashboardPage() {
                           <p className="text-2xl font-semibold text-ink-950">
                             {zone.name}
                           </p>
-                          <span className="rounded-full bg-cheese-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cheese-700">
+                          <span className="rounded-full bg-cheese-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
                             {zone.isActive ? "Active" : "Inactive"}
                           </span>
                           <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-ink-700">
@@ -533,7 +533,7 @@ export default async function AdminDashboardPage() {
                       </div>
 
                       <div className="grid gap-3 sm:grid-cols-3 xl:w-[28rem]">
-                        <div className="rounded-[1.25rem] bg-white/80 px-4 py-4">
+                        <div className="rounded-[1.25rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] px-4 py-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                             Base charge
                           </p>
@@ -541,7 +541,7 @@ export default async function AdminDashboardPage() {
                             {formatCurrency(zone.deliveryCharge)}
                           </p>
                         </div>
-                        <div className="rounded-[1.25rem] bg-white/80 px-4 py-4">
+                        <div className="rounded-[1.25rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] px-4 py-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                             Free delivery
                           </p>
@@ -551,7 +551,7 @@ export default async function AdminDashboardPage() {
                               : "Off"}
                           </p>
                         </div>
-                        <div className="rounded-[1.25rem] bg-white/80 px-4 py-4">
+                        <div className="rounded-[1.25rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] px-4 py-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                             ETA
                           </p>
@@ -566,7 +566,7 @@ export default async function AdminDashboardPage() {
                       <div className="space-y-4">
                         <DeliveryZoneForm zone={zone} />
 
-                        <div className="rounded-[1.5rem] bg-white/80 p-5">
+                        <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                             <div>
                               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
@@ -583,7 +583,7 @@ export default async function AdminDashboardPage() {
                               zone.areas.map((area) => (
                                 <details
                                   key={area.id}
-                                  className="rounded-[1.25rem] border border-black/6 bg-surface-muted px-4 py-4"
+                                  className="rounded-[1.25rem] border-2 border-[rgba(224,123,0,0.18)] bg-surface-muted px-4 py-4"
                                 >
                                   <summary className="flex cursor-pointer list-none flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                     <div>
@@ -619,7 +619,7 @@ export default async function AdminDashboardPage() {
                                 </details>
                               ))
                             ) : (
-                              <div className="rounded-[1.25rem] border border-dashed border-black/10 bg-surface-muted px-4 py-4 text-base text-ink-700/72">
+                              <div className="rounded-[1.25rem] border-2 border-dashed border-[var(--color-accent-dark)] bg-surface-muted px-4 py-4 text-base text-ink-700/72">
                                 No areas yet. Add the first area below.
                               </div>
                             )}
@@ -708,7 +708,7 @@ export default async function AdminDashboardPage() {
                   <details
                     key={order.id}
                     open={index === 0}
-                    className="rounded-[1.75rem] border border-black/6 bg-surface-muted p-5"
+                    className="rounded-[1.75rem] border-2 border-[rgba(224,123,0,0.22)] bg-surface-muted p-5"
                   >
                     <summary className="flex cursor-pointer list-none flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                       <div>
@@ -730,7 +730,7 @@ export default async function AdminDashboardPage() {
                       </div>
 
                       <div className="grid gap-3 text-left sm:grid-cols-3 xl:w-[24rem] xl:grid-cols-1">
-                        <div className="rounded-[1.25rem] bg-white/78 px-4 py-4">
+                        <div className="rounded-[1.25rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] px-4 py-4">
                           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                             Total
                           </p>
@@ -738,7 +738,7 @@ export default async function AdminDashboardPage() {
                             {formatCurrency(order.total)}
                           </p>
                         </div>
-                        <div className="rounded-[1.25rem] bg-white/78 px-4 py-4">
+                        <div className="rounded-[1.25rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] px-4 py-4">
                           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                             Delivery
                           </p>
@@ -746,7 +746,7 @@ export default async function AdminDashboardPage() {
                             {order.deliveryLabel}
                           </p>
                         </div>
-                        <div className="rounded-[1.25rem] bg-white/78 px-4 py-4">
+                        <div className="rounded-[1.25rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] px-4 py-4">
                           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                             Created
                           </p>
@@ -760,7 +760,7 @@ export default async function AdminDashboardPage() {
                     <div className="mt-5 grid gap-4 xl:grid-cols-[1.12fr_0.88fr]">
                       <div className="space-y-4">
                         <div className="grid gap-4 md:grid-cols-2">
-                          <div className="rounded-[1.5rem] bg-white/80 p-5">
+                          <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                               Customer
                             </p>
@@ -772,7 +772,7 @@ export default async function AdminDashboardPage() {
                             </p>
                           </div>
 
-                          <div className="rounded-[1.5rem] bg-white/80 p-5">
+                          <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                               Address
                             </p>
@@ -783,7 +783,7 @@ export default async function AdminDashboardPage() {
                         </div>
 
                         {order.note ? (
-                          <div className="rounded-[1.5rem] bg-white/80 p-5">
+                          <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                               Note
                             </p>
@@ -801,7 +801,7 @@ export default async function AdminDashboardPage() {
                             {order.items.map((item) => (
                               <div
                                 key={item.id}
-                                className="rounded-[1.25rem] border border-black/6 bg-surface-muted px-4 py-4"
+                                className="rounded-[1.25rem] border-2 border-[rgba(224,123,0,0.18)] bg-surface-muted px-4 py-4"
                               >
                                 <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                                   <div>
@@ -824,7 +824,7 @@ export default async function AdminDashboardPage() {
                       </div>
 
                       <div className="space-y-4">
-                        <div className="rounded-[1.5rem] bg-white/80 p-5">
+                        <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                             Update status
                           </p>
@@ -855,7 +855,7 @@ export default async function AdminDashboardPage() {
                           </div>
                         </div>
 
-                        <div className="rounded-[1.5rem] bg-white/80 p-5">
+                        <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                             Send details
                           </p>
@@ -869,13 +869,13 @@ export default async function AdminDashboardPage() {
                               Send to WhatsApp
                             </a>
                           ) : (
-                            <div className="mt-4 rounded-[1.25rem] border border-dashed border-black/10 bg-surface-muted px-4 py-4 text-base text-ink-700/75">
+                            <div className="mt-4 rounded-[1.25rem] border-2 border-dashed border-[var(--color-accent-dark)] bg-surface-muted px-4 py-4 text-base text-ink-700/75">
                               Customer phone number is not valid for WhatsApp.
                             </div>
                           )}
                         </div>
 
-                        <div className="rounded-[1.5rem] bg-ink-950 p-5 text-white">
+                        <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))] p-5 text-white">
                           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/55">
                             Order total
                           </p>
@@ -919,12 +919,12 @@ export default async function AdminDashboardPage() {
           <div className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
             <SimpleSettingsForm settings={settings} />
 
-            <div className="rounded-[1.75rem] border border-black/6 bg-surface-muted p-5 md:p-6">
+            <div className="rounded-[1.75rem] border-2 border-[rgba(224,123,0,0.22)] bg-surface-muted p-5 md:p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cheese-500">
                 Current values
               </p>
               <div className="mt-5 grid gap-4">
-                <div className="rounded-[1.5rem] bg-white/82 p-5">
+                <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                     WhatsApp number
                   </p>
@@ -932,7 +932,7 @@ export default async function AdminDashboardPage() {
                     {settings.whatsappNumber}
                   </p>
                 </div>
-                <div className="rounded-[1.5rem] bg-white/82 p-5">
+                <div className="rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.18)] bg-[var(--color-bg-white)] p-5">
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                     Business hours
                   </p>

@@ -51,10 +51,10 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
   }, [isMenuOpen]);
 
   return (
-    <header className="cheese-header-shell sticky top-0 z-50 overflow-x-clip border-b border-black/10 bg-cheese-300 shadow-[0_10px_28px_rgba(17,17,17,0.12)]">
+    <header className="cheese-header-shell sticky top-0 z-50 overflow-x-clip border-b border-[var(--color-accent-dark)] bg-[var(--color-primary)] shadow-[0_2px_12px_rgba(0,0,0,0.4)]">
       {settings.announcementBar ? (
-        <div className="border-b border-black/10 bg-cheese-200">
-          <div className="mx-auto w-full max-w-[88rem] px-4 py-2 text-center text-[0.64rem] font-semibold uppercase tracking-[0.24em] text-ink-950 sm:px-5 sm:text-[0.72rem] sm:tracking-[0.28em] lg:px-6">
+        <div className="border-b border-[var(--color-accent-dark)] bg-[var(--color-primary-dark)]">
+          <div className="mx-auto w-full max-w-[88rem] px-4 py-2 text-center text-[0.64rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)] sm:px-5 sm:text-[0.72rem] sm:tracking-[0.28em] lg:px-6">
             {settings.announcementBar}
           </div>
         </div>
@@ -67,17 +67,17 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             aria-label="Hyderabad Cheese Store home"
             className="min-w-0 flex-1"
           >
-            <LogoMark className="[&_p]:!text-ink-950 [&_p:last-child]:!text-ink-950/70" />
+            <LogoMark className="[&_p]:!text-[var(--color-text-white)] [&_p:last-child]:!text-[color:rgba(255,248,231,0.82)]" />
           </Link>
 
           <div className="flex items-center gap-2">
             <Link
               href="/checkout"
-              className="inline-flex min-h-[3rem] items-center justify-center rounded-full border border-black/12 bg-white px-4 text-sm font-semibold text-ink-950 shadow-[0_10px_24px_rgba(17,17,17,0.1)]"
+              className="inline-flex min-h-[3rem] items-center justify-center rounded-xl border-2 border-[var(--color-accent)] bg-[var(--color-bg-white)] px-4 text-sm font-semibold text-[var(--color-text-dark)] shadow-[0_12px_24px_rgba(0,0,0,0.18)]"
             >
               <ShoppingBag className="h-4 w-4" />
               {itemCount > 0 ? (
-                <span className="ml-2 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-cheese-300 px-1.5 text-xs font-bold text-ink-950">
+                <span className="ml-2 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[var(--color-primary)] px-1.5 text-xs font-bold text-[var(--color-accent)]">
                   {itemCount}
                 </span>
               ) : null}
@@ -86,7 +86,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             <button
               type="button"
               onClick={() => setIsMenuOpen(true)}
-              className="inline-flex min-h-[3rem] min-w-[3rem] items-center justify-center rounded-full border border-black/12 bg-white text-ink-950 shadow-[0_10px_24px_rgba(17,17,17,0.1)]"
+              className="inline-flex min-h-[3rem] min-w-[3rem] items-center justify-center rounded-xl border-2 border-[var(--color-accent)] bg-[var(--color-bg-white)] text-[var(--color-text-dark)] shadow-[0_12px_24px_rgba(0,0,0,0.18)]"
               aria-label="Open menu"
               aria-expanded={isMenuOpen}
             >
@@ -112,13 +112,13 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
               aria-label="Hyderabad Cheese Store home"
               className="min-w-0 max-w-full flex-1"
             >
-              <LogoMark className="[&_p]:!text-ink-950 [&_p:last-child]:!text-ink-950/70" />
+              <LogoMark className="[&_p]:!text-[var(--color-text-white)] [&_p:last-child]:!text-[color:rgba(255,248,231,0.82)]" />
             </Link>
           </motion.div>
 
           <nav className="min-w-0">
             <motion.ul
-              className="flex min-w-0 items-center justify-center gap-2 rounded-full border border-black/10 bg-white p-2 shadow-[0_10px_24px_rgba(17,17,17,0.08)]"
+              className="flex min-w-0 items-center justify-center gap-5 rounded-none border-0 bg-transparent p-0 shadow-none"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.34, ease: "easeOut" }}
@@ -140,10 +140,10 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
                     <Link
                       href={item.href}
                       className={cn(
-                        "inline-flex min-h-[46px] items-center justify-center whitespace-nowrap rounded-full px-5 py-2.5 text-center text-sm font-semibold tracking-[0.02em] transition-colors duration-200",
+                        "inline-flex min-h-[46px] items-center justify-center whitespace-nowrap border-b-2 border-transparent px-2 py-2.5 text-center text-sm font-semibold tracking-[0.02em] transition-colors duration-200",
                         isActive
-                          ? "bg-ink-950 text-cheese-200 shadow-[0_10px_20px_rgba(17,17,17,0.14)]"
-                          : "bg-transparent !text-ink-950 hover:bg-cheese-200 hover:!text-ink-950",
+                          ? "text-[var(--color-accent)] border-[var(--color-accent)]"
+                          : "bg-transparent !text-[var(--color-text-white)] hover:!text-[var(--color-accent)]",
                       )}
                     >
                       {item.label}
@@ -167,12 +167,12 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             >
               <Link
                 href="/checkout"
-                className="inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-black/12 bg-white px-4 text-sm font-semibold !text-ink-950 shadow-[0_10px_24px_rgba(17,17,17,0.1)] sm:px-5"
+                className="inline-flex min-h-[3.05rem] items-center justify-center rounded-xl border-2 border-[var(--color-accent)] bg-[var(--color-bg-white)] px-4 text-sm font-semibold !text-[var(--color-text-dark)] shadow-[0_12px_24px_rgba(0,0,0,0.2)] sm:px-5"
               >
                 <ShoppingBag className="h-4 w-4" />
                 <span className="ml-2">Checkout</span>
                 {itemCount > 0 ? (
-                  <span className="ml-2 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-cheese-300 px-1.5 text-xs font-bold text-ink-950">
+                  <span className="ml-2 inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[var(--color-primary)] px-1.5 text-xs font-bold text-[var(--color-accent)]">
                     {itemCount}
                   </span>
                 ) : null}
@@ -186,7 +186,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             >
               <Link
                 href="/admin"
-                className="inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-black/12 bg-white px-5 text-sm font-semibold !text-ink-950 shadow-[0_10px_24px_rgba(17,17,17,0.1)]"
+                className="inline-flex min-h-[3.05rem] items-center justify-center rounded-xl border-2 border-[var(--color-accent)] bg-[var(--color-bg-white)] px-5 text-sm font-semibold !text-[var(--color-text-dark)] shadow-[0_12px_24px_rgba(0,0,0,0.2)]"
               >
                 <Shield className="h-4 w-4" />
                 <span className="ml-2">Admin</span>
@@ -202,7 +202,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
                 href={whatsappHref}
                 target="_blank"
                 rel="noreferrer"
-                className="cheese-cta inline-flex min-h-[3.05rem] items-center justify-center rounded-full border border-black/12 bg-cheese-300 px-5 text-sm font-semibold !text-ink-950 shadow-[0_10px_24px_rgba(17,17,17,0.12)]"
+                className="cheese-cta inline-flex min-h-[3.05rem] items-center justify-center rounded-xl border-2 border-[var(--color-accent)] bg-[var(--color-accent)] px-5 text-sm font-semibold !text-[var(--color-text-dark)] shadow-[0_12px_24px_rgba(245,168,0,0.22)]"
               >
                 WhatsApp Help
                 <ArrowUpRight className="ml-2 h-4 w-4" />
@@ -222,7 +222,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             onClick={() => setIsMenuOpen(false)}
           >
             <motion.aside
-              className="absolute right-0 top-0 flex h-full w-full max-w-[22rem] flex-col gap-5 bg-cheese-300 px-5 pb-6 pt-5 shadow-[0_18px_48px_rgba(17,17,17,0.18)]"
+              className="absolute right-0 top-0 flex h-full w-full max-w-[22rem] flex-col gap-5 bg-[var(--color-primary)] px-5 pb-6 pt-5 shadow-[0_18px_48px_rgba(0,0,0,0.28)]"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -230,18 +230,18 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
               onClick={(event) => event.stopPropagation()}
             >
               <div className="flex items-center justify-between gap-4">
-                <LogoMark compact />
+                <LogoMark compact className="[&_p]:!text-[var(--color-text-white)]" />
                 <button
                   type="button"
                   onClick={() => setIsMenuOpen(false)}
-                  className="inline-flex min-h-[3rem] min-w-[3rem] items-center justify-center rounded-full border border-black/12 bg-white text-ink-950"
+                  className="inline-flex min-h-[3rem] min-w-[3rem] items-center justify-center rounded-xl border-2 border-[var(--color-accent)] bg-[var(--color-bg-white)] text-[var(--color-text-dark)]"
                   aria-label="Close menu"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="grid gap-2 rounded-[1.7rem] border border-black/10 bg-white/92 p-2">
+              <div className="grid gap-2 rounded-[1.7rem] border border-[var(--color-accent-dark)] bg-[rgba(255,248,231,0.08)] p-2">
                 {primaryNavigation.map((item) => {
                   const isActive =
                     item.href === "/"
@@ -254,10 +254,10 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
                       href={item.href}
                       onClick={() => setIsMenuOpen(false)}
                       className={cn(
-                        "rounded-[1.15rem] px-4 py-3 text-base font-semibold transition-colors",
+                        "rounded-[1.15rem] border border-transparent px-4 py-3 text-base font-semibold transition-colors",
                         isActive
-                          ? "bg-ink-950 text-cheese-200"
-                          : "text-ink-950 hover:bg-cheese-100",
+                          ? "bg-[var(--color-accent)] text-[var(--color-text-dark)]"
+                          : "text-[var(--color-text-white)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]",
                       )}
                     >
                       {item.label}
@@ -271,7 +271,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
                   <ShoppingBag className="h-4 w-4" />
                   Checkout
                   {itemCount > 0 ? (
-                    <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-white px-1.5 text-xs font-bold text-ink-950">
+                    <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[var(--color-primary)] px-1.5 text-xs font-bold text-[var(--color-accent)]">
                       {itemCount}
                     </span>
                   ) : null}

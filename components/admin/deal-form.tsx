@@ -29,7 +29,7 @@ export function DealForm({ products, deal }: DealFormProps) {
     <form
       action={action}
       encType="multipart/form-data"
-      className="grid gap-4 rounded-[1.75rem] border border-black/6 bg-white/75 p-5"
+      className="grid gap-4 rounded-[1.75rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-5"
     >
       <input type="hidden" name="id" value={deal?.id ?? ""} />
       <div>
@@ -101,7 +101,7 @@ export function DealForm({ products, deal }: DealFormProps) {
         </AdminField>
       </div>
 
-      <div className="grid gap-3 rounded-[1.5rem] border border-black/6 bg-[#faf6ef] p-4">
+      <div className="grid gap-3 rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-light)] p-4">
         <div>
           <p className="text-sm font-semibold text-ink-950">Linked products</p>
           <p className="mt-1 text-xs leading-6 text-ink-700/70">
@@ -112,14 +112,14 @@ export function DealForm({ products, deal }: DealFormProps) {
           {products.map((product) => (
             <label
               key={product.value}
-              className="flex items-center gap-3 rounded-[1.1rem] border border-black/6 bg-white px-4 py-3 text-sm text-ink-800"
+              className="flex items-center gap-3 rounded-[1.1rem] border-2 border-[rgba(224,123,0,0.22)] bg-[var(--color-bg-white)] px-4 py-3 text-sm text-ink-800"
             >
               <input
                 type="checkbox"
                 name="linkedProductIds"
                 value={product.value}
                 defaultChecked={linkedProductIds.has(product.value)}
-                className="h-4 w-4 rounded border-black/20 text-cheese-500 focus:ring-cheese-300"
+                className="h-4 w-4 rounded border-[var(--color-accent-dark)] text-[var(--color-primary)] focus:ring-[var(--color-accent)]"
               />
               <span>{product.label}</span>
             </label>

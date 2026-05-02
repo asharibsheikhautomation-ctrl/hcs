@@ -15,9 +15,9 @@ import { cn, formatCurrency } from "@/lib/utils";
 import type { Product } from "@/types/commerce";
 
 const toneChipClassNames = {
-  gold: "bg-cheese-100 text-ink-950",
-  frost: "bg-cheese-100 text-ink-950",
-  ink: "bg-zinc-100 text-ink-950",
+  gold: "bg-[var(--color-accent)] text-[var(--color-text-dark)]",
+  frost: "bg-[var(--color-accent)] text-[var(--color-text-dark)]",
+  ink: "bg-[var(--color-accent)] text-[var(--color-text-dark)]",
 } as const;
 
 interface ProductCardProps {
@@ -43,10 +43,10 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Reveal delay={index * 0.04}>
-      <article className="card-hover group overflow-hidden rounded-[1.8rem] border border-black/8 bg-white p-4 shadow-[0_12px_30px_rgba(17,17,17,0.08)] sm:p-5">
+      <article className="card-hover group overflow-hidden rounded-[1.8rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-4 shadow-[0_12px_30px_rgba(92,16,16,0.10)] sm:p-5">
         <div className="flex h-full flex-col gap-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-700/60">
+            <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
               {product.categoryName}
             </span>
             {quantityLabel ? (
@@ -81,11 +81,11 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 {descriptionText}
               </p>
               <div className="flex flex-wrap items-end gap-3">
-                <p className="text-[1.85rem] font-black text-ink-950">
+                <p className="rounded-full bg-[var(--color-primary)] px-4 py-2 text-[1.35rem] font-black text-[var(--color-accent)]">
                   {formatCurrency(product.price)}
                 </p>
                 {product.compareAtPrice ? (
-                  <p className="text-sm text-ink-700/50 line-through">
+                  <p className="text-sm text-[rgba(26,10,0,0.55)] line-through">
                     {formatCurrency(product.compareAtPrice)}
                   </p>
                 ) : null}

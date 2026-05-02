@@ -31,16 +31,16 @@ export function AdminSidebar({ adminUsername }: { adminUsername: string }) {
   const pathname = usePathname();
 
   return (
-    <aside className="luxe-panel rounded-[2rem] border border-black/5 p-5 lg:sticky lg:top-4 lg:min-h-[calc(100vh-2rem)]">
-      <div className="border-b border-black/5 pb-5">
+    <aside className="luxe-panel rounded-[2rem] border-2 border-[var(--color-accent-dark)] p-5 lg:sticky lg:top-4 lg:min-h-[calc(100vh-2rem)]">
+      <div className="border-b border-[rgba(224,123,0,0.26)] pb-5">
         <Link href="/admin" className="inline-flex">
           <LogoMark compact />
         </Link>
-        <div className="mt-4 rounded-2xl bg-ink-950 px-4 py-3 text-sm text-white/72">
+        <div className="mt-4 rounded-2xl bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))] px-4 py-3 text-sm text-[rgba(255,248,231,0.84)]">
           Control room for products, deals, orders, delivery charges, and site
           messaging.
         </div>
-        <div className="mt-4 rounded-2xl border border-black/8 bg-white/70 px-4 py-3 text-sm text-ink-700">
+        <div className="mt-4 rounded-2xl border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-4 py-3 text-sm text-ink-700">
           Signed in as <span className="font-semibold text-ink-950">{adminUsername}</span>
         </div>
       </div>
@@ -60,8 +60,8 @@ export function AdminSidebar({ adminUsername }: { adminUsername: string }) {
               className={cn(
                 "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-300",
                 isActive
-                  ? "bg-cheese-300 text-ink-950 shadow-sm"
-                  : "text-ink-700 hover:bg-black/[0.03] hover:text-ink-950",
+                  ? "bg-[var(--color-accent)] text-[var(--color-text-dark)] shadow-[0_12px_22px_rgba(224,123,0,0.20)]"
+                  : "text-[var(--color-primary)] hover:bg-[var(--color-bg-light)] hover:text-[var(--color-primary-dark)]",
               )}
             >
               <Icon className="h-4 w-4" />
@@ -74,7 +74,7 @@ export function AdminSidebar({ adminUsername }: { adminUsername: string }) {
       <form action={logoutAdminAction} className="mt-6">
         <button
           type="submit"
-          className="inline-flex w-full items-center justify-center rounded-full border border-black/10 bg-white px-4 py-3 text-sm font-semibold text-ink-950 transition-colors hover:border-cheese-300 hover:bg-cheese-50"
+          className="inline-flex w-full items-center justify-center rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-4 py-3 text-sm font-semibold text-[var(--color-primary)] transition-colors hover:bg-[var(--color-accent)] hover:text-[var(--color-text-dark)]"
         >
           Logout
         </button>

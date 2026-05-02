@@ -12,19 +12,19 @@ import type { Deal } from "@/types/commerce";
 
 const toneClasses = {
   gold: {
-    surface: "border-cheese-200 bg-cheese-50/96",
-    banner: "bg-cheese-50/96",
-    chip: "bg-cheese-100 text-ink-950",
+    surface: "border-[var(--color-accent-dark)] bg-[var(--color-bg-white)]",
+    banner: "bg-[var(--color-bg-light)]",
+    chip: "bg-[var(--color-primary)] text-[var(--color-accent)]",
   },
   frost: {
-    surface: "border-cheese-200 bg-cheese-50/96",
-    banner: "bg-cheese-50/96",
-    chip: "bg-cheese-100 text-ink-950",
+    surface: "border-[var(--color-accent-dark)] bg-[var(--color-bg-white)]",
+    banner: "bg-[var(--color-bg-light)]",
+    chip: "bg-[var(--color-primary)] text-[var(--color-accent)]",
   },
   ink: {
-    surface: "border-black/10 bg-cheese-50/96",
-    banner: "bg-cheese-50/96",
-    chip: "bg-zinc-100 text-ink-950",
+    surface: "border-[var(--color-accent-dark)] bg-[var(--color-bg-white)]",
+    banner: "bg-[var(--color-bg-light)]",
+    chip: "bg-[var(--color-primary)] text-[var(--color-accent)]",
   },
 } as const;
 
@@ -53,7 +53,7 @@ export function DealCard({ deal, index }: DealCardProps) {
     <Reveal delay={index * 0.08}>
       <article
         className={cn(
-          "glass-ring card-hover group overflow-hidden rounded-[2rem] border shadow-[0_14px_34px_rgba(17,17,17,0.08)]",
+          "glass-ring card-hover group overflow-hidden rounded-[2rem] border-2 shadow-[0_14px_34px_rgba(92,16,16,0.1)]",
           tone.surface,
         )}
       >
@@ -75,17 +75,17 @@ export function DealCard({ deal, index }: DealCardProps) {
                 >
                   {formatDealDiscount(deal)}
                 </span>
-                <span className="rounded-full border border-black/8 bg-white px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-700">
+                <span className="rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]">
                   {formatDealValidity(deal)}
                 </span>
                 {deal.isFeatured ? (
-                  <span className="rounded-full border border-black/8 bg-ink-950 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-white">
+                  <span className="rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-accent)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-text-dark)]">
                     Featured
                   </span>
                 ) : null}
               </div>
 
-              <p className="mt-4 text-xs font-semibold uppercase tracking-[0.3em] text-ink-800/60">
+              <p className="mt-4 text-xs font-semibold uppercase tracking-[0.3em] text-[var(--color-primary)]">
                 Deal
               </p>
               <h3 className="mt-3 text-[1.65rem] font-semibold leading-[0.95] text-ink-950 sm:text-[2rem] md:text-[2.4rem]">
@@ -95,13 +95,13 @@ export function DealCard({ deal, index }: DealCardProps) {
                 {summaryText}
               </p>
 
-              <div className="mt-5 flex flex-wrap items-end gap-4 rounded-[1.5rem] border border-black/6 bg-cheese-50 p-4">
+              <div className="mt-5 flex flex-wrap items-end gap-4 rounded-[1.5rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-light)] p-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/55">
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]">
                     Price
                   </p>
                   <div className="mt-2 flex flex-wrap items-center gap-3">
-                    <p className="text-3xl font-semibold text-ink-950">
+                    <p className="rounded-full bg-[var(--color-primary)] px-4 py-2 text-2xl font-semibold text-[var(--color-accent)]">
                       {formatCurrency(deal.dealPrice)}
                     </p>
                     {deal.originalTotal > deal.dealPrice ? (
@@ -112,13 +112,13 @@ export function DealCard({ deal, index }: DealCardProps) {
                   </div>
                 </div>
 
-                <div className="ml-auto rounded-full bg-cheese-200 px-3.5 py-2 text-sm font-semibold text-ink-950">
+                <div className="ml-auto rounded-full bg-[var(--color-accent)] px-3.5 py-2 text-sm font-semibold text-[var(--color-text-dark)]">
                   {deal.savingsLabel}
                 </div>
               </div>
 
               <div className="mt-5 grid gap-2">
-                <div className="rounded-[1.2rem] border border-black/6 bg-white/90 px-4 py-3 text-sm font-medium text-ink-700 sm:hidden">
+                <div className="rounded-[1.2rem] border-2 border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-white)] px-4 py-3 text-sm font-medium text-ink-700 sm:hidden">
                   {featuredItems.length > 0
                     ? `${featuredItems.length} items included`
                     : "Linked items appear here."}
@@ -127,9 +127,9 @@ export function DealCard({ deal, index }: DealCardProps) {
                   featuredItems.map((item) => (
                     <div
                       key={item.id}
-                      className="hidden items-center gap-3 rounded-[1.2rem] border border-black/6 bg-white/90 px-3.5 py-3 sm:flex"
+                      className="hidden items-center gap-3 rounded-[1.2rem] border-2 border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-white)] px-3.5 py-3 sm:flex"
                     >
-                      <div className="glass-ring relative h-12 w-12 shrink-0 overflow-hidden rounded-[0.9rem] border border-black/8 bg-cheese-50">
+                      <div className="glass-ring relative h-12 w-12 shrink-0 overflow-hidden rounded-[0.9rem] border-2 border-[rgba(224,123,0,0.28)] bg-[var(--color-bg-light)]">
                         <Image
                           src={item.imageUrl || "/img3.png"}
                           alt={item.productName}
@@ -157,7 +157,7 @@ export function DealCard({ deal, index }: DealCardProps) {
                     </div>
                   ))
                 ) : (
-                  <div className="rounded-[1.2rem] border border-dashed border-black/10 bg-white/90 px-4 py-4 text-sm text-ink-700/72">
+                  <div className="rounded-[1.2rem] border-2 border-dashed border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-4 py-4 text-sm text-ink-700/72">
                     Linked items appear here.
                   </div>
                 )}

@@ -33,10 +33,10 @@ export function ProductGallery({ product }: ProductGalleryProps) {
             type="button"
             onClick={() => setSelectedIndex(index)}
             className={cn(
-              "group overflow-hidden rounded-[1.4rem] border p-1 text-left transition-all duration-300",
+              "group overflow-hidden rounded-[1.4rem] border-2 p-1 text-left transition-all duration-300",
               selectedIndex === index
-                ? "border-cheese-300 bg-cheese-50 shadow-[0_10px_28px_rgba(216,170,24,0.18)]"
-                : "border-black/8 bg-cheese-100/82 hover:border-cheese-300 hover:bg-cheese-50",
+                ? "border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] shadow-[0_12px_28px_rgba(92,16,16,0.14)]"
+                : "border-[rgba(224,123,0,0.28)] bg-[var(--color-bg-light)] hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-white)]",
             )}
           >
             <ProductVisual
@@ -47,7 +47,7 @@ export function ProductGallery({ product }: ProductGalleryProps) {
               className="min-h-[6.25rem] sm:min-h-[8rem]"
             />
             <div className="px-3 pb-3 pt-2">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-ink-700/55">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--color-primary)]/80">
                 {index === 0 ? "Hero" : index === 1 ? "Texture" : "Serving"}
               </p>
             </div>

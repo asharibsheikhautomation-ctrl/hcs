@@ -30,10 +30,10 @@ export const siteSettings: SiteSettings = {
   contactPhone: "0335-7750066",
   address: "Latifabad, Hyderabad, Sindh",
   businessHours: "Daily, 3:30 PM to 11:30 PM",
-  primaryColor: "#d7a128",
-  secondaryColor: "#111111",
-  backgroundColor: "#f4efe5",
-  surfaceColor: "#fffaf1",
+  primaryColor: "#7B1A1A",
+  secondaryColor: "#1A0A00",
+  backgroundColor: "#FFF8E7",
+  surfaceColor: "#FFFFFF",
   currencyCode: "PKR",
 };
 

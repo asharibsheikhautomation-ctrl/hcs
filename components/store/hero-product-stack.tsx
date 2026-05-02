@@ -39,17 +39,17 @@ export function HeroProductStack({
   return (
     <div className="relative flex min-h-[16.5rem] items-center justify-center depth-stack sm:min-h-[24rem] lg:min-h-[42rem]">
       <div className="relative h-full w-full max-w-[44rem] overflow-visible">
-        <div className="pointer-events-none absolute inset-x-[10%] top-[14%] bottom-[18%] rounded-[3rem] bg-white/88 blur-2xl" />
-        <div className="pointer-events-none absolute inset-x-[18%] top-[26%] bottom-[16%] rounded-[3rem] bg-cheese-100/70 blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-[10%] top-[14%] bottom-[18%] rounded-[3rem] bg-[rgba(245,168,0,0.18)] blur-2xl" />
+        <div className="pointer-events-none absolute inset-x-[18%] top-[26%] bottom-[16%] rounded-[3rem] bg-[rgba(255,255,255,0.10)] blur-3xl" />
 
         <motion.div
           aria-hidden="true"
-          className="absolute left-[6%] top-[12%] hidden h-32 w-32 rounded-full bg-cheese-200/70 blur-3xl sm:block"
+          className="absolute left-[6%] top-[12%] hidden h-32 w-32 rounded-full bg-[rgba(245,168,0,0.42)] blur-3xl sm:block"
           style={{ scale: orbScale, opacity: orbOpacity }}
         />
         <motion.div
           aria-hidden="true"
-          className="absolute bottom-[12%] right-[8%] hidden h-44 w-44 rounded-full bg-white/80 blur-3xl sm:block"
+          className="absolute bottom-[12%] right-[8%] hidden h-44 w-44 rounded-full bg-[rgba(255,255,255,0.22)] blur-3xl sm:block"
           style={{ scale: orbScale, opacity: orbOpacity }}
         />
 
@@ -83,7 +83,7 @@ export function HeroProductStack({
               }}
               className="relative mx-auto w-full max-w-[30rem] sm:max-w-[33rem]"
             >
-              <div className="pointer-events-none absolute inset-0 scale-[1.08] rounded-full bg-cheese-200/60 blur-3xl" />
+              <div className="pointer-events-none absolute inset-0 scale-[1.08] rounded-full bg-[rgba(245,168,0,0.40)] blur-3xl" />
               <div className="pointer-events-none absolute inset-x-[10%] bottom-[8%] h-10 rounded-full bg-black/28 blur-3xl" />
 
               <div className="relative mx-auto aspect-square w-full max-w-[30rem] overflow-visible">

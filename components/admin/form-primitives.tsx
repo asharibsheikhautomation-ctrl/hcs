@@ -81,12 +81,12 @@ export function AdminToggle({
   defaultChecked,
 }: ToggleProps) {
   return (
-    <label className="flex items-start gap-3 rounded-[1.25rem] border border-black/8 bg-white px-4 py-4 text-base text-ink-800">
+    <label className="flex items-start gap-3 rounded-[1.25rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-4 py-4 text-base text-ink-800">
       <input
         type="checkbox"
         name={name}
         defaultChecked={defaultChecked}
-        className="mt-1 h-4 w-4 rounded border-black/20 text-cheese-500 focus:ring-cheese-300"
+        className="mt-1 h-4 w-4 rounded border-[var(--color-accent-dark)] text-[var(--color-primary)] focus:ring-[var(--color-accent)]"
       />
       <span className="grid gap-1">
         <span className="font-semibold text-ink-950">{label}</span>
@@ -106,7 +106,7 @@ export function AdminFormMessage({ state }: { state: AdminActionState }) {
       className={cn(
         "rounded-[1.25rem] px-4 py-3 text-sm",
         state.status === "success"
-          ? "border border-cheese-300 bg-cheese-100/70 text-ink-950"
+          ? "border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-light)] text-ink-950"
           : "border border-red-200 bg-red-50 text-red-700",
       )}
     >

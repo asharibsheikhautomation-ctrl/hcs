@@ -13,7 +13,7 @@ export default async function AdminLayout({
   const session = await requireAdminSession("/admin");
 
   return (
-    <div className="min-h-screen bg-[#f4efe5]">
+    <div className="min-h-screen bg-[var(--color-bg-light)]">
       <div className="container-main space-y-4 py-4 md:py-6">
         <header className="luxe-panel rounded-[2rem] p-6 md:p-8">
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">

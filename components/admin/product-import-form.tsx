@@ -30,7 +30,7 @@ export function ProductImportForm() {
     <form
       action={action}
       encType="multipart/form-data"
-      className="grid gap-4 rounded-[1.75rem] border border-black/6 bg-white/82 p-5 md:p-6"
+      className="grid gap-4 rounded-[1.75rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-5 md:p-6"
     >
       <div>
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cheese-500">
@@ -52,12 +52,12 @@ export function ProductImportForm() {
         error={state.fieldErrors.file}
         hint="CSV only for now. The file should include the product columns shown below."
       >
-        <div className="rounded-[1.4rem] border border-dashed border-black/10 bg-surface-muted/80 p-4">
+        <div className="rounded-[1.4rem] border-2 border-dashed border-[var(--color-accent-dark)] bg-[var(--color-bg-light)] p-4">
           <AdminInput
             type="file"
             name="file"
             accept=".csv,text/csv"
-            className="w-full cursor-pointer file:mr-4 file:rounded-full file:border-0 file:bg-cheese-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-ink-950"
+            className="w-full cursor-pointer file:mr-4 file:rounded-full file:border-0 file:bg-[var(--color-accent)] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[var(--color-text-dark)]"
           />
         </div>
       </AdminField>
@@ -66,7 +66,7 @@ export function ProductImportForm() {
         {PRODUCT_CSV_COLUMNS.map((column) => (
           <span
             key={column}
-            className="rounded-full border border-black/8 bg-surface-muted px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-ink-700"
+            className="rounded-full border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-light)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-primary)]"
           >
             {column}
           </span>

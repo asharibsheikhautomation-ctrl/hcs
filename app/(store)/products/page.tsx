@@ -221,10 +221,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <Link
               href={buildProductsHref({ query: filters.query, sort: filters.sort, category: "all" })}
               className={cn(
-                "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
+                "rounded-full border-2 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
                 effectiveFilters.category === "all"
-                  ? "border-cheese-400 bg-cheese-100 text-ink-950"
-                  : "border-black/10 bg-cheese-50 text-ink-700 hover:border-cheese-300 hover:text-ink-950",
+                  ? "border-[var(--color-accent-dark)] bg-[var(--color-accent)] text-[var(--color-text-dark)]"
+                  : "border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-white)] text-[var(--color-primary)] hover:border-[var(--color-accent)] hover:text-[var(--color-primary-dark)]",
               )}
             >
               All products
@@ -238,10 +238,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   category: category.slug,
                 })}
                 className={cn(
-                  "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
+                  "rounded-full border-2 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
                   effectiveFilters.category === category.slug
-                    ? "border-cheese-400 bg-cheese-100 text-ink-950"
-                    : "border-black/10 bg-cheese-50 text-ink-700 hover:border-cheese-300 hover:text-ink-950",
+                    ? "border-[var(--color-accent-dark)] bg-[var(--color-accent)] text-[var(--color-text-dark)]"
+                    : "border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-white)] text-[var(--color-primary)] hover:border-[var(--color-accent)] hover:text-[var(--color-primary-dark)]",
                 )}
               >
                 {category.name}
@@ -267,7 +267,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             {hasActiveFilters ? (
               <Link
                 href="/products"
-                className="text-sm font-semibold text-cheese-600 transition-colors hover:text-cheese-700"
+                className="text-sm font-semibold text-[var(--color-primary)] transition-colors hover:text-[var(--color-accent-dark)]"
               >
                 Clear filters
               </Link>

@@ -64,7 +64,7 @@ export function ContactInquiryForm() {
   };
 
   return (
-    <form action={action} className="grid gap-4 rounded-[2rem] border border-cheese-200/70 bg-cheese-50 p-6 shadow-[0_12px_30px_rgba(141,97,8,0.12)] md:p-7">
+    <form action={action} className="grid gap-4 rounded-[2rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-6 shadow-[0_18px_36px_rgba(92,16,16,0.14)] md:p-7">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
           Inquiry Form
@@ -82,10 +82,10 @@ export function ContactInquiryForm() {
           className={cn(
             "rounded-[1.25rem] px-4 py-3 text-sm",
             state.status === "success"
-              ? "border border-cheese-300 bg-cheese-100/70 text-ink-950"
+              ? "border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-light)] text-ink-950"
               : state.status === "error"
                 ? "border border-red-200 bg-red-50 text-red-700"
-                : "border border-black/8 bg-surface-muted text-ink-700",
+                : "border-2 border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-light)] text-ink-700",
           )}
         >
           {state.message}

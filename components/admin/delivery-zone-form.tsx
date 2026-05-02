@@ -25,7 +25,7 @@ export function DeliveryZoneForm({
   const isEditing = Boolean(zone);
 
   return (
-    <form action={action} className="grid gap-4 rounded-[1.75rem] border border-black/6 bg-white/75 p-5">
+    <form action={action} className="grid gap-4 rounded-[1.75rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-5">
       <input type="hidden" name="id" value={zone?.id ?? ""} />
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cheese-500">

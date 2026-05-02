@@ -38,7 +38,7 @@ export function ProductVisual({
   return (
     <div
       className={cn(
-        "glass-ring relative overflow-hidden rounded-[1.85rem] border border-black/8",
+        "glass-ring relative overflow-hidden rounded-[1.85rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)]",
         toneSurface[product.accentTone],
         className,
       )}
@@ -56,7 +56,7 @@ export function ProductVisual({
           "absolute inset-0 h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.04]",
           hasRealImage
             ? "object-cover"
-            : "object-contain bg-white p-6 sm:p-8",
+            : "object-contain bg-[var(--color-bg-white)] p-6 sm:p-8",
         )}
       />
     </div>

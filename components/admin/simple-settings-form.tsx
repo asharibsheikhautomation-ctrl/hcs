@@ -26,7 +26,7 @@ export function SimpleSettingsForm({ settings }: SimpleSettingsFormProps) {
   return (
     <form
       action={action}
-      className="grid gap-4 rounded-[1.75rem] border border-black/6 bg-white/82 p-5 md:p-6"
+      className="grid gap-4 rounded-[1.75rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-5 md:p-6"
     >
       <div>
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cheese-500">

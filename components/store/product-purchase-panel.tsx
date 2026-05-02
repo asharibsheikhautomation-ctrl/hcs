@@ -43,8 +43,8 @@ export function ProductPurchasePanel({
       </p>
       <ProductFeatureStrip product={product} className="mt-5" />
 
-      <div className="mt-6 rounded-[1.6rem] border border-cheese-200/70 bg-cheese-50 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/50">
+      <div className="mt-6 rounded-[1.6rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-light)] p-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]/70">
           Quantity
         </p>
         <div className="mt-3 flex items-center justify-between gap-3 sm:justify-start">
@@ -56,7 +56,7 @@ export function ProductPurchasePanel({
           >
             <Minus className="h-4 w-4" />
           </button>
-          <div className="inline-flex min-w-14 items-center justify-center rounded-full bg-white/92 px-4 py-3 text-base font-semibold text-ink-950 sm:min-w-16 sm:px-5 sm:text-lg">
+          <div className="inline-flex min-w-14 items-center justify-center rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-4 py-3 text-base font-semibold text-ink-950 sm:min-w-16 sm:px-5 sm:text-lg">
             {quantity}
           </div>
           <button
@@ -71,16 +71,16 @@ export function ProductPurchasePanel({
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-[1.45rem] border border-cheese-200/70 bg-cheese-50 px-4 py-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/50">
+        <div className="rounded-[1.45rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-4 py-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]/70">
             Unit price
           </p>
           <p className="mt-2 text-lg font-semibold text-ink-950">
             {formatCurrency(product.price)}
           </p>
         </div>
-        <div className="rounded-[1.45rem] border border-cheese-200 bg-cheese-100 px-4 py-4 text-ink-950">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-ink-700/55">
+        <div className="rounded-[1.45rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-accent)] px-4 py-4 text-[var(--color-text-dark)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-text-dark)]/70">
             Selected total
           </p>
           <p className="mt-2 text-lg font-semibold">{formatCurrency(total)}</p>

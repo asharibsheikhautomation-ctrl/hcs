@@ -23,7 +23,7 @@ export function StoreStatePanel({
       <p
         className={cn(
           "text-xs font-semibold uppercase tracking-[0.32em]",
-          tone === "error" ? "text-red-600" : "text-cheese-500",
+          tone === "error" ? "text-red-700" : "text-[var(--color-primary)]",
         )}
       >
         {eyebrow}

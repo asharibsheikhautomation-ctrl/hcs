@@ -31,18 +31,18 @@ export function ContactHeroVisual({
 
   return (
     <div className="relative mx-auto w-full max-w-[34rem]">
-      <div className="relative overflow-hidden rounded-[2.4rem] border border-black/10 bg-white/84 p-5 shadow-[0_26px_80px_rgba(141,97,8,0.18)] backdrop-blur-sm sm:p-6">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(255,255,255,0.52),transparent_18rem),radial-gradient(circle_at_16%_86%,rgba(255,241,184,0.62),transparent_14rem)]" />
+      <div className="relative overflow-hidden rounded-[2.4rem] border-2 border-[var(--color-accent-dark)] bg-[rgba(255,248,231,0.96)] p-5 shadow-[0_26px_80px_rgba(92,16,16,0.18)] backdrop-blur-sm sm:p-6">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(245,168,0,0.20),transparent_18rem),radial-gradient(circle_at_16%_86%,rgba(123,26,26,0.12),transparent_14rem)]" />
 
         <motion.div
-          className="relative mx-auto flex min-h-[20rem] items-center justify-center rounded-[2rem] border border-white/60 bg-cheese-100/90 px-6 py-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] sm:min-h-[23rem]"
+          className="relative mx-auto flex min-h-[20rem] items-center justify-center rounded-[2rem] border-2 border-[var(--color-accent-dark)] bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))] px-6 py-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] sm:min-h-[23rem]"
           animate={prefersReducedMotion ? undefined : { y: [0, -8, 0] }}
           transition={floatingTransition}
         >
-          <div className="absolute left-5 top-5 rounded-full border border-black/8 bg-white px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cheese-500 shadow-[0_10px_22px_rgba(17,17,17,0.08)]">
+          <div className="absolute left-5 top-5 rounded-full border border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)] shadow-[0_10px_22px_rgba(17,17,17,0.08)]">
             Fast replies
           </div>
-          <div className="absolute right-5 top-5 rounded-full border border-black/8 bg-ink-950 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cheese-100 shadow-[0_10px_22px_rgba(17,17,17,0.12)]">
+          <div className="absolute right-5 top-5 rounded-full border border-[var(--color-accent-dark)] bg-[var(--color-accent)] px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-text-dark)] shadow-[0_10px_22px_rgba(17,17,17,0.12)]">
             Same day help
           </div>
 
@@ -83,8 +83,8 @@ export function ContactHeroVisual({
         </motion.div>
 
         <div className="relative mt-5 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-[1.5rem] border border-black/8 bg-white/88 p-4 shadow-[0_12px_24px_rgba(17,17,17,0.06)]">
-            <div className="flex items-center gap-2 text-cheese-500">
+          <div className="rounded-[1.5rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-4 shadow-[0_12px_24px_rgba(92,16,16,0.08)]">
+            <div className="flex items-center gap-2 text-[var(--color-primary)]">
               <MessageCircle className="h-4 w-4" />
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em]">
                 WhatsApp
@@ -93,8 +93,8 @@ export function ContactHeroVisual({
             <p className="mt-3 text-lg font-semibold text-ink-950">{whatsapp}</p>
           </div>
 
-          <div className="rounded-[1.5rem] border border-black/8 bg-white/88 p-4 shadow-[0_12px_24px_rgba(17,17,17,0.06)]">
-            <div className="flex items-center gap-2 text-cheese-500">
+          <div className="rounded-[1.5rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-4 shadow-[0_12px_24px_rgba(92,16,16,0.08)]">
+            <div className="flex items-center gap-2 text-[var(--color-primary)]">
               <PhoneCall className="h-4 w-4" />
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em]">
                 Call
@@ -103,8 +103,8 @@ export function ContactHeroVisual({
             <p className="mt-3 text-lg font-semibold text-ink-950">{phone}</p>
           </div>
 
-          <div className="rounded-[1.5rem] border border-black/8 bg-white/88 p-4 shadow-[0_12px_24px_rgba(17,17,17,0.06)]">
-            <div className="flex items-center gap-2 text-cheese-500">
+          <div className="rounded-[1.5rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-4 shadow-[0_12px_24px_rgba(92,16,16,0.08)]">
+            <div className="flex items-center gap-2 text-[var(--color-primary)]">
               <Clock3 className="h-4 w-4" />
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em]">
                 Hours
@@ -113,8 +113,8 @@ export function ContactHeroVisual({
             <p className="mt-3 text-sm font-semibold leading-6 text-ink-950">{hours}</p>
           </div>
 
-          <div className="rounded-[1.5rem] border border-black/8 bg-white/88 p-4 shadow-[0_12px_24px_rgba(17,17,17,0.06)]">
-            <div className="flex items-center gap-2 text-cheese-500">
+          <div className="rounded-[1.5rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-4 shadow-[0_12px_24px_rgba(92,16,16,0.08)]">
+            <div className="flex items-center gap-2 text-[var(--color-primary)]">
               <MapPin className="h-4 w-4" />
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em]">
                 Base

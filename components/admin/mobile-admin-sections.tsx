@@ -70,10 +70,10 @@ export function MobileAdminSections({
                   });
                 }}
                 className={cn(
-                    "rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] transition-colors",
+                    "rounded-full border-2 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] transition-colors",
                     openId === link.id
-                      ? "border-cheese-400 bg-cheese-300 text-ink-950"
-                      : "border-black/10 bg-white/92 text-ink-700",
+                      ? "border-[var(--color-accent-dark)] bg-[var(--color-accent)] text-[var(--color-text-dark)]"
+                      : "border-[rgba(224,123,0,0.22)] bg-[var(--color-bg-white)] text-[var(--color-primary)]",
                   )}
                 >
                   {link.label}
@@ -110,12 +110,12 @@ export function MobileAdminSection({
       <button
         type="button"
         onClick={() => setOpenId(id)}
-        className="flex w-full items-center justify-between rounded-[1.6rem] border border-black/10 bg-white/92 px-5 py-4 text-left shadow-[0_10px_24px_rgba(17,17,17,0.06)] md:hidden"
+        className="flex w-full items-center justify-between rounded-[1.6rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-5 py-4 text-left shadow-[0_12px_24px_rgba(92,16,16,0.12)] md:hidden"
         aria-expanded={isOpen}
         aria-controls={`${id}-content`}
       >
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.26em] text-cheese-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-primary)]">
             Admin
           </p>
           <h2 className="mt-2 text-2xl font-semibold text-ink-950">

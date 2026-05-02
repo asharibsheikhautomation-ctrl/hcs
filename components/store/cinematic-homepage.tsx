@@ -179,22 +179,22 @@ export function CinematicHomepage({
 
   return (
     <div className="cheese-storefront overflow-x-clip bg-cheese-300">
-      <section className="relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden bg-cheese-300 md:min-h-[calc(100vh-5rem)]">
+      <section className="relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden border-y-[6px] border-[var(--color-accent-dark)] bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))] md:min-h-[calc(100vh-5rem)]">
 
         <div className="container-main relative z-10 flex min-h-[calc(100svh-4.5rem)] items-center py-10 sm:py-12 md:min-h-[calc(100vh-5rem)] md:py-16 lg:py-20">
           <div className="grid w-full gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
             <FadeUp className="relative max-w-2xl" distance={24}>
-              <p className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-950 shadow-[0_10px_20px_rgba(17,17,17,0.08)] sm:text-[0.72rem] sm:tracking-[0.32em]">
+              <p className="inline-flex items-center gap-2 rounded-full border border-[var(--color-accent-dark)] bg-[rgba(255,255,255,0.12)] px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)] shadow-[0_10px_20px_rgba(0,0,0,0.18)] sm:text-[0.72rem] sm:tracking-[0.32em]">
                 <Sparkles className="h-3.5 w-3.5" />
                 {heroKicker}
               </p>
-              <h1 className="mt-5 max-w-3xl text-balance text-[2.7rem] font-semibold leading-[0.92] text-ink-950 sm:text-[4rem] md:mt-6 md:text-7xl xl:text-[6.1rem]">
+              <h1 className="mt-5 max-w-3xl text-balance text-[2.7rem] font-semibold leading-[0.92] text-[var(--color-accent)] sm:text-[4rem] md:mt-6 md:text-7xl xl:text-[6.1rem]">
                 {heroTitle}
               </h1>
-              <p className="mt-5 max-w-md text-[0.92rem] font-medium leading-6 text-ink-950/78 md:mt-6 md:line-clamp-2 md:text-[0.98rem]">
+              <p className="mt-5 max-w-md text-[0.92rem] font-medium leading-6 text-[rgba(255,255,255,0.94)] md:mt-6 md:line-clamp-2 md:text-[0.98rem]">
                 {heroSubtitle}
               </p>
-              <p className="mt-3 max-w-lg text-sm font-medium leading-6 text-ink-950/70">
+              <p className="mt-3 max-w-lg text-sm font-medium leading-6 text-[rgba(255,248,231,0.78)]">
                 {heroSupportLine}
               </p>
 
@@ -210,7 +210,7 @@ export function CinematicHomepage({
                   href={whatsappShowroomHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="btn-base btn-primary px-7 py-4 uppercase tracking-[0.22em] sm:w-auto"
+                  className="btn-base btn-secondary px-7 py-4 uppercase tracking-[0.22em] sm:w-auto"
                 >
                   Order on WhatsApp
                   <ArrowUpRight className="h-4 w-4" />

@@ -88,7 +88,7 @@ export function SimpleDealForm({ products, deal }: SimpleDealFormProps) {
     <form
       action={action}
       encType="multipart/form-data"
-      className="grid gap-4 rounded-[1.75rem] border border-black/6 bg-white/82 p-5 md:p-6"
+      className="grid gap-4 rounded-[1.75rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-5 md:p-6"
     >
       <input type="hidden" name="id" value={deal?.id ?? ""} />
       <input type="hidden" name="slug" value={deal?.slug ?? ""} />
@@ -169,7 +169,7 @@ export function SimpleDealForm({ products, deal }: SimpleDealFormProps) {
         </AdminField>
       </div>
 
-      <div className="grid gap-3 rounded-[1.5rem] border border-black/6 bg-[#faf6ef] p-4">
+      <div className="grid gap-3 rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-light)] p-4">
         <div>
           <p className="text-sm font-semibold text-ink-950">Included products</p>
           <p className="mt-1 text-xs leading-6 text-ink-700/70">
@@ -181,14 +181,14 @@ export function SimpleDealForm({ products, deal }: SimpleDealFormProps) {
           {products.map((product) => (
             <label
               key={product.value}
-              className="flex items-center gap-3 rounded-[1.1rem] border border-black/6 bg-white px-4 py-3 text-sm text-ink-800"
+              className="flex items-center gap-3 rounded-[1.1rem] border-2 border-[rgba(224,123,0,0.22)] bg-[var(--color-bg-white)] px-4 py-3 text-sm text-ink-800"
             >
               <input
                 type="checkbox"
                 name="linkedProductIds"
                 value={product.value}
                 defaultChecked={linkedProductIds.has(product.value)}
-                className="h-4 w-4 rounded border-black/20 text-cheese-500 focus:ring-cheese-300"
+                className="h-4 w-4 rounded border-[var(--color-accent-dark)] text-[var(--color-primary)] focus:ring-[var(--color-accent)]"
               />
               <span>{product.label}</span>
             </label>
@@ -196,7 +196,7 @@ export function SimpleDealForm({ products, deal }: SimpleDealFormProps) {
         </div>
       </div>
 
-      <div className="grid gap-3 rounded-[1.5rem] border border-black/6 bg-[#faf6ef] p-4">
+      <div className="grid gap-3 rounded-[1.5rem] border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-light)] p-4">
         <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-semibold text-ink-950">Custom items</p>
@@ -224,7 +224,7 @@ export function SimpleDealForm({ products, deal }: SimpleDealFormProps) {
           {customItems.map((item, index) => (
             <div
               key={item.key}
-              className="rounded-[1.2rem] border border-black/6 bg-white p-4"
+              className="rounded-[1.2rem] border-2 border-[rgba(224,123,0,0.22)] bg-[var(--color-bg-white)] p-4"
             >
               <div className="mb-3 flex items-center justify-between gap-3">
                 <p className="text-sm font-semibold text-ink-950">

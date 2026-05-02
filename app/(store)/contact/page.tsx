@@ -121,22 +121,22 @@ export default async function ContactPage() {
 
   return (
     <>
-      <section className="section-space pb-8 pt-10 sm:pt-12">
+      <section className="section-space border-y-[5px] border-[var(--color-accent-dark)] bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))] pb-8 pt-10 sm:pt-12">
         <div className="container-main">
           <div className="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
             <FadeUp className="max-w-2xl" distance={24}>
-              <p className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-cheese-500 shadow-[0_10px_20px_rgba(17,17,17,0.08)]">
+              <p className="inline-flex items-center gap-2 rounded-full border-2 border-[var(--color-accent-dark)] bg-[rgba(255,255,255,0.10)] px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)] shadow-[0_10px_20px_rgba(0,0,0,0.18)]">
                 <Sparkles className="h-3.5 w-3.5" />
                 Contact Hyderabad Cheese Store
               </p>
-              <h1 className="mt-5 text-balance text-[2.6rem] font-semibold leading-[0.92] text-ink-950 sm:text-[3.3rem] md:text-[4.4rem]">
+              <h1 className="mt-5 text-balance text-[2.6rem] font-semibold leading-[0.92] text-[var(--color-accent)] sm:text-[3.3rem] md:text-[4.4rem]">
                 {heroTitle}
               </h1>
-              <p className="mt-5 max-w-xl text-base leading-7 text-ink-700/82">
+              <p className="mt-5 max-w-xl text-base leading-7 text-[rgba(255,255,255,0.92)]">
                 Call, WhatsApp, or send a quick message for daily supply,
                 restaurant support, and home delivery help.
               </p>
-              <p className="mt-3 max-w-lg text-sm leading-6 text-ink-700/72">
+              <p className="mt-3 max-w-lg text-sm leading-6 text-[rgba(255,248,231,0.82)]">
                 Same warm gold theme, simple contact flow, and quick answers for
                 products, pricing, and delivery coverage.
               </p>
@@ -164,7 +164,7 @@ export default async function ContactPage() {
               <StaggerGroup className="mt-6 flex flex-wrap gap-3" amount={0.14}>
                 {supportHighlights.map((highlight) => (
                   <StaggerItem key={highlight}>
-                    <span className="chip-link pointer-events-none bg-white/92">
+                    <span className="chip-link pointer-events-none border-[var(--color-accent-dark)] bg-[rgba(255,255,255,0.10)] text-[var(--color-accent)]">
                       <Sparkles className="h-4 w-4" />
                       {highlight}
                     </span>
@@ -229,16 +229,16 @@ export default async function ContactPage() {
                   </p>
 
                   <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-[1.4rem] border border-black/8 bg-white/88 p-4">
-                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-cheese-500">
+                    <div className="rounded-[1.4rem] border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-white)] p-4">
+                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">
                         Best for
                       </p>
                       <p className="mt-2 text-sm leading-6 text-ink-950">
                         Daily orders, urgent questions, delivery follow-up
                       </p>
                     </div>
-                    <div className="rounded-[1.4rem] border border-black/8 bg-white/88 p-4">
-                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-cheese-500">
+                    <div className="rounded-[1.4rem] border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-white)] p-4">
+                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">
                         Good to ask
                       </p>
                       <p className="mt-2 text-sm leading-6 text-ink-950">

@@ -34,7 +34,7 @@ export function DealVisual({
   return (
     <div
       className={cn(
-        "glass-ring relative overflow-hidden rounded-[1.9rem] border border-black/8 bg-white",
+        "glass-ring relative overflow-hidden rounded-[1.9rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)]",
         className,
       )}
     >
@@ -49,18 +49,18 @@ export function DealVisual({
         className={cn(
           "absolute inset-0 h-full w-full",
           usesFallbackLogo
-            ? "object-contain bg-white p-8"
+            ? "object-contain bg-[var(--color-bg-white)] p-8"
             : "object-cover",
         )}
       />
-      <div className="absolute left-4 top-4 rounded-full border border-black/8 bg-white px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-ink-950 shadow-[0_8px_18px_rgba(17,17,17,0.08)]">
+      <div className="absolute left-4 top-4 rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)] shadow-[0_12px_20px_rgba(92,16,16,0.14)]">
         {deal.includedItems.length} items
       </div>
 
       {secondaryImage ? (
         <div
           className={cn(
-            "absolute overflow-hidden rounded-[1.2rem] border border-black/8 bg-white shadow-[0_14px_28px_rgba(17,17,17,0.12)]",
+            "absolute overflow-hidden rounded-[1.2rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] shadow-[0_16px_30px_rgba(92,16,16,0.16)]",
             compact
               ? "bottom-4 left-4 h-18 w-18 rotate-[-8deg]"
               : "bottom-5 left-5 h-22 w-22 rotate-[-8deg] sm:h-24 sm:w-24",
@@ -81,7 +81,7 @@ export function DealVisual({
       {tertiaryImage ? (
         <div
           className={cn(
-            "absolute overflow-hidden rounded-[1.2rem] border border-black/8 bg-white shadow-[0_14px_28px_rgba(17,17,17,0.12)]",
+            "absolute overflow-hidden rounded-[1.2rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] shadow-[0_16px_30px_rgba(92,16,16,0.16)]",
             compact
               ? "right-4 top-12 h-16 w-16 rotate-[9deg]"
               : "right-5 top-5 h-20 w-20 rotate-[9deg] sm:h-24 sm:w-24",

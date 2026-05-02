@@ -287,10 +287,10 @@ function mapAdminSiteSettingsRow(
     productsSectionTitle: row.products_section_title ?? "",
     dealsSectionTitle: row.deals_section_title ?? "",
     contactSectionTitle: row.contact_section_title ?? "",
-    primaryColor: row.primary_color ?? "#d7a128",
-    secondaryColor: row.secondary_color ?? "#111111",
-    backgroundColor: row.background_color ?? "#f4efe5",
-    surfaceColor: row.surface_color ?? "#fffaf1",
+    primaryColor: row.primary_color ?? "#7B1A1A",
+    secondaryColor: row.secondary_color ?? "#1A0A00",
+    backgroundColor: row.background_color ?? "#FFF8E7",
+    surfaceColor: row.surface_color ?? "#FFFFFF",
   };
 }
 

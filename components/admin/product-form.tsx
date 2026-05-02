@@ -28,7 +28,7 @@ export function ProductForm({ categories, product }: ProductFormProps) {
     <form
       action={action}
       encType="multipart/form-data"
-      className="grid gap-4 rounded-[1.75rem] border border-black/6 bg-white/75 p-5"
+      className="grid gap-4 rounded-[1.75rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-5"
     >
       <input type="hidden" name="id" value={product?.id ?? ""} />
       <div>

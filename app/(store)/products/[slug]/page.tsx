@@ -99,12 +99,12 @@ export default async function ProductDetailPage({
                     {product.categoryName}
                   </p>
                   {quantityLabel ? (
-                    <span className="rounded-full border border-cheese-300 bg-cheese-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-ink-950">
+                    <span className="rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-accent)] px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-[var(--color-text-dark)]">
                       {quantityLabel}
                     </span>
                   ) : null}
                   {product.badge ? (
-                    <span className="rounded-full border border-black/10 bg-cheese-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-ink-700">
+                    <span className="rounded-full border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-light)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">
                       {product.badge}
                     </span>
                   ) : null}
@@ -136,9 +136,9 @@ export default async function ProductDetailPage({
                   {detailPoints.map((point) => (
                     <div
                       key={`${product.id}-${point.label}`}
-                      className="rounded-[1.4rem] border border-cheese-200/70 bg-cheese-50 px-4 py-4"
+                      className="rounded-[1.4rem] border-2 border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-light)] px-4 py-4"
                     >
-                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-ink-700/54">
+                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]/72">
                         {point.label}
                       </p>
                       <p className="mt-3 text-base font-bold leading-6 text-ink-950 sm:text-[1.02rem]">

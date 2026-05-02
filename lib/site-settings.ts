@@ -5,6 +5,17 @@ import { siteSettings as demoSiteSettings } from "@/lib/demo-data";
 import type { SiteSettings } from "@/types/commerce";
 import type { Database, Tables } from "@/types/supabase";
 
+export const brandPalette = {
+  primary: "#7B1A1A",
+  primaryDark: "#5C1010",
+  accent: "#F5A800",
+  accentDark: "#E07B00",
+  bgLight: "#FFF8E7",
+  bgWhite: "#FFFFFF",
+  textDark: "#1A0A00",
+  textWhite: "#FFFFFF",
+} as const;
+
 export function mapSiteSettingsRow(row: Tables<"site_settings">): SiteSettings {
   return {
     id: row.id,
@@ -73,19 +84,33 @@ export const fetchResolvedSiteSettings = cache(async () => {
 });
 
 export function buildSiteThemeStyle(settings: SiteSettings): CSSProperties {
+  void settings;
+
   return {
-    "--background": settings.backgroundColor,
-    "--foreground": settings.secondaryColor,
-    "--surface": settings.surfaceColor,
-    "--surface-muted": `color-mix(in srgb, ${settings.surfaceColor} 72%, ${settings.backgroundColor})`,
-    "--line-soft": `color-mix(in srgb, ${settings.secondaryColor} 10%, white)`,
-    "--cheese-50": `color-mix(in srgb, ${settings.primaryColor} 12%, white)`,
-    "--cheese-100": `color-mix(in srgb, ${settings.primaryColor} 22%, white)`,
-    "--cheese-200": `color-mix(in srgb, ${settings.primaryColor} 42%, white)`,
-    "--cheese-300": `color-mix(in srgb, ${settings.primaryColor} 68%, white)`,
-    "--cheese-400": settings.primaryColor,
-    "--cheese-500": `color-mix(in srgb, ${settings.primaryColor} 82%, black)`,
-    "--ink-700": `color-mix(in srgb, ${settings.secondaryColor} 84%, white)`,
-    "--ink-950": settings.secondaryColor,
+    "--color-primary": brandPalette.primary,
+    "--color-primary-dark": brandPalette.primaryDark,
+    "--color-accent": brandPalette.accent,
+    "--color-accent-dark": brandPalette.accentDark,
+    "--color-bg-light": brandPalette.bgLight,
+    "--color-bg-white": brandPalette.bgWhite,
+    "--color-text-dark": brandPalette.textDark,
+    "--color-text-white": brandPalette.textWhite,
+    "--background": brandPalette.bgLight,
+    "--foreground": brandPalette.textDark,
+    "--surface": brandPalette.bgWhite,
+    "--surface-muted": "#FFEEC7",
+    "--line-soft": "rgba(224, 123, 0, 0.32)",
+    "--cheese-50": brandPalette.bgLight,
+    "--cheese-100": "#FFF3D4",
+    "--cheese-200": brandPalette.accent,
+    "--cheese-300": "#FFF0C1",
+    "--cheese-400": brandPalette.accentDark,
+    "--cheese-500": brandPalette.accent,
+    "--ink-700": "#4B1C10",
+    "--ink-950": brandPalette.textDark,
+    "--shadow-lift":
+      "0 24px 70px rgba(92, 16, 16, 0.14), 0 10px 24px rgba(224, 123, 0, 0.16)",
+    "--shadow-glass":
+      "0 18px 40px rgba(92, 16, 16, 0.16), 0 8px 18px rgba(224, 123, 0, 0.18)",
   } as CSSProperties;
 }

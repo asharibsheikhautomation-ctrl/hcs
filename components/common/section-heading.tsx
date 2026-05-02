@@ -26,12 +26,12 @@ export function SectionHeading({
       amount={0.14}
     >
       <StaggerItem>
-        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-cheese-500 sm:text-xs sm:tracking-[0.34em]">
+        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)] sm:text-xs sm:tracking-[0.34em]">
           {eyebrow}
         </p>
       </StaggerItem>
       <StaggerItem>
-        <h2 className="text-balance text-[2.35rem] font-semibold leading-[0.94] text-ink-950 sm:text-3xl md:text-4xl xl:text-5xl">
+        <h2 className="text-balance text-[2.35rem] font-semibold leading-[0.94] text-[var(--color-primary)] sm:text-3xl md:text-4xl xl:text-5xl">
           {title}
         </h2>
       </StaggerItem>

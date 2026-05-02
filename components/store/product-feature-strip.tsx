@@ -50,7 +50,7 @@ export function ProductFeatureStrip({
           <span
             key={feature.label}
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border border-black/8 bg-white/76 font-semibold text-ink-700 shadow-[0_10px_24px_rgba(17,17,17,0.05)]",
+              "inline-flex items-center gap-2 rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] font-semibold text-[var(--color-primary)] shadow-[0_10px_24px_rgba(92,16,16,0.08)]",
               compact
                 ? "px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.18em]"
                 : "px-3.5 py-2 text-[0.72rem] uppercase tracking-[0.2em]",
