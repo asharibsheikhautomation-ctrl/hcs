@@ -31,8 +31,8 @@ export function ProductPurchasePanel({
   }
 
   return (
-    <div className="luxe-panel rounded-[2rem] p-5 sm:p-6 md:p-7">
-      <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cheese-500">
+    <div className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_10px_24px_rgba(17,17,17,0.08)] sm:p-6 md:p-7">
+      <p className="text-xs font-bold uppercase tracking-[0.32em] text-[var(--color-accent)]">
         Purchase
       </p>
       <h2 className="mt-4 text-[1.8rem] font-semibold leading-[0.96] text-ink-950 sm:text-3xl md:text-4xl">
@@ -43,8 +43,8 @@ export function ProductPurchasePanel({
       </p>
       <ProductFeatureStrip product={product} className="mt-5" />
 
-      <div className="mt-6 rounded-[1.6rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-light)] p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]/70">
+      <div className="mt-6 rounded-[1.6rem] border border-black/10 bg-[var(--color-bg-light)] p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.24em] text-[var(--color-accent)]/80">
           Quantity
         </p>
         <div className="mt-3 flex items-center justify-between gap-3 sm:justify-start">
@@ -56,7 +56,7 @@ export function ProductPurchasePanel({
           >
             <Minus className="h-4 w-4" />
           </button>
-          <div className="inline-flex min-w-14 items-center justify-center rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-4 py-3 text-base font-semibold text-ink-950 sm:min-w-16 sm:px-5 sm:text-lg">
+          <div className="inline-flex min-w-14 items-center justify-center rounded-full border border-black/10 bg-[var(--color-bg-white)] px-4 py-3 text-base font-semibold text-ink-950 sm:min-w-16 sm:px-5 sm:text-lg">
             {quantity}
           </div>
           <button
@@ -71,16 +71,16 @@ export function ProductPurchasePanel({
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-[1.45rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] px-4 py-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]/70">
+        <div className="rounded-[1.45rem] border border-black/10 bg-[var(--color-bg-white)] px-4 py-4">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-[var(--color-accent)]/80">
             Unit price
           </p>
           <p className="mt-2 text-lg font-semibold text-ink-950">
             {formatCurrency(product.price)}
           </p>
         </div>
-        <div className="rounded-[1.45rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-accent)] px-4 py-4 text-[var(--color-text-dark)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-text-dark)]/70">
+        <div className="rounded-[1.45rem] border border-black/10 bg-[var(--color-primary)] px-4 py-4 text-[var(--color-text-dark)]">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-[var(--color-text-dark)]/70">
             Selected total
           </p>
           <p className="mt-2 text-lg font-semibold">{formatCurrency(total)}</p>

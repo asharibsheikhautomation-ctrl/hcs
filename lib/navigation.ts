@@ -1,6 +1,6 @@
 export const publicNavigation = [
   { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
+  { href: "/products", label: "Menu" },
   { href: "/deals", label: "Deals" },
   { href: "/contact", label: "Contact" },
   { href: "/checkout", label: "Checkout" },

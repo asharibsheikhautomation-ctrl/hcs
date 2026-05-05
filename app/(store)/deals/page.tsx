@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Boxes, ShoppingBag, Sparkles } from "lucide-react";
-import { SectionTransition, StaggerGroup, StaggerItem } from "@/components/motion";
-import { SectionHeading } from "@/components/common/section-heading";
-import { DealCard } from "@/components/store/deal-card";
 import { PageHero } from "@/components/store/page-hero";
-import { fetchStoreDeals } from "@/lib/deals";
-import { buildPageMetadata, defaultKeywords } from "@/lib/seo";
-import { fetchResolvedSiteSettings } from "@/lib/site-settings";
+import { DealCard } from "@/components/store/deal-card";
+import { StoreCartSummary } from "@/components/store/store-cart-summary";
 import { StoreStatePanel } from "@/components/store/store-state-panel";
+import { buildPageMetadata, defaultKeywords } from "@/lib/seo";
+import { fetchStoreDeals } from "@/lib/deals";
+import { fetchResolvedSiteSettings } from "@/lib/site-settings";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Deals",
   description:
-    "Explore active percentage discounts, fixed discounts, and bundle deals with simple add-to-cart actions.",
+    "Explore active bundle deals and discounts in a clean menu-style order layout.",
   path: "/deals",
   keywords: [...defaultKeywords, "bundle deals", "discount offers", "featured deals"],
 });
@@ -28,6 +27,7 @@ export default async function DealsPage() {
     }),
     fetchResolvedSiteSettings(),
   ]);
+
   const dealFeatures = [
     {
       title: `${deals.length} live deals`,
@@ -51,79 +51,70 @@ export default async function DealsPage() {
       <PageHero
         eyebrow="Deals"
         title={settings.dealsSectionTitle || "Live deals"}
-        description="Clear savings, simple bundles, and fast checkout."
+        description="Clear savings, simple bundles, and fast cart-first ordering."
         actions={
           <>
-            <Link
-              href="/products"
-              className="btn-base btn-primary"
-            >
-              Explore Products
+            <Link href="/products" className="btn-base btn-primary">
+              View Menu
             </Link>
-            <Link
-              href="/checkout"
-              className="btn-base btn-secondary"
-            >
+            <Link href="/checkout" className="btn-base btn-dark">
               Go to Checkout
             </Link>
           </>
         }
       />
 
-      <section className="container-main pb-8">
-        <StaggerGroup className="grid gap-6 md:grid-cols-3" amount={0.18}>
-          {dealFeatures.map((feature) => {
-            const Icon = feature.icon;
+      <section className="section-space bg-[var(--color-bg-light)] pt-8">
+        <div className="container-main">
+          <div className="mb-6 grid gap-4 md:grid-cols-3">
+            {dealFeatures.map((feature) => {
+              const Icon = feature.icon;
 
-            return (
-              <StaggerItem key={feature.title}>
-                <article className="cheese-surface luxe-panel rounded-[1.8rem] p-5">
-                  <Icon className="h-5 w-5 text-cheese-500" />
-                  <h2 className="mt-4 text-2xl font-semibold text-ink-950">
+              return (
+                <article
+                  key={feature.title}
+                  className="rounded-[1.5rem] border border-black/10 bg-white p-5 shadow-[0_10px_24px_rgba(17,17,17,0.08)]"
+                >
+                  <Icon className="h-5 w-5 text-[var(--color-accent)]" />
+                  <h2 className="mt-4 text-2xl font-extrabold text-black">
                     {feature.title}
                   </h2>
-                  <p className="mt-2 text-sm leading-6 text-ink-700/76">
+                  <p className="mt-2 text-sm leading-6 text-[rgba(17,17,17,0.72)]">
                     {feature.description}
                   </p>
                 </article>
-              </StaggerItem>
-            );
-          })}
-        </StaggerGroup>
-      </section>
+              );
+            })}
+          </div>
 
-      <section className="section-space bg-cheese-300 pt-6">
-        <div className="container-main">
-          <SectionHeading
-            eyebrow="Live Offers"
-            title="Active offers."
-            description="Only current deals are shown here."
-          />
-
-          {deals.length === 0 ? (
-            <SectionTransition className="mt-10">
-              <StoreStatePanel
-                eyebrow="No Active Deals"
-                title="No live deals right now."
-                description="Browse products or return later for fresh offers."
-                actions={
-                  <Link href="/products" className="btn-base btn-primary">
-                    Browse products
-                  </Link>
-                }
-              />
-            </SectionTransition>
-          ) : (
-            <div className="mt-10 grid gap-6 xl:grid-cols-2">
-              {deals.map((deal, index) => (
-                <DealCard
-                  key={deal.id}
-                  deal={deal}
-                  index={index}
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_21rem] xl:items-start">
+            <div>
+              {deals.length === 0 ? (
+                <StoreStatePanel
+                  eyebrow="No Active Deals"
+                  title="No live deals right now."
+                  description="Browse products or return later for fresh offers."
+                  actions={
+                    <Link href="/products" className="btn-base btn-primary">
+                      Browse products
+                    </Link>
+                  }
                 />
-              ))}
+              ) : (
+                <div className="grid gap-4">
+                  {deals.map((deal, index) => (
+                    <DealCard key={deal.id} deal={deal} index={index} />
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+
+            <aside className="hidden xl:block">
+              <div className="sticky top-28">
+                <StoreCartSummary />
+              </div>
+            </aside>
+          </div>
         </div>
       </section>
     </>

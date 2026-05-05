@@ -95,6 +95,25 @@ function getSearchText(product: Product) {
     .toLowerCase();
 }
 
+function getCategoryFallbackDescription(product: Product) {
+  const searchText = getSearchText(product);
+
+  if (
+    searchText.includes("cheese") ||
+    searchText.includes("dairy") ||
+    searchText.includes("cream") ||
+    searchText.includes("butter")
+  ) {
+    return "Fresh dairy item for daily kitchen and restaurant use.";
+  }
+
+  if (product.isFrozen || searchText.includes("frozen")) {
+    return "Ready-to-cook frozen item for quick serving.";
+  }
+
+  return "Useful food supply item for home and restaurant needs.";
+}
+
 export function getProductQuantityLabel(product: Product) {
   return extractQuantityLabel(product);
 }
@@ -272,5 +291,5 @@ export function getProductCardDescription(product: Product) {
     }
   }
 
-  return `${getProductStorageText(product)}. ${getProductUsageText(product)}.`;
+  return getCategoryFallbackDescription(product);
 }

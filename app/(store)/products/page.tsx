@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SectionTransition } from "@/components/motion";
-import { SectionHeading } from "@/components/common/section-heading";
-import { ProductCard } from "@/components/store/product-card";
 import { PageHero } from "@/components/store/page-hero";
+import { ProductCard } from "@/components/store/product-card";
+import { StoreCartSummary } from "@/components/store/store-cart-summary";
 import { StoreStatePanel } from "@/components/store/store-state-panel";
 import { buildPageMetadata, defaultKeywords } from "@/lib/seo";
 import {
@@ -11,7 +10,6 @@ import {
   fetchStoreCatalog,
   filterAndSortProducts,
   getPreferredProductsCategorySlug,
-  getFeaturedProducts,
   parseStoreProductFilters,
   sortStoreCategoriesForDisplay,
 } from "@/lib/store-catalog";
@@ -28,11 +26,11 @@ interface ProductsPageProps {
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Products",
+  title: "Menu",
   description:
-    "Browse cheese, dairy, frozen food, and extras with search, category filters, and simple cart-first ordering.",
+    "Browse cheese, dairy, frozen food, and extras in a clean menu layout with cart-first ordering.",
   path: "/products",
-  keywords: [...defaultKeywords, "premium products", "dairy items", "frozen food"],
+  keywords: [...defaultKeywords, "menu", "dairy items", "frozen food"],
 });
 
 const sortOptions = [
@@ -60,24 +58,22 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     return (
       <section className="section-space">
         <div className="container-main">
-          <SectionTransition>
-            <StoreStatePanel
-              tone="error"
-              eyebrow="Catalogue Error"
-              title="Products could not be loaded."
-              description={
-                catalogResult.error ??
-                "The catalogue is temporarily unavailable. Please retry shortly."
-              }
-            />
-          </SectionTransition>
+          <StoreStatePanel
+            tone="error"
+            eyebrow="Catalogue Error"
+            title="Products could not be loaded."
+            description={
+              catalogResult.error ??
+              "The catalogue is temporarily unavailable. Please retry shortly."
+            }
+          />
         </div>
       </section>
     );
   }
 
   const filters = parseStoreProductFilters(resolvedSearchParams);
-  const { categories, products, settings } = catalogResult.catalog;
+  const { categories, products } = catalogResult.catalog;
   const displayCategories = sortStoreCategoriesForDisplay(categories);
   const preferredCategorySlug = getPreferredProductsCategorySlug(displayCategories);
   const hasExplicitCategoryParam =
@@ -89,7 +85,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         ? filters.category
         : preferredCategorySlug,
   };
-  const featuredProducts = getFeaturedProducts(products, 3);
   const filteredProducts = filterAndSortProducts(products, effectiveFilters);
   const activeCategory =
     effectiveFilters.category === "all"
@@ -105,199 +100,207 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   return (
     <>
       <PageHero
-        eyebrow="Products"
-        title="Fresh products."
-        description="Browse cheese, dairy, frozen food, and extras in one clean catalogue."
+        eyebrow="Menu"
+        title="Order from the menu"
+        description="Cheese and dairy come first, then frozen food and extras. Add items to cart and continue to checkout."
         actions={
           <>
-            <Link
-              href="/checkout"
-              className="btn-base btn-primary"
-            >
-              Open Checkout
+            <Link href="/checkout" className="btn-base btn-primary">
+              Go to Checkout
             </Link>
-            <Link
-              href="/deals"
-              className="btn-base btn-secondary"
-            >
-              Explore Deals
+            <Link href="/deals" className="btn-base btn-dark">
+              View Deals
             </Link>
           </>
         }
       />
 
-      {featuredProducts.length > 0 ? (
-        <section className="section-space pt-4">
-          <div className="container-main">
-            <SectionHeading
-              eyebrow="Featured Selection"
-              title={settings.productsSectionTitle || "Best sellers"}
-              description="Top picks, ready to add."
-            />
-
-            <div className="mt-10 grid gap-6 lg:grid-cols-3">
-              {featuredProducts.map((product, index) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  index={index}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      <section className="section-space border-y border-black/10 bg-cheese-300">
+      <section className="section-space bg-[var(--color-bg-light)] pt-8">
         <div className="container-main">
-          <div className="grid gap-8 xl:grid-cols-[0.7fr_1.3fr] xl:items-end">
-            <SectionHeading
-              eyebrow="Catalogue Controls"
-              title={
-                activeCategory
-                  ? activeCategory.name
-                  : "Find what you need."
-              }
-              description={
-                activeCategory
-                  ? activeCategory.description
-                  : "Search, filter, and sort in seconds."
-              }
-            />
-
-            <form
-              method="get"
-              className="cheese-surface luxe-panel rounded-[2rem] p-5 md:p-6"
-            >
-              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px_auto]">
-                <label className="grid gap-2 text-sm font-medium text-ink-800">
-                  <span>Search products</span>
-                  <input
-                    type="search"
-                    name="query"
-                    defaultValue={effectiveFilters.query}
-                    placeholder="Search by name, category, or keyword"
-                    className="field-input"
-                  />
-                </label>
-
-                <label className="grid gap-2 text-sm font-medium text-ink-800">
-                  <span>Sort by</span>
-                  <select
-                    name="sort"
-                    defaultValue={effectiveFilters.sort}
-                    className="field-select"
-                  >
-                    {sortOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <div className="grid gap-3 lg:self-end">
-                  {effectiveFilters.category !== "all" ? (
-                    <input type="hidden" name="category" value={effectiveFilters.category} />
-                  ) : null}
-                  <button
-                    type="submit"
-                    className="btn-base btn-dark"
-                  >
-                    Apply
-                  </button>
+          <div className="grid gap-6 xl:grid-cols-[15rem_minmax(0,1fr)_21rem] xl:items-start">
+            <aside className="hidden xl:block">
+              <div className="sticky top-28 rounded-[1.6rem] border border-black/10 bg-white p-4 shadow-[0_10px_24px_rgba(17,17,17,0.08)]">
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--color-accent)]">
+                  Categories
+                </p>
+                <div className="mt-4 grid gap-2">
                   <Link
-                    href="/products"
-                    className="btn-base btn-secondary"
+                    href={buildProductsHref({
+                      query: effectiveFilters.query,
+                      sort: effectiveFilters.sort,
+                      category: "all",
+                    })}
+                    className={cn(
+                      "rounded-[1rem] px-4 py-3 text-sm font-bold transition-colors",
+                      effectiveFilters.category === "all"
+                        ? "bg-[var(--color-primary)] text-black"
+                        : "bg-[var(--color-bg-light)] text-black hover:bg-[var(--color-primary)]",
+                    )}
                   >
-                    Reset
+                    All Products
                   </Link>
+                  {displayCategories.map((category) => (
+                    <Link
+                      key={category.id}
+                      href={buildProductsHref({
+                        query: effectiveFilters.query,
+                        sort: effectiveFilters.sort,
+                        category: category.slug,
+                      })}
+                      className={cn(
+                        "rounded-[1rem] px-4 py-3 text-sm font-bold transition-colors",
+                        effectiveFilters.category === category.slug
+                          ? "bg-[var(--color-primary)] text-black"
+                          : "bg-[var(--color-bg-light)] text-black hover:bg-[var(--color-primary)]",
+                      )}
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
                 </div>
               </div>
-            </form>
-          </div>
+            </aside>
 
-          <div className="mt-8 flex flex-wrap gap-2">
-            <Link
-              href={buildProductsHref({ query: filters.query, sort: filters.sort, category: "all" })}
-              className={cn(
-                "rounded-full border-2 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
-                effectiveFilters.category === "all"
-                  ? "border-[var(--color-accent-dark)] bg-[var(--color-accent)] text-[var(--color-text-dark)]"
-                  : "border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-white)] text-[var(--color-primary)] hover:border-[var(--color-accent)] hover:text-[var(--color-primary-dark)]",
-              )}
-            >
-              All products
-            </Link>
-            {displayCategories.map((category) => (
-              <Link
-                key={category.id}
-                href={buildProductsHref({
-                  query: effectiveFilters.query,
-                  sort: effectiveFilters.sort,
-                  category: category.slug,
-                })}
-                className={cn(
-                  "rounded-full border-2 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] transition-colors",
-                  effectiveFilters.category === category.slug
-                    ? "border-[var(--color-accent-dark)] bg-[var(--color-accent)] text-[var(--color-text-dark)]"
-                    : "border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-white)] text-[var(--color-primary)] hover:border-[var(--color-accent)] hover:text-[var(--color-primary-dark)]",
-                )}
+            <div className="min-w-0">
+              <form
+                method="get"
+                className="rounded-[1.6rem] border border-black/10 bg-white p-4 shadow-[0_10px_24px_rgba(17,17,17,0.08)] sm:p-5"
               >
-                {category.name}
-              </Link>
-            ))}
-          </div>
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px_auto]">
+                  <label className="grid gap-2 text-sm font-medium text-black">
+                    <span>Search products</span>
+                    <input
+                      type="search"
+                      name="query"
+                      defaultValue={effectiveFilters.query}
+                      placeholder="Search products"
+                      className="field-input"
+                    />
+                  </label>
 
-          <div className="mt-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-cheese-500">
-                Results
-              </p>
-              <h2 className="mt-2 text-4xl font-semibold text-ink-950">
-                {filteredProducts.length} products
-              </h2>
-              <p className="mt-3 max-w-xl text-sm leading-6 text-ink-700/72">
-                {hasActiveFilters
-                  ? "Updated to your filters."
-                  : "All live products."}
-              </p>
-            </div>
+                  <label className="grid gap-2 text-sm font-medium text-black">
+                    <span>Sort by</span>
+                    <select
+                      name="sort"
+                      defaultValue={effectiveFilters.sort}
+                      className="field-select"
+                    >
+                      {sortOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
-            {hasActiveFilters ? (
-              <Link
-                href="/products"
-                className="text-sm font-semibold text-[var(--color-primary)] transition-colors hover:text-[var(--color-accent-dark)]"
-              >
-                Clear filters
-              </Link>
-            ) : null}
-          </div>
+                  <div className="grid gap-3 lg:self-end">
+                    {effectiveFilters.category !== "all" ? (
+                      <input
+                        type="hidden"
+                        name="category"
+                        value={effectiveFilters.category}
+                      />
+                    ) : null}
+                    <button type="submit" className="btn-base btn-primary">
+                      Apply
+                    </button>
+                    <Link href="/products" className="btn-base btn-secondary">
+                      Reset
+                    </Link>
+                  </div>
+                </div>
+              </form>
 
-          {filteredProducts.length === 0 ? (
-            <SectionTransition className="mt-10">
-              <StoreStatePanel
-                eyebrow="No Matches"
-                title="No products found."
-                description="Try a new search or clear the filters."
-                actions={
-                  <Link href="/products" className="btn-base btn-primary">
-                    Reset filters
+              <div className="-mx-4 mt-4 overflow-x-auto px-4 xl:hidden">
+                <div className="flex min-w-max gap-2 pb-2">
+                  <Link
+                    href={buildProductsHref({
+                      query: effectiveFilters.query,
+                      sort: effectiveFilters.sort,
+                      category: "all",
+                    })}
+                    className={cn(
+                      "rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-colors",
+                      effectiveFilters.category === "all"
+                        ? "bg-[var(--color-primary)] text-black"
+                        : "bg-white text-black",
+                    )}
+                  >
+                    All
                   </Link>
-                }
-              />
-            </SectionTransition>
-          ) : (
-            <div className="mt-10 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-              {filteredProducts.map((product, index) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  index={index}
-                />
-              ))}
+                  {displayCategories.map((category) => (
+                    <Link
+                      key={category.id}
+                      href={buildProductsHref({
+                        query: effectiveFilters.query,
+                        sort: effectiveFilters.sort,
+                        category: category.slug,
+                      })}
+                      className={cn(
+                        "rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap transition-colors",
+                        effectiveFilters.category === category.slug
+                          ? "bg-[var(--color-primary)] text-black"
+                          : "bg-white text-black",
+                      )}
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--color-accent)]">
+                    {activeCategory ? activeCategory.name : "Full Menu"}
+                  </p>
+                  <h2 className="mt-2 text-3xl font-extrabold text-black sm:text-4xl">
+                    {filteredProducts.length} items
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-[rgba(17,17,17,0.72)]">
+                    {activeCategory?.description ||
+                      "Browse, add to cart, and continue to checkout."}
+                  </p>
+                </div>
+
+                {hasActiveFilters ? (
+                  <Link
+                    href="/products"
+                    className="text-sm font-bold text-[var(--color-accent)]"
+                  >
+                    Clear filters
+                  </Link>
+                ) : null}
+              </div>
+
+              {filteredProducts.length === 0 ? (
+                <div className="mt-6">
+                  <StoreStatePanel
+                    eyebrow="No Matches"
+                    title="No products found."
+                    description="Try a new search or clear the filters."
+                    actions={
+                      <Link href="/products" className="btn-base btn-primary">
+                        Reset filters
+                      </Link>
+                    }
+                  />
+                </div>
+              ) : (
+                <div className="mt-6 grid gap-4">
+                  {filteredProducts.map((product, index) => (
+                    <ProductCard key={product.id} product={product} index={index} />
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+
+            <aside className="hidden xl:block">
+              <div className="sticky top-28">
+                <StoreCartSummary />
+              </div>
+            </aside>
+          </div>
         </div>
       </section>
     </>

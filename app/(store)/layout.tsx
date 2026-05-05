@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { CartProvider } from "@/components/providers/cart-provider";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
+import { MobileCartBar } from "@/components/store/mobile-cart-bar";
 import {
   buildSiteThemeStyle,
   fetchResolvedSiteSettings,
@@ -23,7 +24,8 @@ export default async function StoreLayout({
           style={buildSiteThemeStyle(settings)}
         >
           <SiteHeader settings={settings} />
-          <main className="min-w-0 flex-1 overflow-x-hidden">{children}</main>
+          <main className="min-w-0 flex-1 overflow-x-hidden pb-20 md:pb-0">{children}</main>
+          <MobileCartBar />
           <SiteFooter settings={settings} />
         </div>
       </CartProvider>

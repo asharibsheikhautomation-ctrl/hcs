@@ -197,7 +197,7 @@ export function CheckoutScaffold({
         onSubmit={handleSubmit}
       >
         <SectionTransition>
-          <div className="cheese-surface luxe-panel rounded-[2rem] p-5 sm:p-6 md:p-8">
+          <div className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_10px_24px_rgba(17,17,17,0.08)] sm:p-6 md:p-8">
             <div className="mb-6">
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
                 Customer Details
@@ -210,7 +210,7 @@ export function CheckoutScaffold({
               </p>
               {submitMessage ? (
                 <FadeUp delay={0.05}>
-                  <div className="mt-4 rounded-[1.4rem] border border-cheese-200/70 bg-cheese-50 px-4 py-3 text-sm text-ink-700">
+                  <div className="mt-4 rounded-[1.4rem] border border-black/10 bg-[var(--color-bg-light)] px-4 py-3 text-sm text-ink-700">
                     {submitMessage}
                   </div>
                 </FadeUp>
@@ -333,7 +333,7 @@ export function CheckoutScaffold({
 
               <label className="space-y-2 text-sm font-medium text-ink-700">
                 <span>Estimated delivery time</span>
-                <div className="rounded-2xl border border-cheese-200/70 bg-cheese-50 px-4 py-3 text-sm text-ink-700">
+                <div className="rounded-2xl border border-black/10 bg-[var(--color-bg-light)] px-4 py-3 text-sm text-ink-700">
                   {selectedZone?.estimatedDeliveryTime || "Select a zone"}
                 </div>
               </label>
@@ -351,16 +351,16 @@ export function CheckoutScaffold({
           </div>
         </SectionTransition>
 
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-28 lg:self-start">
           <SectionTransition delay={0.08}>
-            <div className="cheese-surface luxe-panel rounded-[2rem] p-5 sm:p-6 md:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
+            <div className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_10px_24px_rgba(17,17,17,0.08)] sm:p-6 md:p-8">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[var(--color-accent)]">
                 Cart Summary
               </p>
               <div className="mt-5 space-y-4">
                 {items.map((item) => (
                   <ScaleIn key={item.id} scale={0.98} amount={0.1}>
-                    <div className="flex flex-col gap-4 rounded-2xl border border-cheese-200/70 bg-cheese-50 px-4 py-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex flex-col gap-4 rounded-2xl border border-black/10 bg-[var(--color-bg-light)] px-4 py-4 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <p className="font-semibold text-ink-950">{item.productName}</p>
                         <p className="text-sm text-ink-700/70">
@@ -393,11 +393,11 @@ export function CheckoutScaffold({
                 </p>
               ) : null}
 
-              <div className="mt-6 rounded-[1.6rem] border border-cheese-200/70 bg-cheese-50 px-4 py-4 text-sm text-ink-700">
+              <div className="mt-6 rounded-[1.6rem] border border-black/10 bg-[var(--color-bg-light)] px-4 py-4 text-sm text-ink-700">
                 {pricing.freeDeliveryMinimum <= 0 ? (
                   <p>Delivery charges apply based on the selected area.</p>
                 ) : pricing.qualifiesForFreeDelivery ? (
-                  <p className="font-semibold text-cheese-500">
+                  <p className="font-semibold text-[var(--color-accent)]">
                     Free delivery for {selectedZone?.name}.
                   </p>
                 ) : (
@@ -453,22 +453,22 @@ export function CheckoutScaffold({
                   ? "Saving order..."
                   : phase === "submitted"
                     ? "WhatsApp Ready"
-                    : "Place Order"}
+                    : "Place Order on WhatsApp"}
               </button>
             </div>
           </SectionTransition>
 
           <FadeUp delay={0.12}>
-            <details className="cheese-surface luxe-panel rounded-[2rem] p-5 md:hidden">
-              <summary className="cursor-pointer list-none text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
+            <details className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_10px_24px_rgba(17,17,17,0.08)] md:hidden">
+              <summary className="cursor-pointer list-none text-xs font-bold uppercase tracking-[0.3em] text-[var(--color-accent)]">
                 WhatsApp Preview
               </summary>
               <pre className="mt-4 whitespace-pre-wrap text-xs leading-6 text-ink-700/78">
                 {previewWhatsAppMessage}
               </pre>
             </details>
-            <div className="cheese-surface luxe-panel hidden rounded-[2rem] p-6 md:block md:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
+            <div className="hidden rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_10px_24px_rgba(17,17,17,0.08)] md:block md:p-8">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[var(--color-accent)]">
                 WhatsApp Preview
               </p>
               <pre className="mt-4 whitespace-pre-wrap text-xs leading-6 text-ink-700/78 md:text-sm">

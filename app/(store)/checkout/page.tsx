@@ -62,21 +62,21 @@ export default async function CheckoutPage() {
     <>
       <PageHero
         eyebrow="Checkout"
-        title="Fast checkout."
-        description="Choose your zone and area. Total updates instantly."
+        title="Review and place your order"
+        description="Choose your zone and area, review delivery charges, and continue to WhatsApp after saving the order."
         actions={
           <>
             <a
               href={`https://wa.me/${settings.whatsappNumber}`}
               target="_blank"
               rel="noreferrer"
-              className="btn-base btn-primary"
+              className="btn-base btn-secondary"
             >
               WhatsApp Help
             </a>
             <a
               href={`tel:${callNumber}`}
-              className="btn-base btn-secondary"
+              className="btn-base btn-dark"
             >
               Call the Store
             </a>

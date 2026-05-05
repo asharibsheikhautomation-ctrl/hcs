@@ -35,6 +35,10 @@ function formatOrderDate(value: string) {
 }
 
 function formatDealDiscount(deal: AdminDeal) {
+  if (deal.includedValue > 0) {
+    return `${formatCurrency(deal.offerPrice)} offer`;
+  }
+
   if (deal.discountType === "percentage") {
     return `${deal.discountValue}% off`;
   }
@@ -419,6 +423,19 @@ export default async function AdminDashboardPage() {
                             <p className="mt-2 line-clamp-2 text-sm leading-6 text-ink-700/78">
                               {deal.description}
                             </p>
+                            {deal.includedValue > 0 ? (
+                              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]">
+                                <span className="rounded-full bg-white px-3 py-1 text-ink-700">
+                                  Worth {formatCurrency(deal.includedValue)}
+                                </span>
+                                <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-white">
+                                  Offer {formatCurrency(deal.offerPrice)}
+                                </span>
+                                <span className="rounded-full bg-[var(--color-accent)] px-3 py-1 text-black">
+                                  Save {formatCurrency(deal.savingsAmount)}
+                                </span>
+                              </div>
+                            ) : null}
                           </div>
                         </div>
 
@@ -438,6 +455,26 @@ export default async function AdminDashboardPage() {
                             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink-700/55">
                               Included items
                             </p>
+                            {deal.includedValue > 0 ? (
+                              <div className="mt-4 grid gap-3">
+                                <div className="rounded-[1.15rem] border-2 border-[rgba(224,123,0,0.18)] bg-surface-muted px-4 py-4">
+                                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-700/55">
+                                    Total item worth
+                                  </p>
+                                  <p className="mt-2 text-lg font-semibold text-ink-950">
+                                    {formatCurrency(deal.includedValue)}
+                                  </p>
+                                </div>
+                                <div className="rounded-[1.15rem] border-2 border-[rgba(224,123,0,0.18)] bg-surface-muted px-4 py-4">
+                                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-700/55">
+                                    Customer pays
+                                  </p>
+                                  <p className="mt-2 text-lg font-semibold text-[var(--color-primary)]">
+                                    {formatCurrency(deal.offerPrice)}
+                                  </p>
+                                </div>
+                              </div>
+                            ) : null}
                             <div className="mt-4 flex flex-wrap gap-2">
                               {deal.linkedProductNames.length > 0 || deal.customItems.length > 0 ? (
                                 <>

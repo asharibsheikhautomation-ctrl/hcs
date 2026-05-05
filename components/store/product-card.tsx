@@ -11,14 +11,8 @@ import {
   getProductDisplayTitle,
   getProductQuantityLabel,
 } from "@/lib/product-copy";
-import { cn, formatCurrency } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/types/commerce";
-
-const toneChipClassNames = {
-  gold: "bg-[var(--color-accent)] text-[var(--color-text-dark)]",
-  frost: "bg-[var(--color-accent)] text-[var(--color-text-dark)]",
-  ink: "bg-[var(--color-accent)] text-[var(--color-text-dark)]",
-} as const;
 
 interface ProductCardProps {
   product: Product;
@@ -43,63 +37,64 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
   return (
     <Reveal delay={index * 0.04}>
-      <article className="card-hover group overflow-hidden rounded-[1.8rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-4 shadow-[0_12px_30px_rgba(92,16,16,0.10)] sm:p-5">
-        <div className="flex h-full flex-col gap-5">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-              {product.categoryName}
-            </span>
-            {quantityLabel ? (
-              <span
-                className={cn(
-                  "rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em]",
-                  toneChipClassNames[product.accentTone],
-                )}
-              >
-                {quantityLabel}
-              </span>
-            ) : null}
-          </div>
-
-          <Link href={`/products/${product.slug}`} className="block">
+      <article className="overflow-hidden rounded-[1.6rem] border border-black/10 bg-white shadow-[0_10px_24px_rgba(17,17,17,0.08)] transition-transform duration-200 hover:-translate-y-1">
+        <div className="flex h-full flex-col sm:flex-row">
+          <Link
+            href={`/products/${product.slug}`}
+            className="block sm:w-[11.5rem] sm:shrink-0"
+          >
             <ProductVisual
               product={product}
               imageUrl={product.imageUrl ?? product.galleryUrls?.[0]}
-              sizes="(min-width: 1280px) 24vw, (min-width: 1024px) 32vw, (min-width: 640px) 45vw, 100vw"
-              className="card-hover-image min-h-[18rem] rounded-[1.5rem] sm:min-h-[19rem]"
+              sizes="(min-width: 1280px) 16vw, (min-width: 640px) 28vw, 100vw"
+              className="min-h-[13.5rem] rounded-none sm:min-h-full"
             />
           </Link>
 
-          <div className="flex flex-1 flex-col justify-between gap-4">
-            <div className="space-y-4">
+          <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-black">
+                {product.categoryName}
+              </span>
+              {quantityLabel ? (
+                <span className="rounded-full bg-black px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white">
+                  {quantityLabel}
+                </span>
+              ) : null}
+            </div>
+
+            <div className="space-y-3">
               <Link href={`/products/${product.slug}`} className="block">
-                <h3 className="font-sans text-[1.7rem] font-black leading-[0.96] tracking-[-0.04em] text-ink-950 sm:text-[1.95rem]">
+                <h3 className="text-[1.55rem] font-extrabold leading-[1] text-black sm:text-[1.75rem]">
                   {displayTitle}
                 </h3>
               </Link>
-              <p className="line-clamp-2 text-sm font-medium leading-6 text-ink-700/82">
+              <p className="line-clamp-2 text-sm leading-6 text-[rgba(17,17,17,0.72)]">
                 {descriptionText}
               </p>
+            </div>
+
+            <div className="mt-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap items-end gap-3">
-                <p className="rounded-full bg-[var(--color-primary)] px-4 py-2 text-[1.35rem] font-black text-[var(--color-accent)]">
+                <p className="text-[1.8rem] font-extrabold leading-none text-[var(--color-accent)]">
                   {formatCurrency(product.price)}
                 </p>
                 {product.compareAtPrice ? (
-                  <p className="text-sm text-[rgba(26,10,0,0.55)] line-through">
+                  <p className="text-sm text-[rgba(17,17,17,0.5)] line-through">
                     {formatCurrency(product.compareAtPrice)}
                   </p>
                 ) : null}
               </div>
-            </div>
 
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              className="btn-base btn-primary w-full"
-            >
-              <ShoppingBag className="h-4 w-4" />
-              {didAdd ? "Added to cart" : "Add to cart"}
-            </button>
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                className="btn-base btn-primary sm:w-auto"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                {didAdd ? "Added" : "Add"}
+              </button>
+            </div>
           </div>
         </div>
       </article>

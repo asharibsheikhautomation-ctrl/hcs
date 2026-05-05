@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useMotionPreferences } from "@/hooks/use-motion-preferences";
 import type { Product } from "@/types/commerce";
 
@@ -17,109 +17,63 @@ export function HeroProductStack({
   void _leadProduct;
   void _supportProducts;
 
-  const { prefersReducedMotion, prefersSimplifiedMotion } =
-    useMotionPreferences();
-  const progress = useMotionValue(0.5);
-
-  const cheeseX = useTransform(progress, [0, 1], [-18, 24]);
-  const cheeseY = useTransform(progress, [0, 1], [-54, -24]);
-  const cheeseRotateZ = useTransform(progress, [0, 1], [-7, 6]);
-  const cheeseRotateX = useTransform(progress, [0, 1], [9, -5]);
-  const cheeseRotateY = useTransform(progress, [0, 1], [-10, 11]);
-  const cheeseScale = useTransform(
-    progress,
-    [0, 1],
-    prefersSimplifiedMotion ? [1, 1] : [0.98, 1.05],
-  );
-  const orbScale = useTransform(progress, [0, 1], [1.06, 0.92]);
-  const orbOpacity = useTransform(progress, [0, 1], [0.7, 0.34]);
-  const shadowScale = useTransform(progress, [0, 1], [0.82, 1.14]);
-  const shadowOpacity = useTransform(progress, [0, 1], [0.14, 0.28]);
+  const { prefersReducedMotion } = useMotionPreferences();
 
   return (
-    <div className="relative flex min-h-[16.5rem] items-center justify-center depth-stack sm:min-h-[24rem] lg:min-h-[42rem]">
-      <div className="relative h-full w-full max-w-[44rem] overflow-visible">
-        <div className="pointer-events-none absolute inset-x-[10%] top-[14%] bottom-[18%] rounded-[3rem] bg-[rgba(245,168,0,0.18)] blur-2xl" />
-        <div className="pointer-events-none absolute inset-x-[18%] top-[26%] bottom-[16%] rounded-[3rem] bg-[rgba(255,255,255,0.10)] blur-3xl" />
-
-        <motion.div
-          aria-hidden="true"
-          className="absolute left-[6%] top-[12%] hidden h-32 w-32 rounded-full bg-[rgba(245,168,0,0.42)] blur-3xl sm:block"
-          style={{ scale: orbScale, opacity: orbOpacity }}
-        />
-        <motion.div
-          aria-hidden="true"
-          className="absolute bottom-[12%] right-[8%] hidden h-44 w-44 rounded-full bg-[rgba(255,255,255,0.22)] blur-3xl sm:block"
-          style={{ scale: orbScale, opacity: orbOpacity }}
-        />
-
-        <div className="absolute inset-x-[2%] top-[-8%] z-20 sm:inset-x-[6%] sm:top-[-6%]">
-          <motion.div
-            style={{
-              x: prefersSimplifiedMotion ? 0 : cheeseX,
-              y: prefersSimplifiedMotion ? 0 : cheeseY,
-              rotateX: prefersSimplifiedMotion ? 0 : cheeseRotateX,
-              rotateY: prefersSimplifiedMotion ? 0 : cheeseRotateY,
-              rotateZ: prefersSimplifiedMotion ? 0 : cheeseRotateZ,
-              scale: cheeseScale,
-              transformStyle: "preserve-3d",
-            }}
-          >
-            <motion.div
-              animate={
-                prefersReducedMotion
-                  ? undefined
-                  : {
-                      y: [0, -18, 0],
-                      rotateZ: [0, 1.6, 0],
-                      rotateY: [0, -2.5, 0, 2.5, 0],
-                      scale: [1, 1.02, 1],
-                    }
-              }
-              transition={{
-                duration: 6.6,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
-              }}
-              className="relative mx-auto w-full max-w-[30rem] sm:max-w-[33rem]"
-            >
-              <div className="pointer-events-none absolute inset-0 scale-[1.08] rounded-full bg-[rgba(245,168,0,0.40)] blur-3xl" />
-              <div className="pointer-events-none absolute inset-x-[10%] bottom-[8%] h-10 rounded-full bg-black/28 blur-3xl" />
-
-              <div className="relative mx-auto aspect-square w-full max-w-[30rem] overflow-visible">
-                <Image
-                  src="/cheese.png"
-                  alt="3D cheese visual"
-                  width={900}
-                  height={900}
-                  priority
-                  className="pointer-events-none absolute inset-0 z-0 h-full w-full scale-[1.16] object-contain opacity-[0.16] blur-[6px]"
-                  sizes="(min-width: 1280px) 38vw, (min-width: 1024px) 42vw, 88vw"
-                />
-                <Image
-                  src="/cheese.png"
-                  alt="3D cheese visual"
-                  width={900}
-                  height={900}
-                  priority
-                  className="pointer-events-none relative z-10 h-auto w-full scale-[1.1] object-contain saturate-[1.22] contrast-[1.16] brightness-[1.02] drop-shadow-[0_56px_88px_rgba(17,17,17,0.34)]"
-                  sizes="(min-width: 1280px) 38vw, (min-width: 1024px) 42vw, 88vw"
-                />
-              </div>
-            </motion.div>
-          </motion.div>
+    <div className="relative flex min-h-[19rem] items-center justify-center sm:min-h-[24rem] lg:min-h-[32rem]">
+      <div className="relative w-full max-w-[28rem] rounded-[2rem] border-4 border-[var(--color-accent)] bg-white p-5 shadow-[0_22px_50px_rgba(0,0,0,0.18)] sm:p-6">
+        <div className="absolute -left-4 top-5 z-20 rounded-[1.65rem] border-2 border-[var(--color-accent)] bg-white p-2 shadow-[0_14px_30px_rgba(0,0,0,0.16)]">
+          <div className="absolute -bottom-2 left-2 h-14 w-14 rounded-[1.2rem] bg-[var(--color-primary)]" />
+          <div className="relative h-14 w-14 overflow-hidden rounded-[1.1rem] bg-white md:h-16 md:w-16">
+            <Image
+              src="/logo.png"
+              alt=""
+              fill
+              sizes="64px"
+              className="object-cover"
+            />
+          </div>
         </div>
 
-        <div className="pointer-events-none absolute inset-x-[18%] bottom-[9%] hidden sm:block">
-          <motion.div
-            aria-hidden="true"
-            className="h-14 rounded-full bg-black/16 blur-3xl"
-            style={{
-              scaleX: shadowScale,
-              opacity: shadowOpacity,
-            }}
+        <div className="absolute -right-3 bottom-8 z-20 rounded-full border-2 border-[var(--color-accent)] bg-black p-1.5 shadow-[0_14px_26px_rgba(0,0,0,0.2)]">
+          <div className="relative h-12 w-12 overflow-hidden rounded-full bg-white md:h-14 md:w-14">
+            <Image
+              src="/logo.png"
+              alt=""
+              fill
+              sizes="56px"
+              className="object-cover"
+            />
+          </div>
+        </div>
+
+        <motion.div
+          animate={
+            prefersReducedMotion
+              ? undefined
+              : {
+                  y: [0, -8, 0],
+                  rotate: [0, -2, 0, 2, 0],
+                }
+          }
+          transition={{
+            duration: 5.4,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "easeInOut",
+          }}
+          className="relative z-10"
+        >
+          <div className="absolute inset-x-[12%] bottom-[3%] h-10 rounded-full bg-black/18 blur-2xl" />
+          <Image
+            src="/cheese.png"
+            alt="Cheese visual"
+            width={900}
+            height={900}
+            priority
+            className="relative z-10 mx-auto h-auto w-full max-w-[22rem] object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.22)]"
+            sizes="(min-width: 1280px) 28vw, (min-width: 1024px) 36vw, 82vw"
           />
-        </div>
+        </motion.div>
       </div>
     </div>
   );

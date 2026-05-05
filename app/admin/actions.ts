@@ -139,78 +139,29 @@ function getCheckboxValues(formData: FormData, key: string) {
   );
 }
 
-function getStringValues(formData: FormData, key: string) {
-  return formData
-    .getAll(key)
-    .map((value) => (typeof value === "string" ? value.trim() : ""));
-}
+async function calculateDealIncludedValue(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  linkedProductIds: string[],
+) {
+  let linkedProductsValue = 0;
 
-interface ParsedCustomDealItem {
-  name: string;
-  quantity: number;
-  price: number;
-  unitLabel: string | null;
-  imageUrl: string | null;
-}
+  if (linkedProductIds.length > 0) {
+    const { data: linkedProducts, error } = await supabase
+      .from("products")
+      .select("id, base_price, sale_price")
+      .in("id", linkedProductIds);
 
-function parseCustomDealItems(formData: FormData) {
-  const names = getStringValues(formData, "customItemName");
-  const quantities = getStringValues(formData, "customItemQuantity");
-  const prices = getStringValues(formData, "customItemPrice");
-  const unitLabels = getStringValues(formData, "customItemUnitLabel");
-  const imageUrls = getStringValues(formData, "customItemImageUrl");
-  const maxLength = Math.max(
-    names.length,
-    quantities.length,
-    prices.length,
-    unitLabels.length,
-    imageUrls.length,
-  );
-  const items: ParsedCustomDealItem[] = [];
-  const errors: string[] = [];
-
-  for (let index = 0; index < maxLength; index += 1) {
-    const name = names[index] ?? "";
-    const quantityValue = quantities[index] ?? "";
-    const priceValue = prices[index] ?? "";
-    const unitLabel = unitLabels[index] ?? "";
-    const imageUrl = imageUrls[index] ?? "";
-
-    if (!name && !quantityValue && !priceValue && !unitLabel && !imageUrl) {
-      continue;
+    if (error) {
+      throw error;
     }
 
-    if (!name) {
-      errors.push(`Custom item ${index + 1}: name is required.`);
-      continue;
-    }
-
-    const quantity = quantityValue
-      ? Number.parseInt(quantityValue, 10)
-      : 1;
-
-    if (!Number.isFinite(quantity) || quantity <= 0) {
-      errors.push(`Custom item ${index + 1}: quantity must be at least 1.`);
-      continue;
-    }
-
-    const price = Number.parseFloat(priceValue);
-
-    if (!Number.isFinite(price) || price <= 0) {
-      errors.push(`Custom item ${index + 1}: price must be greater than zero.`);
-      continue;
-    }
-
-    items.push({
-      name,
-      quantity,
-      price,
-      unitLabel: unitLabel || null,
-      imageUrl: imageUrl || null,
-    });
+    linkedProductsValue = (linkedProducts ?? []).reduce(
+      (total, product) => total + Number(product.sale_price ?? product.base_price),
+      0,
+    );
   }
 
-  return { items, errors };
+  return linkedProductsValue;
 }
 
 function getStockStatus(stockQuantity: number) {
@@ -1178,15 +1129,12 @@ export async function saveDealAction(
   const description = getString(formData, "description");
   const discountType = getString(formData, "discountType") || "percentage";
   const discountValue = getDecimal(formData, "discountValue");
+  const offerPrice = getOptionalDecimal(formData, "offerPrice");
   const startsAt = getDateTimeValue(formData, "startsAt");
   const endsAt = getDateTimeValue(formData, "endsAt");
   const isActive = getBoolean(formData, "isActive");
   const isFeatured = getBoolean(formData, "isFeatured");
   const linkedProductIds = getCheckboxValues(formData, "linkedProductIds");
-  const {
-    items: customDealItems,
-    errors: customDealItemErrors,
-  } = parseCustomDealItems(formData);
   const fieldErrors: Record<string, string> = {};
   let slug = requestedSlug;
 
@@ -1230,16 +1178,45 @@ export async function saveDealAction(
     fieldErrors.discountValue = "Discount value must be zero or greater.";
   }
 
+  if (offerPrice !== null && (!Number.isFinite(offerPrice) || offerPrice <= 0)) {
+    fieldErrors.offerPrice = "Offer price must be greater than zero.";
+  }
+
   if (startsAt && endsAt && startsAt > endsAt) {
     fieldErrors.endsAt = "End date must be after the start date.";
   }
 
-  if (customDealItemErrors.length > 0) {
-    fieldErrors.customItems = "Check the custom items section.";
+  if (Object.keys(fieldErrors).length > 0) {
+    return errorState("Please fix the deal form.", fieldErrors);
   }
 
-  if (Object.keys(fieldErrors).length > 0) {
-    return errorState("Please fix the deal form.", fieldErrors, customDealItemErrors);
+  let includedValue = 0;
+
+  try {
+    includedValue = await calculateDealIncludedValue(
+      supabase,
+      linkedProductIds,
+    );
+  } catch (error) {
+    return errorState(
+      error instanceof Error
+        ? error.message
+        : "Included items total could not be calculated.",
+    );
+  }
+
+  if (offerPrice !== null) {
+    if (includedValue <= 0) {
+      return errorState("Add at least one deal item before setting an offer price.", {
+        offerPrice: "Offer price needs included products to calculate savings.",
+      });
+    }
+
+    if (offerPrice > includedValue) {
+      return errorState("Offer price cannot be greater than the total included items value.", {
+        offerPrice: "Set a price that is lower than or equal to the included items total.",
+      });
+    }
   }
 
   let bannerImageUrl: string | null = null;
@@ -1261,19 +1238,32 @@ export async function saveDealAction(
     );
   }
 
+  const effectiveDiscountType =
+    offerPrice !== null
+      ? "fixed"
+      : (discountType as "percentage" | "fixed" | "bundle");
+  const effectiveDiscountValue =
+    offerPrice !== null
+      ? Math.max(includedValue - offerPrice, 0)
+      : discountValue;
+  const savingsLabel =
+    offerPrice !== null && includedValue > 0
+      ? `Worth PKR ${includedValue.toLocaleString("en-PK")} - Offer PKR ${offerPrice.toLocaleString("en-PK")}`
+      : buildDealSavingsLabel(
+          effectiveDiscountType,
+          effectiveDiscountValue,
+        );
+
   const values = {
     name: title,
     slug,
     headline: description.slice(0, 120),
     description,
-    savings_label: buildDealSavingsLabel(
-      discountType as "percentage" | "fixed" | "bundle",
-      discountValue,
-    ),
+    savings_label: savingsLabel,
     banner_image_url: bannerImageUrl || null,
     banner_tone: "gold",
-    discount_type: discountType,
-    discount_value: discountValue,
+    discount_type: effectiveDiscountType,
+    discount_value: effectiveDiscountValue,
     starts_at: startsAt,
     ends_at: endsAt,
     is_active: isActive,
@@ -1308,41 +1298,21 @@ export async function saveDealAction(
     return errorState(deleteItemsError.message);
   }
 
-  if (linkedProductIds.length > 0 || customDealItems.length > 0) {
-    const dealItems: TablesInsert<"deal_items">[] = [
-      ...linkedProductIds.map((productId) => ({
+  if (linkedProductIds.length > 0) {
+    const dealItems: TablesInsert<"deal_items">[] = linkedProductIds.map(
+      (productId) => ({
         deal_id: dealId,
         product_id: productId,
         quantity: 1,
-        custom_name: null,
-        custom_price: null,
-        custom_unit_label: null,
-        custom_image_url: null,
-      })),
-      ...customDealItems.map((item) => ({
-        deal_id: dealId,
-        product_id: null,
-        quantity: item.quantity,
-        custom_name: item.name,
-        custom_price: item.price,
-        custom_unit_label: item.unitLabel,
-        custom_image_url: item.imageUrl,
-      })),
-    ];
+      }),
+    );
 
     const { error: insertItemsError } = await supabase
       .from("deal_items")
       .insert(dealItems);
 
     if (insertItemsError) {
-      return errorState(
-        insertItemsError.message,
-        {},
-        [
-          "Custom deal items need the latest deal_items columns in Supabase.",
-          "Run the SQL in supabase/deal-items-custom-support.sql if your database has not been updated yet.",
-        ],
-      );
+      return errorState(insertItemsError.message);
     }
   }
 

@@ -15,17 +15,17 @@ export function PanelCard({
   compactHeaderOnMobile = false,
 }: PanelCardProps) {
   return (
-    <section className="luxe-panel rounded-[2rem] p-6 md:p-8">
+    <section className="rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_10px_24px_rgba(17,17,17,0.08)] md:p-8">
       <div
         className={cn(
           "mb-6 max-w-2xl",
           compactHeaderOnMobile && "hidden md:block",
         )}
       >
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-[var(--color-accent)]">
           Admin Section
         </p>
-        <h2 className="mt-3 text-3xl font-semibold text-ink-950 md:text-4xl">
+        <h2 className="mt-3 text-3xl font-extrabold text-ink-950 md:text-4xl">
           {title}
         </h2>
         <p className="mt-3 text-base leading-8 text-ink-700/80">{description}</p>

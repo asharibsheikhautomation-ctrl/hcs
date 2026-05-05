@@ -22,13 +22,13 @@ export default async function AdminLoginPage({
   return (
     <main className="min-h-screen bg-[var(--color-bg-light)] px-4 py-8">
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-5xl items-center">
-        <div className="grid w-full gap-8 rounded-[2.5rem] border-2 border-[var(--color-accent-dark)] bg-[var(--color-bg-white)] p-6 shadow-[0_24px_90px_rgba(92,16,16,0.14)] md:grid-cols-[0.9fr_1.1fr] md:p-10">
-          <section className="rounded-[2rem] bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))] px-6 py-8 text-[var(--color-text-white)] md:px-8 md:py-10">
-            <LogoMark compact />
-            <p className="mt-8 text-xs font-semibold uppercase tracking-[0.34em] text-[var(--color-accent)]">
+        <div className="grid w-full gap-8 rounded-[2.5rem] border border-black/10 bg-[var(--color-bg-white)] p-6 shadow-[0_24px_90px_rgba(17,17,17,0.10)] md:grid-cols-[0.9fr_1.1fr] md:p-10">
+          <section className="rounded-[2rem] bg-black px-6 py-8 text-[var(--color-text-white)] md:px-8 md:py-10">
+            <LogoMark compact className="[&_p]:!text-white" />
+            <p className="mt-8 text-xs font-bold uppercase tracking-[0.34em] text-[var(--color-primary)]">
               Protected Admin
             </p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight">
+            <h1 className="mt-4 text-4xl font-extrabold leading-tight">
               Premium control room for Hyderabad Cheese Store.
             </h1>
             <p className="mt-4 text-sm leading-7 text-white/72">
@@ -37,11 +37,11 @@ export default async function AdminLoginPage({
             </p>
           </section>
 
-          <section className="rounded-[2rem] border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-light)] px-6 py-8 md:px-8 md:py-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--color-primary)]">
+          <section className="rounded-[2rem] border border-black/10 bg-[var(--color-bg-light)] px-6 py-8 md:px-8 md:py-10">
+            <p className="text-xs font-bold uppercase tracking-[0.34em] text-[var(--color-accent)]">
               Admin Access
             </p>
-            <h2 className="mt-4 text-3xl font-semibold text-ink-950">
+            <h2 className="mt-4 text-3xl font-extrabold text-ink-950">
               Unlock the dashboard
             </h2>
             <p className="mt-3 text-sm leading-7 text-ink-700/78">

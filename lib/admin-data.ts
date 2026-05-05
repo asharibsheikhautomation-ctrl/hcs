@@ -3,6 +3,7 @@ import {
   isOrderStatus,
   sanitizeAdminOrderSearchTerm,
 } from "@/lib/admin-orders";
+import { calculateDealPrice } from "@/lib/deal-utils";
 import { siteSettings as demoSiteSettings } from "@/lib/demo-data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type {
@@ -153,20 +154,32 @@ function mapAdminDealRow(
   linkedProductIds: string[],
   linkedProductNames: string[],
   customItems: AdminDeal["customItems"],
+  includedValue: number,
 ): AdminDeal {
+  const discountType =
+    row.discount_type === "fixed"
+      ? "fixed"
+      : row.discount_type === "bundle"
+        ? "bundle"
+        : "percentage";
+  const discountValue = Number(row.discount_value ?? 0);
+  const offerPrice = calculateDealPrice(
+    includedValue,
+    discountType,
+    discountValue,
+  );
+
   return {
     id: row.id,
     title: row.name,
     slug: row.slug,
     description: row.description ?? "",
     bannerImageUrl: row.banner_image_url ?? "",
-    discountType:
-      row.discount_type === "fixed"
-        ? "fixed"
-        : row.discount_type === "bundle"
-          ? "bundle"
-          : "percentage",
-    discountValue: Number(row.discount_value ?? 0),
+    discountType,
+    discountValue,
+    includedValue,
+    offerPrice,
+    savingsAmount: Math.max(includedValue - offerPrice, 0),
     startsAt: row.starts_at ?? "",
     endsAt: row.ends_at ?? "",
     isActive: row.is_active,
@@ -287,8 +300,8 @@ function mapAdminSiteSettingsRow(
     productsSectionTitle: row.products_section_title ?? "",
     dealsSectionTitle: row.deals_section_title ?? "",
     contactSectionTitle: row.contact_section_title ?? "",
-    primaryColor: row.primary_color ?? "#7B1A1A",
-    secondaryColor: row.secondary_color ?? "#1A0A00",
+    primaryColor: row.primary_color ?? "#F5A800",
+    secondaryColor: row.secondary_color ?? "#111111",
     backgroundColor: row.background_color ?? "#FFF8E7",
     surfaceColor: row.surface_color ?? "#FFFFFF",
   };
@@ -469,6 +482,12 @@ export async function fetchAdminDeals(
   const productNameById = new Map(
     products.map((product) => [product.id, product.name]),
   );
+  const productPriceById = new Map(
+    products.map((product) => [
+      product.id,
+      Number(product.salePrice ?? product.regularPrice),
+    ]),
+  );
   const productIdsByDeal = new Map<string, string[]>();
   const customItemsByDeal = new Map<string, AdminDeal["customItems"]>();
 
@@ -502,12 +521,22 @@ export async function fetchAdminDeals(
       .map((productId) => productNameById.get(productId))
       .filter((name): name is string => Boolean(name));
     const customItems = customItemsByDeal.get(deal.id) ?? [];
+    const linkedProductsValue = linkedProductIds.reduce(
+      (total, productId) => total + (productPriceById.get(productId) ?? 0),
+      0,
+    );
+    const customItemsValue = customItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0,
+    );
+    const includedValue = linkedProductsValue + customItemsValue;
 
     return mapAdminDealRow(
       deal,
       linkedProductIds,
       linkedProductNames,
       customItems,
+      includedValue,
     );
   });
 }

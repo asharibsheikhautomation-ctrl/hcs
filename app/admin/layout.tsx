@@ -15,21 +15,21 @@ export default async function AdminLayout({
   return (
     <div className="min-h-screen bg-[var(--color-bg-light)]">
       <div className="container-main space-y-4 py-4 md:py-6">
-        <header className="luxe-panel rounded-[2rem] p-6 md:p-8">
+        <header className="rounded-[2rem] border border-black/10 bg-black p-6 text-white shadow-[0_10px_24px_rgba(17,17,17,0.14)] md:p-8">
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-3xl">
-              <LogoMark />
-              <p className="mt-5 text-xs font-semibold uppercase tracking-[0.3em] text-cheese-500">
+              <LogoMark className="[&_p]:!text-white [&_p:last-child]:!text-[rgba(255,255,255,0.76)]" />
+              <p className="mt-5 text-xs font-bold uppercase tracking-[0.3em] text-[var(--color-primary)]">
                 Hyderabad Cheese Store Admin
               </p>
-              <h1 className="mt-3 text-4xl font-semibold text-ink-950 md:text-5xl">
+              <h1 className="mt-3 text-4xl font-extrabold text-white md:text-5xl">
                 Simple store control screen
               </h1>
-              <p className="mt-3 text-base leading-8 text-ink-700/80">
+              <p className="mt-3 text-base leading-8 text-white/78">
                 Everything important lives on one page: quick overview,
                 products, deals, orders, and core settings.
               </p>
-              <p className="mt-4 text-sm font-semibold text-ink-700">
+              <p className="mt-4 text-sm font-semibold text-white/86">
                 Signed in as {session.username}
               </p>
             </div>
@@ -37,7 +37,7 @@ export default async function AdminLayout({
             <div className="flex flex-col gap-3 md:flex-row md:flex-wrap xl:max-w-[32rem] xl:justify-end">
               <div className="grid gap-3 md:hidden">
                 <form action={logoutAdminAction}>
-                  <button type="submit" className="btn-base btn-dark w-full">
+                  <button type="submit" className="btn-base btn-primary w-full">
                     Logout
                   </button>
                 </form>
@@ -59,7 +59,7 @@ export default async function AdminLayout({
                 Settings
               </a>
               <form action={logoutAdminAction}>
-                <button type="submit" className="btn-base btn-dark w-auto">
+                <button type="submit" className="btn-base btn-primary w-auto">
                   Logout
                 </button>
               </form>

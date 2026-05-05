@@ -15,23 +15,23 @@ export function PageHero({
   actions,
 }: PageHeroProps) {
   return (
-    <section className="section-space pb-6 pt-10 sm:pt-12">
+    <section className="section-space border-b-4 border-[var(--color-accent)] bg-[var(--color-primary)] pb-6 pt-8 sm:pt-10">
       <div className="container-main">
         <SectionTransition>
-          <div className="cheese-surface rounded-[2rem] border-[5px] border-[var(--color-accent-dark)] bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))] p-6 shadow-[0_20px_54px_rgba(92,16,16,0.28)] md:rounded-[2.25rem] md:p-10 lg:p-12">
+          <div className="rounded-[2rem] border-4 border-[var(--color-accent)] bg-[var(--color-primary)] p-6 md:rounded-[2.25rem] md:p-10 lg:p-12">
             <StaggerGroup className="max-w-3xl space-y-4" amount={0.12}>
               <StaggerItem>
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)] sm:text-xs sm:tracking-[0.34em]">
+                <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-[var(--color-accent)] sm:text-xs sm:tracking-[0.34em]">
                   {eyebrow}
                 </p>
               </StaggerItem>
               <StaggerItem>
-                <h1 className="text-balance text-[2.35rem] font-semibold leading-[0.94] text-[var(--color-accent)] sm:text-[2.7rem] md:text-5xl xl:text-[3.9rem]">
+                <h1 className="text-balance text-[2.35rem] font-extrabold leading-[0.94] text-[var(--color-text-dark)] sm:text-[2.7rem] md:text-5xl xl:text-[3.9rem]">
                   {title}
                 </h1>
               </StaggerItem>
               <StaggerItem>
-                <p className="line-clamp-3 max-w-xl text-balance text-[0.95rem] leading-6 text-[rgba(255,255,255,0.92)] md:text-base md:leading-7">
+                <p className="line-clamp-3 max-w-xl text-balance text-[0.95rem] leading-6 text-[rgba(17,17,17,0.84)] md:text-base md:leading-7">
                   {description}
                 </p>
               </StaggerItem>

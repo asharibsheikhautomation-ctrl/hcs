@@ -66,6 +66,9 @@ export interface AdminDeal {
   bannerImageUrl: string;
   discountType: "percentage" | "fixed" | "bundle";
   discountValue: number;
+  includedValue: number;
+  offerPrice: number;
+  savingsAmount: number;
   startsAt: string;
   endsAt: string;
   isActive: boolean;

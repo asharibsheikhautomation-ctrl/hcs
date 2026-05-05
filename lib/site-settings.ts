@@ -6,13 +6,13 @@ import type { SiteSettings } from "@/types/commerce";
 import type { Database, Tables } from "@/types/supabase";
 
 export const brandPalette = {
-  primary: "#7B1A1A",
-  primaryDark: "#5C1010",
-  accent: "#F5A800",
-  accentDark: "#E07B00",
+  primary: "#F5A800",
+  primaryDark: "#111111",
+  accent: "#C62828",
+  accentDark: "#A61D1D",
   bgLight: "#FFF8E7",
   bgWhite: "#FFFFFF",
-  textDark: "#1A0A00",
+  textDark: "#111111",
   textWhite: "#FFFFFF",
 } as const;
 
@@ -98,19 +98,19 @@ export function buildSiteThemeStyle(settings: SiteSettings): CSSProperties {
     "--background": brandPalette.bgLight,
     "--foreground": brandPalette.textDark,
     "--surface": brandPalette.bgWhite,
-    "--surface-muted": "#FFEEC7",
-    "--line-soft": "rgba(224, 123, 0, 0.32)",
+    "--surface-muted": "#FFF0C2",
+    "--line-soft": "rgba(245, 168, 0, 0.35)",
     "--cheese-50": brandPalette.bgLight,
-    "--cheese-100": "#FFF3D4",
-    "--cheese-200": brandPalette.accent,
-    "--cheese-300": "#FFF0C1",
-    "--cheese-400": brandPalette.accentDark,
+    "--cheese-100": "#FFF0B6",
+    "--cheese-200": brandPalette.primary,
+    "--cheese-300": "#FFF3C7",
+    "--cheese-400": "#D89100",
     "--cheese-500": brandPalette.accent,
-    "--ink-700": "#4B1C10",
+    "--ink-700": "#4B3B16",
     "--ink-950": brandPalette.textDark,
     "--shadow-lift":
-      "0 24px 70px rgba(92, 16, 16, 0.14), 0 10px 24px rgba(224, 123, 0, 0.16)",
+      "0 12px 28px rgba(17, 17, 17, 0.1)",
     "--shadow-glass":
-      "0 18px 40px rgba(92, 16, 16, 0.16), 0 8px 18px rgba(224, 123, 0, 0.18)",
+      "0 10px 24px rgba(17, 17, 17, 0.08)",
   } as CSSProperties;
 }

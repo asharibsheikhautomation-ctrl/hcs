@@ -93,18 +93,18 @@ export default async function ProductDetailPage({
             </SectionTransition>
 
             <SectionTransition className="space-y-6" delay={0.06}>
-              <div className="cheese-surface luxe-panel glass-ring rounded-[2rem] p-5 sm:p-6 md:p-8">
+              <div className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_10px_24px_rgba(17,17,17,0.08)] sm:p-6 md:p-8">
                 <div className="flex flex-wrap items-center gap-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.34em] text-cheese-500">
+                  <p className="text-xs font-bold uppercase tracking-[0.34em] text-[var(--color-accent)]">
                     {product.categoryName}
                   </p>
                   {quantityLabel ? (
-                    <span className="rounded-full border-2 border-[var(--color-accent-dark)] bg-[var(--color-accent)] px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-[var(--color-text-dark)]">
+                    <span className="rounded-full bg-black px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-white">
                       {quantityLabel}
                     </span>
                   ) : null}
                   {product.badge ? (
-                    <span className="rounded-full border-2 border-[rgba(224,123,0,0.24)] bg-[var(--color-bg-light)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-primary)]">
+                    <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-black">
                       {product.badge}
                     </span>
                   ) : null}
@@ -136,9 +136,9 @@ export default async function ProductDetailPage({
                   {detailPoints.map((point) => (
                     <div
                       key={`${product.id}-${point.label}`}
-                      className="rounded-[1.4rem] border-2 border-[rgba(224,123,0,0.26)] bg-[var(--color-bg-light)] px-4 py-4"
+                      className="rounded-[1.4rem] border border-black/10 bg-[var(--color-bg-light)] px-4 py-4"
                     >
-                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--color-primary)]/72">
+                      <p className="text-[0.68rem] font-bold uppercase tracking-[0.24em] text-[var(--color-accent)]/80">
                         {point.label}
                       </p>
                       <p className="mt-3 text-base font-bold leading-6 text-ink-950 sm:text-[1.02rem]">
