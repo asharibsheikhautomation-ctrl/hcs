@@ -104,6 +104,21 @@ create table if not exists public.delivery_zone_areas (
   description text
 );
 
+create table if not exists public.vouchers (
+  id uuid primary key default gen_random_uuid(),
+  code text not null unique,
+  name text not null,
+  discount_type text not null check (discount_type in ('fixed', 'percentage')),
+  discount_value numeric(10, 2) not null default 0,
+  valid_from timestamptz,
+  valid_until timestamptz,
+  max_uses integer,
+  times_used integer not null default 0,
+  is_active boolean not null default true,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now())
+);
+
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
   order_number text not null unique default ('HCS-' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 8))),
@@ -113,6 +128,9 @@ create table if not exists public.orders (
   note text,
   delivery_zone_id uuid references public.delivery_zones(id) on delete set null,
   delivery_zone_name text not null,
+  voucher_id uuid references public.vouchers(id) on delete set null,
+  voucher_code text,
+  discount_amount numeric(10, 2) not null default 0,
   delivery_charge numeric(10, 2) not null default 0,
   subtotal numeric(10, 2) not null default 0,
   total numeric(10, 2) not null default 0,
@@ -213,6 +231,15 @@ alter table public.deal_items
 alter table public.deal_items
   add column if not exists custom_image_url text;
 
+alter table public.orders
+  add column if not exists voucher_id uuid references public.vouchers(id) on delete set null;
+
+alter table public.orders
+  add column if not exists voucher_code text;
+
+alter table public.orders
+  add column if not exists discount_amount numeric(10, 2) not null default 0;
+
 alter table public.site_settings
   add column if not exists logo_url text;
 
@@ -246,6 +273,7 @@ create unique index if not exists products_sku_idx on public.products(sku) where
 create index if not exists deals_featured_idx on public.deals(is_featured);
 create index if not exists orders_status_idx on public.orders(status);
 create index if not exists orders_created_at_idx on public.orders(created_at desc);
+create index if not exists vouchers_active_idx on public.vouchers(is_active, valid_until);
 create index if not exists contact_inquiries_created_at_idx on public.contact_inquiries(created_at desc);
 create index if not exists contact_inquiries_status_idx on public.contact_inquiries(status);
 create index if not exists delivery_zones_active_idx on public.delivery_zones(is_active, sort_order);
@@ -278,6 +306,12 @@ execute function public.set_updated_at();
 drop trigger if exists orders_set_updated_at on public.orders;
 create trigger orders_set_updated_at
 before update on public.orders
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists vouchers_set_updated_at on public.vouchers;
+create trigger vouchers_set_updated_at
+before update on public.vouchers
 for each row
 execute function public.set_updated_at();
 

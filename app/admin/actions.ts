@@ -15,6 +15,7 @@ import {
 } from "@/lib/admin-auth";
 import { fetchAdminSiteSettings } from "@/lib/admin-data";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { normalizeVoucherCode } from "@/lib/vouchers";
 import type { AdminActionState } from "@/types/admin";
 import type { Json, Tables, TablesInsert, TablesUpdate } from "@/types/supabase";
 
@@ -77,6 +78,18 @@ function getInteger(formData: FormData, key: string) {
   return Number.isFinite(parsedValue) ? parsedValue : Number.NaN;
 }
 
+function getOptionalInteger(formData: FormData, key: string) {
+  const rawValue = getString(formData, key);
+
+  if (!rawValue) {
+    return null;
+  }
+
+  const parsedValue = Number.parseInt(rawValue, 10);
+
+  return Number.isFinite(parsedValue) ? parsedValue : Number.NaN;
+}
+
 function getDecimal(formData: FormData, key: string) {
   const rawValue = getString(formData, key);
 
@@ -119,6 +132,10 @@ function isValidSlug(value: string) {
 
 function isValidHexColor(value: string) {
   return /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value);
+}
+
+function isValidVoucherCode(value: string) {
+  return /^[A-Z0-9-]{3,40}$/.test(value);
 }
 
 function parseGalleryUrls(value: string) {
@@ -1533,6 +1550,105 @@ export async function deleteDeliveryZoneAreaAction(formData: FormData) {
   revalidatePath("/admin/delivery-zones");
 }
 
+export async function saveVoucherAction(
+  _previousState: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  await requireAdminSession("/admin");
+
+  const supabase = await createSupabaseServerClient();
+  const id = getString(formData, "id");
+  const name = getString(formData, "name");
+  const code = normalizeVoucherCode(getString(formData, "code"));
+  const discountType = getString(formData, "discountType");
+  const discountValue = getDecimal(formData, "discountValue");
+  const validUntil = getDateTimeValue(formData, "validUntil");
+  const maxUses = getOptionalInteger(formData, "maxUses");
+  const isActive = getBoolean(formData, "isActive");
+  const fieldErrors: Record<string, string> = {};
+
+  if (!name) {
+    fieldErrors.name = "Voucher name is required.";
+  }
+
+  if (!code || !isValidVoucherCode(code)) {
+    fieldErrors.code = "Use 3-40 letters, numbers, or hyphens only.";
+  }
+
+  if (!["fixed", "percentage"].includes(discountType)) {
+    fieldErrors.discountType = "Choose fixed or percentage.";
+  }
+
+  if (!Number.isFinite(discountValue) || discountValue <= 0) {
+    fieldErrors.discountValue = "Discount must be greater than zero.";
+  }
+
+  if (discountType === "percentage" && discountValue > 100) {
+    fieldErrors.discountValue = "Percentage discount cannot be more than 100.";
+  }
+
+  if (!validUntil) {
+    fieldErrors.validUntil = "Expiry date is required.";
+  }
+
+  if (maxUses !== null && (!Number.isFinite(maxUses) || maxUses <= 0)) {
+    fieldErrors.maxUses = "Usage limit must be greater than zero.";
+  }
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return errorState("Please fix the voucher form.", fieldErrors);
+  }
+
+  const values = {
+    name,
+    code,
+    discount_type: discountType,
+    discount_value: discountValue,
+    valid_until: validUntil,
+    max_uses: maxUses,
+    is_active: isActive,
+  };
+
+  const { error } = id
+    ? await supabase
+        .from("vouchers")
+        .update(values satisfies TablesUpdate<"vouchers">)
+        .eq("id", id)
+    : await supabase
+        .from("vouchers")
+        .insert(values satisfies TablesInsert<"vouchers">);
+
+  if (error) {
+    if (error.message.toLowerCase().includes("duplicate")) {
+      return errorState("A voucher with this code already exists.", {
+        code: "Use a different voucher code.",
+      });
+    }
+
+    return errorState(error.message);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/checkout");
+
+  return successState(id ? "Voucher updated." : "Voucher created.");
+}
+
+export async function deleteVoucherAction(formData: FormData) {
+  await requireAdminSession("/admin");
+
+  const supabase = await createSupabaseServerClient();
+  const id = getString(formData, "id");
+
+  if (!id) {
+    return;
+  }
+
+  await supabase.from("vouchers").delete().eq("id", id);
+  revalidatePath("/admin");
+  revalidatePath("/checkout");
+}
+
 export async function saveSiteSettingsAction(
   _previousState: AdminActionState,
   formData: FormData,
@@ -1760,4 +1876,20 @@ export async function updateSimpleOrderStatusAction(formData: FormData) {
 
   await supabase.from("orders").update({ status }).eq("id", id);
   revalidatePath("/admin");
+}
+
+export async function deleteSimpleOrderAction(formData: FormData) {
+  await requireAdminSession("/admin");
+
+  const supabase = await createSupabaseServerClient();
+  const id = getString(formData, "id");
+
+  if (!id) {
+    return;
+  }
+
+  await supabase.from("orders").delete().eq("id", id);
+  revalidatePath("/admin");
+  revalidatePath("/admin/orders");
+  revalidatePath(`/admin/orders/${id}`);
 }

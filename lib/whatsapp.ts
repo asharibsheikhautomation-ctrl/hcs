@@ -33,6 +33,16 @@ function formatCartLine(item: CartLine) {
     .join("\n");
 }
 
+function formatVoucherLine(voucherCode?: string | null, discountAmount?: number) {
+  if (!discountAmount || discountAmount <= 0) {
+    return null;
+  }
+
+  return voucherCode
+    ? `Voucher (${voucherCode}): -${formatCurrency(discountAmount)}`
+    : `Discount: -${formatCurrency(discountAmount)}`;
+}
+
 export function formatWhatsAppOrderMessage(order: WhatsAppOrderPayload) {
   const itemLines = order.items.map(formatCartLine).join("\n");
 
@@ -43,6 +53,7 @@ export function formatWhatsAppOrderMessage(order: WhatsAppOrderPayload) {
     itemLines,
     "",
     `Subtotal: ${formatCurrency(order.subtotal)}`,
+    formatVoucherLine(order.voucherCode, order.discountAmount),
     `Delivery: ${formatCurrency(order.deliveryCharge)}`,
     `Total: ${formatCurrency(order.total)}`,
     "",
@@ -175,6 +186,8 @@ interface AdminCustomerWhatsAppPayload {
   status: OrderStatus;
   deliveryLabel: string;
   subtotal: number;
+  voucherCode?: string | null;
+  discountAmount?: number;
   deliveryCharge: number;
   total: number;
   note?: string | null;
@@ -210,6 +223,7 @@ export function formatAdminCustomerOrderMessage(
     "",
     `Delivery area: ${order.deliveryLabel}`,
     `Subtotal: ${formatCurrency(order.subtotal)}`,
+    formatVoucherLine(order.voucherCode, order.discountAmount),
     `Delivery: ${formatCurrency(order.deliveryCharge)}`,
     `Total: ${formatCurrency(order.total)}`,
     `Note: ${order.note || "No extra note"}`,

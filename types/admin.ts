@@ -108,6 +108,19 @@ export interface AdminDeliveryZone {
   areas: AdminDeliveryZoneArea[];
 }
 
+export interface AdminVoucher {
+  id: string;
+  code: string;
+  name: string;
+  discountType: "fixed" | "percentage";
+  discountValue: number;
+  validFrom: string;
+  validUntil: string;
+  maxUses: number | null;
+  timesUsed: number;
+  isActive: boolean;
+}
+
 export interface AdminSiteSettings {
   id: number;
   siteName: string;
@@ -141,6 +154,8 @@ export interface AdminOrderSummary {
   address: string;
   note: string;
   deliveryLabel: string;
+  voucherCode: string;
+  discountAmount: number;
   deliveryCharge: number;
   subtotal: number;
   total: number;

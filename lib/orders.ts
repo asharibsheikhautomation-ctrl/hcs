@@ -63,6 +63,10 @@ export function validateCheckoutSubmission(input: CheckoutSubmissionInput) {
     errors.deliveryZoneAreaId = "Please select a delivery area.";
   }
 
+  if (input.form.voucherCode && input.form.voucherCode.trim().length > 40) {
+    errors.voucherCode = "Voucher code is too long.";
+  }
+
   if (
     input.items.length === 0 ||
     input.items.some(

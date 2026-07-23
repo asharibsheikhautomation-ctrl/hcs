@@ -4,8 +4,13 @@ import type {
   DeliveryZone,
   DeliveryZoneArea,
   OrderItemProductSnapshot,
+  Voucher,
 } from "@/types/commerce";
 import type { Json, TablesInsert } from "@/types/supabase";
+import {
+  calculateVoucherDiscount,
+  validateVoucherForSubtotal,
+} from "@/lib/vouchers";
 
 function toNullableUuid(value?: string | null) {
   if (!value) {
@@ -53,19 +58,32 @@ export function calculateDeliveryCharge(
   return area?.deliveryCharge ?? zone.deliveryCharge;
 }
 
-export function generateTotal(subtotal: number, deliveryCharge: number) {
-  return subtotal + deliveryCharge;
+export function generateTotal(
+  subtotal: number,
+  deliveryCharge: number,
+  discountAmount = 0,
+) {
+  return Math.max(subtotal - discountAmount, 0) + deliveryCharge;
 }
 
 export function buildCheckoutPricing(
   items: CartLine[],
   zone?: DeliveryZone | null,
   area?: DeliveryZoneArea | null,
+  voucher?: Voucher | null,
 ): CheckoutPricing {
   const subtotal = calculateSubtotal(items);
+  const voucherValidation = voucher
+    ? validateVoucherForSubtotal(voucher, subtotal)
+    : null;
+  const discountAmount =
+    voucherValidation?.isValid && voucher
+      ? calculateVoucherDiscount(subtotal, voucher)
+      : 0;
+  const discountedSubtotal = Math.max(subtotal - discountAmount, 0);
   const qualifiesForFreeDelivery = applyFreeDeliveryRule(subtotal, zone);
   const deliveryCharge = calculateDeliveryCharge(subtotal, zone, area);
-  const total = generateTotal(subtotal, deliveryCharge);
+  const total = generateTotal(subtotal, deliveryCharge, discountAmount);
   const freeDeliveryMinimum = zone?.freeDeliveryMinimum ?? 0;
   const remainingForFreeDelivery = Math.max(
     freeDeliveryMinimum - subtotal,
@@ -74,6 +92,8 @@ export function buildCheckoutPricing(
 
   return {
     subtotal,
+    discountAmount,
+    discountedSubtotal,
     deliveryCharge,
     total,
     qualifiesForFreeDelivery,

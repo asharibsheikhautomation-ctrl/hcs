@@ -5,6 +5,7 @@ export type AccentTone = "gold" | "frost" | "ink";
 export type ProductStockStatus = "in_stock" | "low_stock" | "out_of_stock";
 export type DealStatus = "scheduled" | "active" | "archived";
 export type DealDiscountType = "percentage" | "fixed" | "bundle";
+export type VoucherDiscountType = "fixed" | "percentage";
 export type OrderStatus =
   | "New"
   | "Contacted"
@@ -136,6 +137,21 @@ export interface CartLine {
   includedItems?: DealIncludedItem[] | null;
 }
 
+export interface Voucher {
+  id: UUID;
+  code: string;
+  name: string;
+  discountType: VoucherDiscountType;
+  discountValue: number;
+  validFrom: string | null;
+  validUntil: string | null;
+  maxUses: number | null;
+  timesUsed: number;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface OrderItemProductSnapshot {
   productId: UUID | null;
   slug?: string | null;
@@ -175,6 +191,9 @@ export interface Order {
   deliveryZoneName: string;
   deliveryZoneAreaId?: UUID | null;
   deliveryZoneAreaName?: string | null;
+  voucherId?: UUID | null;
+  voucherCode?: string | null;
+  discountAmount: number;
   deliveryCharge: number;
   subtotal: number;
   total: number;
@@ -224,6 +243,8 @@ export interface WhatsAppOrderPayload {
   note?: string;
   deliveryZoneName: string;
   deliveryZoneAreaName: string;
+  voucherCode?: string | null;
+  discountAmount?: number;
   deliveryCharge: number;
   subtotal: number;
   total: number;
@@ -235,12 +256,15 @@ export interface CheckoutFormValues {
   phone: string;
   address: string;
   note: string;
+  voucherCode: string;
   deliveryZoneId: string;
   deliveryZoneAreaId: string;
 }
 
 export interface CheckoutPricing {
   subtotal: number;
+  discountAmount: number;
+  discountedSubtotal: number;
   deliveryCharge: number;
   total: number;
   qualifiesForFreeDelivery: boolean;

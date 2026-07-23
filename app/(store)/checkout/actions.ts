@@ -1,7 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { buildCheckoutPricing, createOrderItemInsertRecord } from "@/lib/checkout";
+import {
+  buildCheckoutPricing,
+  calculateSubtotal,
+  createOrderItemInsertRecord,
+} from "@/lib/checkout";
 import { fetchActiveDeliveryZones } from "@/lib/delivery-zones";
 import {
   CheckoutSubmissionInput,
@@ -15,13 +19,132 @@ import {
   createWhatsAppOrderUrl,
   formatWhatsAppOrderMessage,
 } from "@/lib/whatsapp";
+import { fetchVoucherByCode } from "@/lib/vouchers-server";
+import {
+  calculateVoucherDiscount,
+  normalizeVoucherCode,
+  validateVoucherForSubtotal,
+} from "@/lib/vouchers";
 import type { TablesInsert } from "@/types/supabase";
+import type { CartLine } from "@/types/commerce";
+
+interface ApplyVoucherInput {
+  code: string;
+  items: CartLine[];
+}
+
+type ApplyVoucherResult =
+  | {
+      success: true;
+      message: string;
+      voucher: NonNullable<Awaited<ReturnType<typeof fetchVoucherByCode>>>;
+      discountAmount: number;
+    }
+  | {
+      success: false;
+      message: string;
+      error: string;
+    };
 
 function isSupabaseConfigured() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );
+}
+
+function getVoucherSystemMessage(error: unknown) {
+  if (error instanceof Error) {
+    if (
+      error.message.includes("vouchers") ||
+      error.message.includes("voucher_id") ||
+      error.message.includes("voucher_code") ||
+      error.message.includes("discount_amount")
+    ) {
+      return "Voucher system is not ready in Supabase yet. Run the SQL in supabase/voucher-system.sql first.";
+    }
+
+    return error.message;
+  }
+
+  return "Voucher system is not available right now.";
+}
+
+async function resolveAppliedVoucher(code: string, items: CartLine[]) {
+  const normalizedCode = normalizeVoucherCode(code);
+
+  if (!normalizedCode) {
+    return {
+      voucher: null,
+      error: "Enter a voucher code first.",
+      discountAmount: 0,
+    };
+  }
+
+  const subtotal = calculateSubtotal(items);
+  const voucher = await fetchVoucherByCode(normalizedCode);
+
+  if (!voucher) {
+    return {
+      voucher: null,
+      error: "This voucher code was not found.",
+      discountAmount: 0,
+    };
+  }
+
+  const validation = validateVoucherForSubtotal(voucher, subtotal);
+
+  if (!validation.isValid) {
+    return {
+      voucher: null,
+      error: validation.message,
+      discountAmount: 0,
+    };
+  }
+
+  return {
+    voucher,
+    error: null,
+    discountAmount: calculateVoucherDiscount(subtotal, voucher),
+  };
+}
+
+export async function applyCheckoutVoucherAction(
+  input: ApplyVoucherInput,
+): Promise<ApplyVoucherResult> {
+  if (!isSupabaseConfigured()) {
+    return {
+      success: false,
+      message: "Live vouchers are not available yet.",
+      error:
+        "Supabase environment variables are missing for voucher validation.",
+    };
+  }
+
+  try {
+    const resolvedVoucher = await resolveAppliedVoucher(input.code, input.items);
+
+    if (!resolvedVoucher.voucher) {
+      return {
+        success: false,
+        message: "This voucher could not be applied.",
+        error: resolvedVoucher.error ?? "Invalid voucher.",
+      };
+    }
+
+    return {
+      success: true,
+      message: `${resolvedVoucher.voucher.code} applied successfully.`,
+      voucher: resolvedVoucher.voucher,
+      discountAmount: resolvedVoucher.discountAmount,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Voucher validation failed.",
+      error: getVoucherSystemMessage(error),
+    };
+  }
 }
 
 export async function submitCheckoutOrder(
@@ -85,10 +208,47 @@ export async function submitCheckoutOrder(
       };
     }
 
-    const pricing = buildCheckoutPricing(
+    const submittedVoucherCode = input.form.voucherCode.trim();
+    let appliedVoucher: NonNullable<Awaited<ReturnType<typeof fetchVoucherByCode>>> | null =
+      null;
+    let voucherDiscountAmount = 0;
+
+    if (submittedVoucherCode) {
+      try {
+        const resolvedVoucher = await resolveAppliedVoucher(
+          submittedVoucherCode,
+          input.items,
+        );
+
+        if (!resolvedVoucher.voucher) {
+          return {
+            success: false,
+            message: "The voucher could not be applied to this order.",
+            errors: {
+              voucherCode:
+                resolvedVoucher.error ?? "Please enter a valid voucher code.",
+            },
+          };
+        }
+
+        appliedVoucher = resolvedVoucher.voucher;
+        voucherDiscountAmount = resolvedVoucher.discountAmount;
+      } catch (error) {
+        return {
+          success: false,
+          message: "The voucher system is not available right now.",
+          errors: {
+            voucherCode: getVoucherSystemMessage(error),
+          },
+        };
+      }
+    }
+
+    const finalPricing = buildCheckoutPricing(
       input.items,
       selectedZone,
       selectedArea,
+      appliedVoucher,
     );
     const orderNumber = generateOrderNumber();
     const whatsappNumber =
@@ -105,9 +265,11 @@ export async function submitCheckoutOrder(
       note: note || undefined,
       deliveryZoneName: selectedZone.name,
       deliveryZoneAreaName: selectedArea.name,
-      deliveryCharge: pricing.deliveryCharge,
-      subtotal: pricing.subtotal,
-      total: pricing.total,
+      voucherCode: appliedVoucher?.code ?? null,
+      discountAmount: finalPricing.discountAmount,
+      deliveryCharge: finalPricing.deliveryCharge,
+      subtotal: finalPricing.subtotal,
+      total: finalPricing.total,
       items: input.items,
     });
     const whatsappUrl = createWhatsAppOrderUrl(
@@ -123,12 +285,19 @@ export async function submitCheckoutOrder(
       note: note || null,
       delivery_zone_id: selectedZone.id,
       delivery_zone_name: deliveryZoneLabel,
-      delivery_charge: pricing.deliveryCharge,
-      subtotal: pricing.subtotal,
-      total: pricing.total,
+      delivery_charge: finalPricing.deliveryCharge,
+      subtotal: finalPricing.subtotal,
+      total: finalPricing.total,
       status: "New",
       whatsapp_sent: true,
       whatsapp_message: whatsappMessage,
+      ...(appliedVoucher
+        ? {
+            voucher_id: appliedVoucher.id,
+            voucher_code: appliedVoucher.code,
+            discount_amount: voucherDiscountAmount,
+          }
+        : {}),
     };
 
     const { data: insertedOrder, error: orderError } = await supabase
@@ -142,7 +311,14 @@ export async function submitCheckoutOrder(
         success: false,
         message: "We couldn't save the order. Please try again.",
         errors: {
-          server: orderError?.message ?? "Failed to create the order record.",
+          ...(appliedVoucher
+            ? {
+                voucherCode: getVoucherSystemMessage(orderError),
+              }
+            : {}),
+          server:
+            orderError?.message ??
+            "Failed to create the order record.",
         },
       };
     }
@@ -169,8 +345,30 @@ export async function submitCheckoutOrder(
       };
     }
 
+    if (appliedVoucher) {
+      const { error: voucherUsageError } = await supabase
+        .from("vouchers")
+        .update({
+          times_used: appliedVoucher.timesUsed + 1,
+        })
+        .eq("id", appliedVoucher.id);
+
+      if (voucherUsageError) {
+        await supabase.from("orders").delete().eq("id", insertedOrder.id);
+
+        return {
+          success: false,
+          message: "We couldn't finalize the voucher usage. Please try again.",
+          errors: {
+            voucherCode: getVoucherSystemMessage(voucherUsageError),
+          },
+        };
+      }
+    }
+
     revalidatePath("/admin");
     revalidatePath("/admin/orders");
+    revalidatePath("/checkout");
 
     return {
       success: true,

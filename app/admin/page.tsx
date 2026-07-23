@@ -4,6 +4,7 @@ import {
   deleteDealAction,
   deleteDeliveryZoneAction,
   deleteDeliveryZoneAreaAction,
+  deleteSimpleOrderAction,
   deleteSimpleProductAction,
   updateSimpleOrderStatusAction,
 } from "@/app/admin/actions";
@@ -22,10 +23,15 @@ import { SimpleCategoryForm } from "@/components/admin/simple-category-form";
 import { SimpleDealForm } from "@/components/admin/simple-deal-form";
 import { SimpleProductForm } from "@/components/admin/simple-product-form";
 import { SimpleSettingsForm } from "@/components/admin/simple-settings-form";
-import { fetchAdminDeals, fetchSimpleAdminPageData } from "@/lib/admin-data";
+import { SimpleVoucherForm } from "@/components/admin/simple-voucher-form";
+import {
+  fetchAdminDeals,
+  fetchAdminVouchers,
+  fetchSimpleAdminPageData,
+} from "@/lib/admin-data";
 import { formatCurrency } from "@/lib/utils";
 import { createAdminCustomerOrderWhatsAppUrl } from "@/lib/whatsapp";
-import type { AdminDeal } from "@/types/admin";
+import type { AdminDeal, AdminVoucher } from "@/types/admin";
 
 function formatOrderDate(value: string) {
   return new Date(value).toLocaleString("en-PK", {
@@ -72,8 +78,27 @@ function formatDealWindow(deal: AdminDeal) {
   return `Until ${formatDate(deal.endsAt)}`;
 }
 
+function formatVoucherDiscount(voucher: AdminVoucher) {
+  if (voucher.discountType === "percentage") {
+    return `${voucher.discountValue}% off`;
+  }
+
+  return `${formatCurrency(voucher.discountValue)} off`;
+}
+
+function formatVoucherExpiry(value: string) {
+  if (!value) {
+    return "No expiry";
+  }
+
+  return new Date(value).toLocaleString("en-PK", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
 export default async function AdminDashboardPage() {
-  const [result, dealsResult] = await Promise.all([
+  const [result, dealsResult, vouchersResult] = await Promise.all([
     fetchSimpleAdminPageData()
       .then((data) => ({ data, error: null as string | null }))
       .catch((error) => ({
@@ -91,6 +116,15 @@ export default async function AdminDashboardPage() {
           error instanceof Error
             ? error.message
             : "Unexpected error while loading deals data.",
+      })),
+    fetchAdminVouchers()
+      .then((vouchers) => ({ vouchers, error: null as string | null }))
+      .catch((error) => ({
+        vouchers: [] as AdminVoucher[],
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unexpected error while loading vouchers data.",
       })),
   ]);
 
@@ -131,10 +165,11 @@ export default async function AdminDashboardPage() {
       links={[
         { id: "overview", label: "Overview" },
         { id: "products", label: "Products" },
-        { id: "orders", label: "Orders" },
         { id: "deals", label: "Deals" },
         { id: "categories", label: "Categories" },
         { id: "delivery", label: "Delivery" },
+        { id: "vouchers", label: "Vouchers" },
+        { id: "orders", label: "Orders" },
         { id: "settings", label: "Settings" },
       ]}
     >
@@ -691,14 +726,89 @@ export default async function AdminDashboardPage() {
       </MobileAdminSection>
 
       <MobileAdminSection
+        id="vouchers"
+        title="Vouchers"
+        description="Create discount codes for checkout."
+      >
+      <section>
+        <PanelCard
+          title="Vouchers"
+          description="Create a code, set the discount, choose the expiry date, and control how many times it can be used."
+          compactHeaderOnMobile
+        >
+          {vouchersResult.error ? (
+            <AdminErrorState
+              title="Vouchers could not be loaded."
+              description={vouchersResult.error}
+            />
+          ) : (
+            <div className="grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
+              <SimpleVoucherForm />
+
+              <div className="space-y-4">
+                {vouchersResult.vouchers.length === 0 ? (
+                  <AdminEmptyState
+                    title="No vouchers yet"
+                    description="Create your first voucher code for checkout discounts."
+                  />
+                ) : (
+                  vouchersResult.vouchers.map((voucher) => (
+                    <details
+                      key={voucher.id}
+                      className="rounded-[1.75rem] border-2 border-[rgba(224,123,0,0.22)] bg-surface-muted p-5"
+                    >
+                      <summary className="flex cursor-pointer list-none flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-2xl font-semibold text-ink-950">
+                              {voucher.name}
+                            </p>
+                            <span className="rounded-full bg-[var(--color-primary)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+                              {voucher.code}
+                            </span>
+                            <span className="rounded-full bg-cheese-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">
+                              {formatVoucherDiscount(voucher)}
+                            </span>
+                            <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-ink-700">
+                              {voucher.isActive ? "Active" : "Inactive"}
+                            </span>
+                          </div>
+                          <p className="mt-2 text-sm leading-6 text-ink-700/78">
+                            Expires {formatVoucherExpiry(voucher.validUntil)}.
+                          </p>
+                          <p className="mt-2 text-sm leading-6 text-ink-700/78">
+                            Used {voucher.timesUsed}
+                            {voucher.maxUses ? ` of ${voucher.maxUses}` : ""} times.
+                          </p>
+                        </div>
+
+                        <span className="text-sm font-semibold uppercase tracking-[0.22em] text-cheese-500">
+                          Tap to edit
+                        </span>
+                      </summary>
+
+                      <div className="mt-5">
+                        <SimpleVoucherForm voucher={voucher} />
+                      </div>
+                    </details>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </PanelCard>
+      </section>
+      </MobileAdminSection>
+
+      <MobileAdminSection
         id="orders"
         title="Orders"
-        description="Review orders, update status, and send WhatsApp summaries."
+        description="Review orders, update status, send WhatsApp summaries, or delete old orders."
       >
       <section>
         <PanelCard
           title="Orders"
-          description="View customer details, confirm or deliver the order, send the full order summary to WhatsApp, and export all orders to CSV."
+          description="View customer details, confirm or deliver the order, send the full order summary to WhatsApp, export orders, or delete records you no longer need."
           compactHeaderOnMobile
         >
           <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-end">
@@ -726,6 +836,8 @@ export default async function AdminDashboardPage() {
                     status: order.status,
                     deliveryLabel: order.deliveryLabel,
                     subtotal: order.subtotal,
+                    voucherCode: order.voucherCode || null,
+                    discountAmount: order.discountAmount,
                     deliveryCharge: order.deliveryCharge,
                     total: order.total,
                     note: order.note,
@@ -912,6 +1024,16 @@ export default async function AdminDashboardPage() {
                           )}
                         </div>
 
+                        <form action={deleteSimpleOrderAction}>
+                          <input type="hidden" name="id" value={order.id} />
+                          <button
+                            type="submit"
+                            className="btn-base w-full justify-center rounded-[1.25rem] border border-red-200 bg-red-50 px-6 py-4 text-red-700"
+                          >
+                            Delete Order
+                          </button>
+                        </form>
+
                         <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,var(--color-primary),var(--color-primary-dark))] p-5 text-white">
                           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/55">
                             Order total
@@ -921,6 +1043,15 @@ export default async function AdminDashboardPage() {
                               <span>Subtotal</span>
                               <span>{formatCurrency(order.subtotal)}</span>
                             </div>
+                            {order.discountAmount > 0 ? (
+                              <div className="flex items-center justify-between">
+                                <span>
+                                  Voucher
+                                  {order.voucherCode ? ` (${order.voucherCode})` : ""}
+                                </span>
+                                <span>-{formatCurrency(order.discountAmount)}</span>
+                              </div>
+                            ) : null}
                             <div className="flex items-center justify-between">
                               <span>Delivery</span>
                               <span>{formatCurrency(order.deliveryCharge)}</span>

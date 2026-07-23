@@ -19,6 +19,7 @@ import type {
   AdminOrderSummary,
   AdminProduct,
   AdminSiteSettings,
+  AdminVoucher,
 } from "@/types/admin";
 import type {
   DealIncludedItem,
@@ -220,6 +221,22 @@ function mapAdminZoneRow(
   };
 }
 
+function mapAdminVoucherRow(row: Tables<"vouchers">): AdminVoucher {
+  return {
+    id: row.id,
+    code: row.code,
+    name: row.name,
+    discountType:
+      row.discount_type === "fixed" ? "fixed" : "percentage",
+    discountValue: Number(row.discount_value ?? 0),
+    validFrom: row.valid_from ?? "",
+    validUntil: row.valid_until ?? "",
+    maxUses: row.max_uses,
+    timesUsed: row.times_used,
+    isActive: row.is_active,
+  };
+}
+
 function mapAdminOrderRow(row: Tables<"orders">): AdminOrderSummary {
   return {
     id: row.id,
@@ -229,6 +246,8 @@ function mapAdminOrderRow(row: Tables<"orders">): AdminOrderSummary {
     address: row.address,
     note: row.note ?? "",
     deliveryLabel: row.delivery_zone_name,
+    voucherCode: row.voucher_code ?? "",
+    discountAmount: Number(row.discount_amount ?? 0),
     deliveryCharge: Number(row.delivery_charge),
     subtotal: Number(row.subtotal),
     total: Number(row.total),
@@ -599,6 +618,22 @@ export async function fetchAdminOrders(
   }
 
   return (data ?? []).map(mapAdminOrderRow);
+}
+
+export async function fetchAdminVouchers(
+  client?: SupabaseClient<Database>,
+) {
+  const supabase = await getSupabaseClient(client);
+  const { data, error } = await supabase
+    .from("vouchers")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []).map(mapAdminVoucherRow);
 }
 
 export async function fetchAdminOrdersList(

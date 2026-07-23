@@ -300,6 +300,51 @@ export interface Database {
         };
         Relationships: [];
       };
+      vouchers: {
+        Row: {
+          id: string;
+          code: string;
+          name: string;
+          discount_type: string;
+          discount_value: number;
+          valid_from: string | null;
+          valid_until: string | null;
+          max_uses: number | null;
+          times_used: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          name: string;
+          discount_type: string;
+          discount_value: number;
+          valid_from?: string | null;
+          valid_until?: string | null;
+          max_uses?: number | null;
+          times_used?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          code?: string;
+          name?: string;
+          discount_type?: string;
+          discount_value?: number;
+          valid_from?: string | null;
+          valid_until?: string | null;
+          max_uses?: number | null;
+          times_used?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       orders: {
         Row: {
           id: string;
@@ -312,6 +357,9 @@ export interface Database {
           delivery_zone_name: string;
           delivery_zone_area_id: string | null;
           delivery_zone_area_name: string | null;
+          voucher_id: string | null;
+          voucher_code: string | null;
+          discount_amount: number;
           delivery_charge: number;
           subtotal: number;
           total: number;
@@ -332,6 +380,9 @@ export interface Database {
           delivery_zone_name: string;
           delivery_zone_area_id?: string | null;
           delivery_zone_area_name?: string | null;
+          voucher_id?: string | null;
+          voucher_code?: string | null;
+          discount_amount?: number;
           delivery_charge?: number;
           subtotal?: number;
           total?: number;
@@ -352,6 +403,9 @@ export interface Database {
           delivery_zone_name?: string;
           delivery_zone_area_id?: string | null;
           delivery_zone_area_name?: string | null;
+          voucher_id?: string | null;
+          voucher_code?: string | null;
+          discount_amount?: number;
           delivery_charge?: number;
           subtotal?: number;
           total?: number;

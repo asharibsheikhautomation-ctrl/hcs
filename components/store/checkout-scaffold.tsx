@@ -2,15 +2,20 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { submitCheckoutOrder } from "@/app/(store)/checkout/actions";
+import {
+  applyCheckoutVoucherAction,
+  submitCheckoutOrder,
+} from "@/app/(store)/checkout/actions";
 import { FadeUp, ScaleIn, SectionTransition } from "@/components/motion";
 import { useCart } from "@/components/providers/cart-provider";
 import { StoreStatePanel } from "@/components/store/store-state-panel";
 import { useCheckoutState } from "@/hooks/use-checkout-state";
-import type { DeliveryZone, SiteSettings } from "@/types/commerce";
+import { buildCheckoutPricing } from "@/lib/checkout";
 import type { CheckoutValidationErrors } from "@/lib/orders";
 import { createWhatsAppOrderMessage } from "@/lib/whatsapp";
+import { normalizeVoucherCode } from "@/lib/vouchers";
 import { formatCurrency } from "@/lib/utils";
+import type { DeliveryZone, SiteSettings, Voucher } from "@/types/commerce";
 
 interface CheckoutScaffoldProps {
   zones: DeliveryZone[];
@@ -36,8 +41,11 @@ export function CheckoutScaffold({
 }: CheckoutScaffoldProps) {
   const { clear, isHydrated, items } = useCart();
   const [isPending, startTransition] = useTransition();
+  const [isVoucherPending, startVoucherTransition] = useTransition();
   const [fieldErrors, setFieldErrors] = useState<CheckoutValidationErrors>({});
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  const [voucherMessage, setVoucherMessage] = useState<string | null>(null);
+  const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
   const [submittedOrderNumber, setSubmittedOrderNumber] = useState<string | null>(
     null,
   );
@@ -45,7 +53,6 @@ export function CheckoutScaffold({
     canSubmit,
     form,
     phase,
-    pricing,
     selectedZone,
     selectedArea,
     updateField,
@@ -56,6 +63,12 @@ export function CheckoutScaffold({
     items,
     zones,
   });
+  const pricing = buildCheckoutPricing(
+    items,
+    selectedZone,
+    selectedArea,
+    appliedVoucher,
+  );
 
   const previewWhatsAppMessage = createWhatsAppOrderMessage({
     customerName: form.customerName,
@@ -64,6 +77,8 @@ export function CheckoutScaffold({
     note: form.note,
     deliveryZoneName: selectedZone?.name ?? "Not selected",
     deliveryZoneAreaName: selectedArea?.name ?? "Not selected",
+    voucherCode: appliedVoucher?.code ?? null,
+    discountAmount: pricing.discountAmount,
     deliveryCharge: pricing.deliveryCharge,
     subtotal: pricing.subtotal,
     total: pricing.total,
@@ -72,11 +87,22 @@ export function CheckoutScaffold({
   });
 
   function handleFieldChange(
-    field: "customerName" | "phone" | "address" | "note",
+    field: "customerName" | "phone" | "address" | "note" | "voucherCode",
     value: string,
   ) {
     updateField(field, value);
     setSubmitMessage(null);
+    if (field === "voucherCode") {
+      const normalizedValue = normalizeVoucherCode(value);
+
+      if (appliedVoucher && normalizedValue !== appliedVoucher.code) {
+        setAppliedVoucher(null);
+        setVoucherMessage("Voucher changed. Apply it again to refresh discount.");
+      } else if (!value.trim()) {
+        setAppliedVoucher(null);
+        setVoucherMessage(null);
+      }
+    }
     setFieldErrors((currentErrors) => {
       const withoutField = clearFieldError(currentErrors, field);
       return clearFieldError(withoutField, "server");
@@ -100,6 +126,54 @@ export function CheckoutScaffold({
       const withoutArea = clearFieldError(currentErrors, "deliveryZoneAreaId");
       return clearFieldError(withoutArea, "server");
     });
+  }
+
+  function handleApplyVoucher() {
+    setSubmitMessage(null);
+    setFieldErrors((currentErrors) => clearFieldError(currentErrors, "server"));
+
+    if (!form.voucherCode.trim()) {
+      setAppliedVoucher(null);
+      setVoucherMessage("Enter a voucher code first.");
+      setFieldErrors((currentErrors) => ({
+        ...currentErrors,
+        voucherCode: "Enter a voucher code first.",
+      }));
+      return;
+    }
+
+    startVoucherTransition(async () => {
+      const result = await applyCheckoutVoucherAction({
+        code: form.voucherCode,
+        items,
+      });
+
+      if (!result.success) {
+        setAppliedVoucher(null);
+        setVoucherMessage(result.message);
+        setFieldErrors((currentErrors) => ({
+          ...clearFieldError(currentErrors, "server"),
+          voucherCode: result.error,
+        }));
+        return;
+      }
+
+      setAppliedVoucher(result.voucher);
+      setVoucherMessage(
+        `${result.message} You saved ${formatCurrency(result.discountAmount)}.`,
+      );
+      setFieldErrors((currentErrors) => {
+        const withoutVoucher = clearFieldError(currentErrors, "voucherCode");
+        return clearFieldError(withoutVoucher, "server");
+      });
+    });
+  }
+
+  function handleRemoveVoucher() {
+    updateField("voucherCode", "");
+    setAppliedVoucher(null);
+    setVoucherMessage("Voucher removed.");
+    setFieldErrors((currentErrors) => clearFieldError(currentErrors, "voucherCode"));
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -347,6 +421,63 @@ export function CheckoutScaffold({
                   placeholder="Anything the store should know?"
                 />
               </label>
+
+              <div className="space-y-2 text-sm font-medium text-ink-700 md:col-span-2">
+                <span>Voucher code</span>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <input
+                    className="field-input flex-1"
+                    value={form.voucherCode}
+                    onChange={(event) =>
+                      handleFieldChange("voucherCode", event.target.value)
+                    }
+                    placeholder="Enter voucher code"
+                  />
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={handleApplyVoucher}
+                      disabled={isVoucherPending || items.length === 0}
+                      className="btn-base btn-secondary min-w-[8rem] justify-center"
+                    >
+                      {isVoucherPending ? "Applying..." : "Apply"}
+                    </button>
+                    {appliedVoucher ? (
+                      <button
+                        type="button"
+                        onClick={handleRemoveVoucher}
+                        className="btn-base min-w-[7rem] justify-center rounded-full border border-black/12 bg-white text-ink-950"
+                      >
+                        Remove
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+                {fieldErrors.voucherCode ? (
+                  <p className="text-xs font-semibold text-red-600">
+                    {fieldErrors.voucherCode}
+                  </p>
+                ) : null}
+                {voucherMessage ? (
+                  <p className="text-xs leading-5 text-ink-700/72">
+                    {voucherMessage}
+                  </p>
+                ) : null}
+                {appliedVoucher ? (
+                  <div className="rounded-2xl border border-black/10 bg-[var(--color-bg-light)] px-4 py-3 text-sm text-ink-700">
+                    <span className="font-semibold text-ink-950">
+                      {appliedVoucher.code}
+                    </span>{" "}
+                    is active for{" "}
+                    <span className="font-semibold text-ink-950">
+                      {appliedVoucher.discountType === "percentage"
+                        ? `${appliedVoucher.discountValue}% off`
+                        : formatCurrency(appliedVoucher.discountValue)}
+                    </span>
+                    .
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </SectionTransition>
@@ -420,6 +551,14 @@ export function CheckoutScaffold({
                   <span>Subtotal</span>
                   <span>{formatCurrency(pricing.subtotal)}</span>
                 </div>
+                {pricing.discountAmount > 0 ? (
+                  <div className="flex items-center justify-between text-[var(--color-primary)]">
+                    <span>
+                      Voucher {appliedVoucher?.code ? `(${appliedVoucher.code})` : ""}
+                    </span>
+                    <span>-{formatCurrency(pricing.discountAmount)}</span>
+                  </div>
+                ) : null}
                 <div className="flex items-center justify-between">
                   <span>Delivery charge</span>
                   <span>{formatCurrency(pricing.deliveryCharge)}</span>
@@ -432,6 +571,12 @@ export function CheckoutScaffold({
                       : "Not available"}
                   </span>
                 </div>
+                {pricing.discountAmount > 0 ? (
+                  <div className="flex items-center justify-between">
+                    <span>After discount</span>
+                    <span>{formatCurrency(pricing.discountedSubtotal)}</span>
+                  </div>
+                ) : null}
                 <div className="flex items-center justify-between text-base font-semibold text-ink-950">
                   <span>Final total</span>
                   <span>{formatCurrency(pricing.total)}</span>
