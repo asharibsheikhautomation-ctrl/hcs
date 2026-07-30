@@ -14,7 +14,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   themeColor: "#F5A800",
-};
+};_____
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
